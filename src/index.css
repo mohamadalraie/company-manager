@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+
+html,
+body,
+#root,
+.app,
+.content{
+  height: 100%;
+  width: 100%;
+  font-family:  'Roboto Mono',sans-serif;
+}
+
+.app{
+  display: flex;
+  position: relative;
+}
+
+::-webkit-scrollbar{
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track{
+  background: #e0e0e0;
+}
+
+/* Handel */
+::-webkit-scrollbar-thumb{
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background: #555;
+}
+
+
