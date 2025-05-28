@@ -10,7 +10,7 @@ import LockOpenOutLinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutLinedIcon from "@mui/icons-material/SecurityOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
-const Engineers = () => {
+const SalesManagers = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const columns = [
@@ -47,13 +47,16 @@ const Engineers = () => {
   return (
     <Box m="10px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title={"Engineers"} subtitle={"The Engineers in the Company"} />
-        <Link to="/engineers/add">
-          <Button variant="standard" style={{backgroundColor:colors.greenAccent[700], color:colors.blueAccent[100]}}> add</Button>
+        <Header
+          title={"Sales Managers"}
+          subtitle={"The Slaes Managers in the Company"}
+        />
+        <Link to="/salesManagers">
+        <Button variant="standard" style={{backgroundColor:colors.greenAccent[700], color:colors.blueAccent[100]}}> add</Button>
         </Link>
       </Box>
       <Box
-        m="20px 0 0 0"
+        m="40px 0 0 0"
         height="70vh"
         sx={{
           "& .MuiDataGrid-cell": {},
@@ -70,4 +73,4 @@ const Engineers = () => {
   );
 };
 
-export default Engineers;
+export default SalesManagers;

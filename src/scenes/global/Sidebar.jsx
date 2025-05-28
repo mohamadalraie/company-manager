@@ -9,7 +9,7 @@ import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
-import HelpOutlinedIcon from "@mui/icons-material/HelpOutlined";
+import RealEstateAgentSharpIcon from "@mui/icons-material/RealEstateAgentSharp";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 // import PieChartOutlinedOutlinedIcon from "@mui/icons-material/PieChartOutlinedOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
@@ -17,6 +17,7 @@ import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import { tokens } from "../../theme";
 
 import userImage from "../../assets/user.jpg";
+import { GridAddIcon } from "@mui/x-data-grid";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -43,128 +44,130 @@ const ProSidebar = () => {
   const [selected, setSelected] = useState("Engineer");
 
   return (
-    <Sidebar collapsed={isCollapsed} backgroundColor={colors.primary[800]}>
-      <Menu
-        iconShape="square"
-        menuItemStyles={{
-          button: ({ level, active, disabled }) => {
-            if (level === 0) {
-              return {
-                color: disabled ? colors.grey[900] : colors.grey[100],
-                backgroundColor: active ? colors.blueAccent[800] : undefined,
-                "&:hover": {
-                  backgroundColor: `${colors.blueAccent[900]} !important`,
-                  color: `${colors.primary[100]} !important`,
-                  borderRadius: "10px !important",
-                  fontWeight: "bold !important",
-                },
-              };
-            }
-          },
-        }}
-      >
-        {/* logo */}
-        <MenuItem
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-          style={{
-            margin: "10px 0 20px 0",
-            color: colors.grey[100],
+    <Sidebar
+      style={{ border: "none" }}
+      scrollbarWidth="none"
+      collapsed={isCollapsed}
+      backgroundColor={colors.primary[800]}
+    
+    >
+      <Box justifyContent="space-between" alignItems="center">
+        <Menu
+          iconShape="square"
+          menuItemStyles={{
+            button: ({ level, active, disabled }) => {
+              if (level === 0) {
+                return {
+                  color: disabled ? colors.grey[900] : colors.grey[100],
+                  backgroundColor: active ? colors.primary[700] : undefined,
+                  "&:hover": {
+                    backgroundColor: `${colors.primary[900]} !important`,
+                    color: `${colors.primary[100]} !important`,
+                    borderRadius: "10px !important",
+                    fontWeight: "bold !important",
+                  },
+                };
+              }
+            },
           }}
         >
+          {/* logo */}
+          <MenuItem
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
+            style={{
+              margin: "10px 0 20px 0",
+              color: colors.grey[100],
+            }}
+          >
+            {!isCollapsed && (
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                ml="15px"
+              >
+                <Typography variant="h3" color={colors.grey[100]}>
+                  Orient
+                </Typography>
+                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+                  <MenuOutlinedIcon />
+                </IconButton>
+              </Box>
+            )}
+          </MenuItem>
           {!isCollapsed && (
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              ml="15px"
-            >
-              <Typography variant="h3" color={colors.grey[100]}>
-                Orient
-              </Typography>
-              <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                <MenuOutlinedIcon />
-              </IconButton>
+            <Box mb="25px">
+              <Box display="flex" justifyContent="center" alignItems="center">
+                <img
+                  alt="profile-user"
+                  width="100px"
+                  height="100px"
+                  src={userImage}
+                  style={{ cursor: "pointer", borderRadius: "50%" }}
+                />
+              </Box>
+
+              <Box textAlign="center">
+                <Typography
+                  variant="h4"
+                  color={colors.grey[100]}
+                  fontWeight="bold"
+                  sx={{ m: "10px 0 0 0" }}
+                >
+                  Mohamad Alraie
+                </Typography>
+                <Typography variant="h5" color={colors.greenAccent[200]}>
+                  IT Admin
+                </Typography>
+              </Box>
             </Box>
           )}
-        </MenuItem>
-        {!isCollapsed && (
-          <Box mb="25px">
-            <Box display="flex" justifyContent="center" alignItems="center">
-              <img
-                alt="profile-user"
-                width="100px"
-                height="100px"
-                src={userImage}
-                style={{ cursor: "pointer", borderRadius: "50%" }}
-              />
-            </Box>
 
-            <Box textAlign="center">
+          {/* Sidebar MENU ITEMS */}
+          <Box>
+            <Item
+              title="Dashboard"
+              to="/"
+              icon={<HomeOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            {!isCollapsed && (
               <Typography
-                variant="h4"
-                color={colors.grey[100]}
-                fontWeight="bold"
-                sx={{ m: "10px 0 0 0" }}
+                variant="h6"
+                color={colors.grey[500]}
+                sx={{ m: "15px 0 5px 30px" }}
               >
-                Mohamad Alraie
+                Managment
               </Typography>
-              <Typography variant="h5" color={colors.greenAccent[200]}>
-                IT Admin
-              </Typography>
-            </Box>
+            )}
+
+            <Item
+              title="Engineers"
+              to="/engineers"
+              icon={<PeopleOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Sales Managers"
+              to="/salesManagers"
+              icon={<RealEstateAgentSharpIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Projects"
+              to="/projects"
+              icon={<BarChartOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
           </Box>
-        )}
-
-        {/* Sidebar MENU ITEMS */}
-        <Box >
-          <Item
-            title="Dashboard"
-            to="/"
-            icon={<HomeOutlinedIcon />}
-            selected={selected}
-            setSelected={setSelected}
-          />
-
-          {!isCollapsed && <Typography
-            variant="h6"
-            color={colors.grey[500]}
-            sx={{ m: "15px 0 5px 30px" }}
-          >
-            Managment
-          </Typography>}
-
-          <Item
-            title="Engineers"
-            to="/engineers"
-            icon={<PeopleOutlinedIcon />}
-            selected={selected}
-            setSelected={setSelected}
-          />
-          <Item
-            title="Engineers"
-            to="/engineers"
-            icon={<PeopleOutlinedIcon />}
-            selected={selected}
-            setSelected={setSelected}
-          />
-          <Item
-            title="Engineers"
-            to="/engineers"
-            icon={<PeopleOutlinedIcon />}
-            selected={selected}
-            setSelected={setSelected}
-          />
-
-          <Item
-            title="Projects"
-            to="/projects"
-            icon={<BarChartOutlinedIcon />}
-            selected={selected}
-            setSelected={setSelected}
-          />
-        </Box>
-      </Menu>
+        </Menu>
+      </Box>
     </Sidebar>
   );
 };
