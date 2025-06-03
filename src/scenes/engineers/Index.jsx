@@ -22,12 +22,13 @@ const Engineers = () => {
   useEffect(() => {
     console.log("rendered");
     axios
-      .post(`${baseUrl}${getAllEngineersApi}`, {})
+      .get(`${baseUrl}${getAllEngineersApi}`)
       .then(function (response) {
         console.log(response);
         allEngineersResponse = response
           .map((engineer) => {
             return {
+            
               ...engineer, // Spreads all existing properties of the engineer object
               id: engineer.id,
               first_name: engineer.user.first_name,
