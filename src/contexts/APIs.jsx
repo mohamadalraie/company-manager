@@ -1,1 +1,0 @@
-export const getAllEngineersApi="/api/engineers/all"

@@ -2,7 +2,7 @@ import { Box, Typography, useTheme, Button } from "@mui/material";
 import { Header } from "../../components/Header";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataTeam } from "../../data/mockData";
+// import { mockDataTeam } from "../../data/mockData";
 import { Link } from "react-router-dom";
 
 import AdminPanelSettingsOutLinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
@@ -43,6 +43,7 @@ const SalesManagers = () => {
       },
     },
   ];
+  
 
   return (
     <Box m="10px">
@@ -67,7 +68,7 @@ const SalesManagers = () => {
           },
         }}
       >
-        <DataGrid rows={mockDataTeam} columns={columns} />
+        <DataGrid rows={[]} columns={columns} />
       </Box>
     </Box>
   );

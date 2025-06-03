@@ -1,59 +1,40 @@
+// src/components/Engineers.jsx (تأكد من المسار الصحيح)
+
 import { Header } from "../../components/Header";
 import { tokens } from "../../theme";
-import { combinedEngineersData, testDataEngineers } from "../../data/testData";
-// React
-import { useEffect } from "react";
+// تأكد من أن هذا هو المسار الصحيح لـ hook الخاص بك
+import useEngineersData from "../../hooks/getAllEngineersDataHook"; // يجب أن يرجع refetchEngineers
 
-// External libraris
-import axios from "axios";
 import { Link } from "react-router-dom";
 
-// Mui libraries
-import { Box, Typography, useTheme, Button } from "@mui/material";
+import { Box, Typography, useTheme, Button, CircularProgress, Snackbar, Alert } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import AdminPanelSettingsOutLinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
-import LockOpenOutLinedIcon from "@mui/icons-material/LockOpenOutlined";
-import SecurityOutLinedIcon from "@mui/icons-material/SecurityOutlined";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { baseUrl } from "../../contexts/baseUrl";
-import { getAllEngineersApi } from "../../contexts/APIs";
+// لا تحتاج DeleteOutlineIcon هنا إذا كان داخل DeleteConfirmationComponent
+// import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+
+// استيراد المكون الجديد للحذف
+import DeleteConfirmationComponent from "../../components/DeleteConfirmation";// تأكد من المسار الصحيح
+
+import { baseUrl } from "../../shared/baseUrl";
+import { deleteEngineerApi } from "../../shared/APIs";
+
 
 const Engineers = () => {
-  useEffect(() => {
-    console.log("rendered");
-    axios
-      .get(`${baseUrl}${getAllEngineersApi}`)
-      .then(function (response) {
-        console.log(response);
-        allEngineersResponse = response
-          .map((engineer) => {
-            return {
-            
-              ...engineer, // Spreads all existing properties of the engineer object
-              id: engineer.id,
-              first_name: engineer.user.first_name,
-              last_name: engineer.user.last_name,
-              email: engineer.user.email,
-              phone_number: engineer.user.phone_number,
-              status: engineer.user.status,
-              specialization_name: engineer.specialization.name,
-        
-            };
-          })
-          .map(({ user, specialization, ...rest }) => rest); // A second map to explicitly remove 'user' and 'specialization' properties
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }, []);
-  const allEngineersResponse = [];
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  // استقبل refetchEngineers من الـ hook
+  const { engineers, loading, error } = useEngineersData();
+
+  // يمكنك إزالة حالة الـ Snackbar من هنا إذا كنت تريد أن يديرها DeleteConfirmationComponent فقط
+  // أو يمكنك الاحتفاظ بها هنا إذا كنت تريد رسائل عامة للمكون كله.
+  // لأغراض هذا المثال، سأفترض أن DeleteConfirmationComponent يدير الـ Snackbar الخاص به.
+
   const columns = [
     {
       field: "id",
       headerName: "ID",
-      flex: 0.5, // Adjust flex as needed
+      flex: 0.5,
     },
     {
       field: "first_name",
@@ -74,10 +55,8 @@ const Engineers = () => {
     {
       field: "status",
       headerName: "Status",
-
-      sortable: false, // Actions columns are usually not sortable
+      sortable: false,
       filterable: false,
-      // if you want to specify the cell
       renderCell: (params) => {
         return (
           <Button
@@ -86,9 +65,9 @@ const Engineers = () => {
               color: colors.primary[100],
               backgroundColor: params.value === "active" ? "green" : "red",
             }}
-            onClick={alert}
+            onClick={() => alert(`Status: ${params.value}`)}
           >
-            {params.value}
+            {params.value ? params.value : "null"}
           </Button>
         );
       },
@@ -96,19 +75,77 @@ const Engineers = () => {
     {
       field: "actions",
       headerName: "Actions",
-
-      sortable: false, // Actions columns are usually not sortable
+      sortable: false,
       filterable: false,
-      // if you want to specify the cell
-      renderCell: () => {
+      renderCell: (params) => {
         return (
-          <Button style={{ color: "red", borderColor: "red" }} onClick={alert}>
-            {<DeleteOutlineIcon />}
-          </Button>
+          // 🚨 هنا نستخدم DeleteConfirmationComponent ونمرر له refetchEngineers
+          <DeleteConfirmationComponent
+            itemId={params.row.id}
+            deleteApi={`${baseUrl}${deleteEngineerApi}`}
+            onDeleteSuccess={()=>{}} // 🚨 استدعاء refetchEngineers عند النجاح
+            onDeleteError={() => { /* يمكنك وضع منطق للتعامل مع الأخطاء هنا إذا أردت */ }}
+          />
         );
       },
     },
   ];
+
+  if (loading) {
+    return (
+      <Box m="10px">
+         <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Header title={"Engineers"} subtitle={"The Engineers in the Company"} />
+        <Link to="/engineers/add">
+          <Button
+            variant="standard"
+            style={{
+              backgroundColor: colors.greenAccent[700],
+              color: colors.blueAccent[100],
+            }}
+          >
+            add
+          </Button>
+        </Link>
+      </Box>
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+     
+
+      >
+        <CircularProgress size={60} sx={{ color: colors.greenAccent[400] }} />
+        <Typography variant="h6" sx={{ mt: 2, color: colors.grey[500] }}>
+          Loading engineers...
+        </Typography>
+      </Box>
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+        width="100vw"
+        position="fixed"
+        top={0}
+        left={0}
+        zIndex={9999}
+        bgcolor={theme.palette.background.default}
+      >
+        <Typography variant="h5" color="error">
+          Error: {error.message}
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box m="10px">
@@ -131,15 +168,21 @@ const Engineers = () => {
         height="70vh"
         sx={{
           "& .MuiDataGrid-cell": {},
-
           "& .MuiDataGrid-columnHeaders": {
             color: colors.greenAccent[400],
             backgroundColor: colors.greenAccent[100],
           },
         }}
       >
-        <DataGrid rows={allEngineersResponse} columns={columns} />
+        <DataGrid rows={engineers} columns={columns} />
       </Box>
+      {/* إذا كنت لا تزال تريد رسائل Snackbar عامة غير متعلقة بالحذف، احتفظ بها هنا.
+          وإلا، فقد تديرها DeleteConfirmationComponent بنفسها. */}
+      {/* <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar> */}
     </Box>
   );
 };
