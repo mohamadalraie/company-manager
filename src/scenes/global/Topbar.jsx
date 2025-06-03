@@ -28,6 +28,7 @@ const Topbar = () => {
           <SearchIcon />
         </IconButton>
       </Box>
+      {/* <Box></Box> */}
 
       <Box display="flex">
         <IconButton>
