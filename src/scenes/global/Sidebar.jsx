@@ -1,5 +1,7 @@
+// src/scenes/global/Sidebar.jsx (ProSidebar)
+
 import { useState } from "react";
-import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
+import { Sidebar, Menu, MenuItem } from "react-pro-sidebar"; // تأكد من استيراد Sidebar من react-pro-sidebar
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 
@@ -11,7 +13,6 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import RealEstateAgentSharpIcon from "@mui/icons-material/RealEstateAgentSharp";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-// import PieChartOutlinedOutlinedIcon from "@mui/icons-material/PieChartOutlinedOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import { tokens } from "../../theme";
@@ -45,11 +46,17 @@ const ProSidebar = () => {
 
   return (
     <Sidebar
-      style={{ border: "none" }}
+      style={{
+        border: "none",
+        position: "fixed", // <--- هذا هو المفتاح! اجعل الشريط الجانبي ثابتًا
+        height: "100vh", // <--- يمتد بطول الشاشة بالكامل
+        top: 0,          // <--- يبدأ من أعلى الشاشة
+        left: 0,         // <--- يبدأ من يسار الشاشة
+        zIndex: 100,     // <--- يظهر فوق المحتوى الآخر (القيمة الافتراضية لـ Topbar عادة تكون أقل)
+      }}
       scrollbarWidth="none"
       collapsed={isCollapsed}
       backgroundColor={colors.primary[800]}
-    
     >
       <Box justifyContent="space-between" alignItems="center">
         <Menu

@@ -10,8 +10,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { Stack } from '@mui/material';
+import { Stack,useTheme } from '@mui/material';
 import axios from "axios";
+import { tokens } from '../theme';
 
 // Helper Alert component for Snackbar
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -23,6 +24,8 @@ function DeleteConfirmationComponent({ itemId, deleteApi, onDeleteSuccess, onDel
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
   const handleClickOpen = () => {
     setOpenConfirmDialog(true);
@@ -85,20 +88,50 @@ function DeleteConfirmationComponent({ itemId, deleteApi, onDeleteSuccess, onDel
         onClose={handleCloseConfirmDialog}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        // --- Apply custom styles to the Dialog ---
+        PaperProps={{ // Target the Paper component that wraps the dialog content
+          sx: {
+            backgroundColor: colors.primary[700], // Example: A darker background
+            color: colors.grey[100],             // Text color for the entire dialog
+            borderRadius: '8px',                 // Rounded corners
+            boxShadow: '0 4px 20px rgba(0,0,0,0.5)', // Custom shadow
+          }
+        }}
+        // --- End custom styles for Dialog ---
       >
-        <DialogTitle id="alert-dialog-title">
+        <DialogTitle
+          id="alert-dialog-title"
+          sx={{
+            backgroundColor: colors.primary[800], // Header background
+            color: colors.greenAccent[400],      // Header text color
+            fontWeight: 'bold',
+            padding: '16px 24px',
+          
+          }}
+        >
           {"Confirm deletion process"}
         </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+        <DialogContent
+          sx={{
+            padding: '24px',
+            color: colors.grey[200],
+            backgroundColor:colors.primary[800] // Content text color
+          }}
+        >
+          <DialogContentText id="alert-dialog-description" component="span"> {/* Use component="span" to apply color directly */}
             Are you sure you want to delete this item? Be careful, you cannot undo this action.
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseConfirmDialog} color="primary">
+        <DialogActions
+          sx={{
+            backgroundColor: colors.primary[800], // Footer background
+            padding: '16px 24px',
+          }}
+        >
+          <Button onClick={handleCloseConfirmDialog} sx={{ color: colors.grey[100] }}> {/* Custom color for Cancel */}
             Cancel
           </Button>
-          <Button onClick={handleDelete} color="error" autoFocus>
+          <Button onClick={handleDelete} sx={{ color: colors.redAccent[500] }} autoFocus> {/* Custom color for Delete */}
             Delete
           </Button>
         </DialogActions>

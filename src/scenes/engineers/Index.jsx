@@ -59,6 +59,13 @@ const Engineers = () => {
       filterable: false,
       renderCell: (params) => {
         return (
+          <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100%"
+          width="100%"
+          >
           <Button
             style={{
               fontSize: "10px",
@@ -69,6 +76,7 @@ const Engineers = () => {
           >
             {params.value ? params.value : "null"}
           </Button>
+          </Box>
         );
       },
     },
@@ -79,13 +87,21 @@ const Engineers = () => {
       filterable: false,
       renderCell: (params) => {
         return (
-          // 🚨 هنا نستخدم DeleteConfirmationComponent ونمرر له refetchEngineers
+          <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100%"
+          width="100%"
+          >
+
           <DeleteConfirmationComponent
             itemId={params.row.id}
             deleteApi={`${baseUrl}${deleteEngineerApi}`}
             onDeleteSuccess={()=>{}} // 🚨 استدعاء refetchEngineers عند النجاح
             onDeleteError={() => { /* يمكنك وضع منطق للتعامل مع الأخطاء هنا إذا أردت */ }}
           />
+          </Box>
         );
       },
     },
