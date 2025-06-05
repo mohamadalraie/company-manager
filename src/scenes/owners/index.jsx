@@ -6,7 +6,7 @@ import { Header } from "../../components/Header";
 import { tokens } from "../../theme";
 // Ensure this is the correct path for your hook
 // useEngineersData should also return a refetchEngineers function
-import useEngineersData from "../../hooks/getAllEngineersDataHook";
+import useOwnersData from "../../hooks/getAllOwnersDataHook";
 
 import { Link } from "react-router-dom"; // For navigation links
 
@@ -31,15 +31,15 @@ import AddIcon from "@mui/icons-material/Add"; // Icon for the Add button
 import DeleteConfirmationComponent from "../../components/DeleteConfirmation"; // Ensure correct path
 
 import { baseUrl } from "../../shared/baseUrl";
-import { deleteEngineerApi } from "../../shared/APIs";
+import { deleteOwnerApi } from "../../shared/APIs";
 
 
-const Engineers = () => {
+const Owners = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  // Update your hook to return engineers, loading, error, AND refetchEngineers
-  const { engineers, loading, error, refetchEngineers } = useEngineersData();
+
+  const { owners, loading, error } = useOwnersData();
 
   // State for Snackbar messages (notifications)
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -80,11 +80,7 @@ const Engineers = () => {
       flex: 1,
       cellClassName: "name-column--cell", // Custom class for name styling
     },
-    {
-      field: "specialization_name",
-      headerName: "Specialization",
-      flex: 1,
-    },
+
     {
       field: "email",
       headerName: "Email",
@@ -123,7 +119,7 @@ const Engineers = () => {
                     params.value === "active" ? colors.greenAccent[700] : colors.redAccent[700],
                 },
               }}
-              onClick={() => showSnackbar(`Engineer Status: ${params.value}`, "info")}
+              onClick={() => showSnackbar(`Owner Status: ${params.value}`, "info")}
             >
               {params.value ? params.value : "Undefined"}
             </Button>
@@ -147,7 +143,7 @@ const Engineers = () => {
             width="100%"
           >
             {/* Edit Button */}
-            <Link to={`/engineers/edit/${params.row.id}`} style={{ textDecoration: "none" }}>
+            <Link to={`/owners/edit/${params.row.id}`} style={{ textDecoration: "none" }}>
               <IconButton
                 aria-label="edit"
                 sx={{ color: colors.blueAccent[400], "&:hover": { color: colors.blueAccent[300] } }}
@@ -159,18 +155,18 @@ const Engineers = () => {
             {/* Delete Confirmation Component */}
             <DeleteConfirmationComponent
               itemId={params.row.id}
-              deleteApi={`${baseUrl}${deleteEngineerApi}`}
+              deleteApi={`${baseUrl}${deleteOwnerApi}`}
               onDeleteSuccess={() => {
-                showSnackbar("Engineer deleted successfully!", "success");
-                refetchEngineers(); // 🚨 Refetch data to update the table
+                showSnackbar("Owner deleted successfully!", "success");
+                // refetchEngineers(); // 🚨 Refetch data to update the table
               }}
               onDeleteError={(errorMessage) => {
-                showSnackbar(`Failed to delete engineer: ${errorMessage}`, "error");
+                showSnackbar(`Failed to delete Owner: ${errorMessage}`, "error");
               }}
               // Pass the delete icon to be rendered inside the component's button
               icon={<DeleteOutlineIcon sx={{ color: colors.redAccent[500] }} />}
               // You can also pass custom confirmation text if needed
-              confirmationText="Are you sure you want to delete this engineer?"
+              confirmationText="Are you sure you want to delete this Owner?"
             />
           </Box>
         );
@@ -184,10 +180,10 @@ const Engineers = () => {
       <Box m="10px">
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Header
-            title={"Engineers"}
-            subtitle={"Managing the Engineers in the Company"}
+            title={"Owners"}
+            subtitle={"Managing the Owners that have Projects we work on in the Company"}
           />
-          <Link to="/engineers/add" style={{ textDecoration: "none" }}>
+          <Link to="/Owners/add" style={{ textDecoration: "none" }}>
             <Button
               variant="contained" // Use contained for a more prominent button
               sx={{
@@ -199,7 +195,7 @@ const Engineers = () => {
               }}
               startIcon={<AddIcon />} // Icon for the Add button
             >
-              Add Engineer
+              Add Owner
             </Button>
           </Link>
         </Box>
@@ -212,7 +208,7 @@ const Engineers = () => {
         >
           <CircularProgress size={60} sx={{ color: colors.greenAccent[400] }} />
           <Typography variant="h6" sx={{ mt: 2, color: colors.grey[500] }}>
-            Loading engineers...
+            Loading Owners...
           </Typography>
         </Box>
       </Box>
@@ -233,7 +229,7 @@ const Engineers = () => {
           Error loading data: {error.message}
         </Typography>
         <Button
-          onClick={refetchEngineers} // Button to retry fetching data
+        //   onClick={(refetchEngineers)} // Button to retry fetching data
           variant="outlined"
           sx={{ mt: 2, color: colors.blueAccent[500], borderColor: colors.blueAccent[500] }}
         >
@@ -259,10 +255,10 @@ const Engineers = () => {
     <Box m="10px">
       <Box display="flex" justifyContent="space-between" alignItems="center" mb="20px">
         <Header
-          title={"Engineers"}
-          subtitle={"Managing the Engineers in the Company"}
+          title={"Owners"}
+          subtitle={"Managing the Owners that have Projects we work on in the Company"}
         />
-        <Link to="/engineers/add" style={{ textDecoration: "none" }}>
+        <Link to="/Owners/add" style={{ textDecoration: "none" }}>
           <Button
             variant="contained"
             sx={{
@@ -274,7 +270,7 @@ const Engineers = () => {
             }}
             startIcon={<AddIcon />} // Icon for the Add button
           >
-            Add Engineer
+            Add Owner
           </Button>
         </Link>
       </Box>
@@ -305,7 +301,7 @@ const Engineers = () => {
         }}
       >
         <DataGrid
-          rows={engineers}
+          rows={owners}
           columns={columns}
           pageSize={10} // Default number of rows per page
           rowsPerPageOptions={[5, 10, 20]} // Options for rows per page
@@ -328,4 +324,4 @@ const Engineers = () => {
   );
 };
 
-export default Engineers;
+export default Owners;

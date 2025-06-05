@@ -1,16 +1,21 @@
 // src/components/DeleteConfirmationComponent.jsx
 
 import React, { useState } from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+import
+ MuiAlert from '@mui/material/Alert';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { Stack,useTheme } from '@mui/material';
+import {
+  Stack,
+  useTheme,
+  IconButton,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Snackbar,
+} from "@mui/material";
 import axios from "axios";
 import { tokens } from '../theme';
 
@@ -76,12 +81,12 @@ function DeleteConfirmationComponent({ itemId, deleteApi, onDeleteSuccess, onDel
 
   return (
     <Stack direction="row" spacing={2} alignItems="center">
-      <Button
+      <IconButton
         color="error"
         onClick={handleClickOpen}
       >
         <DeleteOutlineIcon />
-      </Button>
+      </IconButton>
 
       <Dialog
         open={openConfirmDialog}

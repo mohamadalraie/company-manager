@@ -1,7 +1,5 @@
-// src/scenes/global/Sidebar.jsx (ProSidebar)
-
-import { useState } from "react";
-import { Sidebar, Menu, MenuItem } from "react-pro-sidebar"; // تأكد من استيراد Sidebar من react-pro-sidebar
+import { useState } from "react"; // Keep useState for internal selected menu item
+import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 
@@ -28,7 +26,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       active={selected === title}
       onClick={() => {
         setSelected(title);
-        console.log(selected, to);
+        // console.log(selected, to); // Consider removing console.logs from production code
       }}
       icon={icon}
       component={<Link to={to} style={{ textDecoration: "none" }} />}
@@ -38,24 +36,31 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   );
 };
 
-const ProSidebar = () => {
+// Receive isCollapsed and setIsCollapsed as props
+const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [selected, setSelected] = useState("Engineer");
+  // const [isCollapsed, setIsCollapsed] = useState(false); // Remove this local state, it's now managed by App.js
+  const [selected, setSelected] = useState("Dashboard"); // Set a default selected value
+
+  // Define sidebar widths (must match App.js for consistent behavior)
+  const collapsedSidebarWidth = "80px";
+  const expandedSidebarWidth = "270px";
 
   return (
     <Sidebar
       style={{
         border: "none",
-        position: "fixed", // <--- هذا هو المفتاح! اجعل الشريط الجانبي ثابتًا
-        height: "100vh", // <--- يمتد بطول الشاشة بالكامل
-        top: 0,          // <--- يبدأ من أعلى الشاشة
-        left: 0,         // <--- يبدأ من يسار الشاشة
-        zIndex: 100,     // <--- يظهر فوق المحتوى الآخر (القيمة الافتراضية لـ Topbar عادة تكون أقل)
+        position: "fixed", // Keep fixed positioning
+        height: "100vh",   // Full viewport height
+        top: 0,
+        left: 0,
+        zIndex: 100,       // Ensures it's above other content
+        width: isCollapsed ? collapsedSidebarWidth : expandedSidebarWidth, // Dynamic width based on state
+        transition: "width 0.3s ease-in-out", // Smooth transition for width change
       }}
       scrollbarWidth="none"
-      collapsed={isCollapsed}
+      collapsed={isCollapsed} // Use the prop
       backgroundColor={colors.primary[800]}
     >
       <Box justifyContent="space-between" alignItems="center">
@@ -78,9 +83,9 @@ const ProSidebar = () => {
             },
           }}
         >
-          {/* logo */}
+          {/* logo / Collapse toggle */}
           <MenuItem
-            onClick={() => setIsCollapsed(!isCollapsed)}
+            onClick={() => setIsCollapsed(!isCollapsed)} // Use the prop setter
             icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
             style={{
               margin: "10px 0 20px 0",
@@ -97,7 +102,7 @@ const ProSidebar = () => {
                 <Typography variant="h3" color={colors.grey[100]}>
                   Orient
                 </Typography>
-                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}> {/* Use the prop setter */}
                   <MenuOutlinedIcon />
                 </IconButton>
               </Box>
@@ -159,6 +164,20 @@ const ProSidebar = () => {
               setSelected={setSelected}
             />
             <Item
+              title="Consulting Engineers"
+              to="/consultingEngineers"
+              icon={<PeopleOutlinedIcon />} // Consider a different icon for distinction
+              selected={selected}
+              setSelected={setSelected}
+            />
+                 <Item
+              title="Consulting Companies"
+              to="/consultingCompanies"
+              icon={<PeopleOutlinedIcon />} // Consider a different icon for distinction
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
               title="Sales Managers"
               to="/salesManagers"
               icon={<RealEstateAgentSharpIcon />}
@@ -168,6 +187,13 @@ const ProSidebar = () => {
             <Item
               title="Projects"
               to="/projects"
+              icon={<BarChartOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+              <Item
+              title="Owners"
+              to="/owners"
               icon={<BarChartOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

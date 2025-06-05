@@ -1,19 +1,32 @@
-// src/App.js
-
 import { ColorModeContext, useMode } from "./theme";
-import { CssBaseline, ThemeProvider } from "@mui/material";
+import { CssBaseline, ThemeProvider,Box } from "@mui/material";
 import { Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { useState } from "react"; // Import useState here
+
 import Topbar from "./scenes/global/Topbar";
-import Sidebar from "./scenes/global/Sidebar"; // تأكد أن هذا هو ProSidebar
+import Sidebar from "./scenes/global/Sidebar"; // Assuming this is your ProSidebar
 import Dashboard from "./scenes/dashboard/index";
 import Engineers from "./scenes/engineers/Index";
 import Projects from "./scenes/projects/Index";
 import SalesManagers from "./scenes/salesManagers/index";
 import AddEngineer from "./scenes/engineers/addEngineer/index";
+import ConsultingEngineers from "./scenes/consultingEngineers/Index";
+import ConsultingCompanies from "./scenes/consultingCompanies";
+import AddConsultingCompany from "./scenes/consultingCompanies/addConsultingCompany";
+import Owners from "./scenes/owners";
+import AddOwner from "./scenes/owners/addOwner";
 
 function App() {
   const [theme, colorMode] = useMode();
+  // Move the isCollapsed state to App.js
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  // Define sidebar widths (adjust these values if needed)
+  const collapsedSidebarWidth = "80px";
+  const expandedSidebarWidth = "270px"; // This is the default expanded width for react-pro-sidebar
+
+  // Calculate dynamic margin for main content
+  const mainContentMargin = isSidebarCollapsed ? collapsedSidebarWidth : expandedSidebarWidth;
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -22,44 +35,46 @@ function App() {
         <div
           className="app"
           style={{
-            display: "flex", // لجعل الشريط الجانبي والمحتوى بجانب بعضهما
-            minHeight: "100vh", // تأكد أن الـ app يمتد بطول الشاشة
-            width: "100%", // تأكد أن الـ app يأخذ العرض الكامل
-            position: "relative", // مهم إذا كان هناك أي عناصر أخرى ذات تموضع مطلق داخله
+            display: "flex", // Makes sidebar and main content sit side-by-side
+            minHeight: "100vh", // Ensures the app takes at least full viewport height
+            width: "100%", // Ensures the app takes full viewport width
+            position: "relative", // Important if you have absolutely positioned elements inside
           }}
         >
-          {/* الشريط الجانبي سيتم تثبيته باستخدام position: fixed داخله.
-            سنمرر الـ `isCollapsed` state إذا كان الشريط الجانبي يحتاج لمعرفتها
-            لتحديد عرض الـ `main` content.
-          */}
-          <Sidebar /> {/* Sidebar (ProSidebar) should handle its own fixed positioning */}
+          {/* Pass the isCollapsed state and its setter to the Sidebar */}
+          <Sidebar
+            isCollapsed={isSidebarCollapsed}
+            setIsCollapsed={setIsSidebarCollapsed}
+          />
 
-          {/* المحتوى الرئيسي: يجب أن يحتوي على هامش لليمين ليتجنب التداخل مع الشريط الجانبي.
-            هذا الهامش يجب أن يتغير بناءً على حالة الشريط الجانبي (collapsed/expanded).
-          */}
           <main
             className="content"
             style={{
-              flexGrow: 1, // يأخذ المساحة المتبقية
-              overflowY: "auto", // يجعل المحتوى الرئيسي فقط قابلاً للتمرير
-              maxHeight: "100vh", // يضمن عدم تجاوز المحتوى لارتفاع الشاشة
-              // هنا سنضيف الهامش الأيسر الديناميكي
-              // بما أن Sidebar لا يمرر حالته لـ App، سنحتاج لتقدير عرض الشريط الجانبي.
-              // الحل الأمثل هو تمرير حالة isCollapsed من Sidebar إلى App، 
-              // لكن لعدم تعقيد App.js الآن، سنفترض عرضًا ثابتًا مؤقتًا.
-              marginLeft: "270px", // افتراضيًا، عرض الشريط الجانبي غير المتقلص (قد تحتاج لضبط هذا)
-              // هذا الهامش يجب أن يصبح ديناميكيًا لاحقًا بناءً على isCollapsed
+              flexGrow: 1, // Allows main content to take up remaining horizontal space
+              overflowY: "auto", // Makes only the main content area scrollable vertically
+              maxHeight: "100vh", // Ensures main content doesn't exceed viewport height
+              marginLeft: mainContentMargin, // Dynamic margin based on sidebar state
+              transition: "margin-left 0.3s ease-in-out", // Smooth transition for margin
+              display: "flex", // Use flex to stack Topbar and Routes content
+              flexDirection: "column",
             }}
           >
-            <Topbar /> {/* Topbar يجب أن يكون داخل main */}
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/engineers" element={<Engineers />} />
-              <Route path="/engineers/add" element={<AddEngineer />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/salesManagers" element={<SalesManagers />} />
-              <Route path="*" element={<div>404</div>} />
-            </Routes>
+            <Topbar /> {/* Topbar should be inside main content */}
+            <Box flexGrow={1} overflow="auto"> {/* Allows route content to scroll independently if it overflows */}
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/engineers" element={<Engineers />} />
+                <Route path="/engineers/add" element={<AddEngineer />} />
+                <Route path="/ConsultingCompanies" element={<ConsultingCompanies/>} />
+                <Route path="/ConsultingCompanies/add" element={<AddConsultingCompany/>} />
+                <Route path="/ConsultingEngineers" element={<ConsultingEngineers />} />
+                <Route path="/projects" element={<Projects />} />
+                <Route path="/salesManagers" element={<SalesManagers />} />
+                <Route path="/owners" element={<Owners />} />
+                <Route path="/owners/add" element={<AddOwner />} />
+                <Route path="*" element={<div>404</div>} />
+              </Routes>
+            </Box>
           </main>
         </div>
       </ThemeProvider>

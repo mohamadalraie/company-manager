@@ -1,10 +1,11 @@
-// src/scenes/engineers/addEngineer/index.jsx (path based on your initial prompt)
+// src/scenes/owners/addOwner/index.jsx
 
 // imports
 import { Header } from "../../../components/Header";
 import { tokens } from "../../../theme";
 import { baseUrl } from "../../../shared/baseUrl";
-import { createEngineerApi } from "../../../shared/APIs";
+// Assuming you have an API endpoint for creating owners
+import { createOwnerApi } from "../../../shared/APIs";
 import CustomSnackbar from "../../../components/CustomSnackbar";
 
 // react
@@ -18,12 +19,9 @@ import {
   InputAdornment,
   useTheme,
   TextField,
-  InputLabel,
-  FormControl,
-  NativeSelect, // Assuming you still want a native select for specialization
   CircularProgress,
-  Grid, // <--- Import Grid
-  Typography, // <--- Import Typography
+  Grid,
+  Typography,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
@@ -31,129 +29,117 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import PersonIcon from "@mui/icons-material/Person"; // For first/last name
 import EmailIcon from "@mui/icons-material/Email";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
-import WorkIcon from "@mui/icons-material/Work"; // For specialization/experience
-import LockIcon from "@mui/icons-material/Lock"; // For password
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined'; // For password
+import HomeIcon from '@mui/icons-material/Home'; // For address
+import ArticleIcon from '@mui/icons-material/Article'; // For national_id
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
 
 //External libraries
 import { Formik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
 
-const AddEngineer = () => {
+const AddOwner = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  // password visibility state
+  // State for API loading
+  const [isLoading, setIsLoading] = useState(false);
+  const snackbarRef = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
+
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
-  // handling create engineer Api
-  const [isLoading, setIsLoading] = useState(false);
-  const snackbarRef = useRef(null);
-
   const handleFormSubmit = async (values, { resetForm }) => {
-    setIsLoading(true); // Set loading state to true
+    setIsLoading(true);
     try {
       console.log("Submitting values:", values);
       const response = await axios.post(
-        `${baseUrl}${createEngineerApi}`,
+        `${baseUrl}${createOwnerApi}`,
         values,
         {
           headers: {
-            // Add any required headers here
+            // Add any required headers here (e.g., Authorization token)
           },
         }
       );
 
-      console.log("Engineer created successfully:", response.data);
+      console.log("Owner created successfully:", response.data);
       snackbarRef.current.showSnackbar(
-        "Engineer created successfully!",
+        "Owner created successfully!",
         "success"
       );
-      resetForm(); // Reset the form fields after successful submission
+      resetForm();
     } catch (error) {
       console.error(
-        "Error creating engineer:",
+        "Error creating owner:",
         error.response?.data || error.message
       );
       const errorMessage =
         error.response?.data?.message ||
-        "Failed to create engineer. Please try again.";
+        "Failed to create owner. Please try again.";
       snackbarRef.current.showSnackbar(errorMessage, "error");
     } finally {
-      setIsLoading(false); // Set loading state to false
+      setIsLoading(false);
     }
   };
 
+  // Initial form values for owner
   const initialValues = {
     first_name: "",
     last_name: "",
     email: "",
-    phone_number: "",
-    engineer_specialization_id: "",
     password: "",
-    years_of_experience: "",
+    phone_number: "",
+    address: "",
+    national_id: "",
   };
 
-  const specializations = [
-    { id: 1, name: "Civil Engineering" },
-    { id: 2, name: "Electrical Engineering" },
-    { id: 3, name: "Mechanical Engineering" },
-    { id: 4, name: "Architectural Engineering" },
-    { id: 5, name: "Computer Engineering" },
-    { id: 6, name: "Environmental Engineering" },
-    { id: 7, name: "Industrial Engineering" },
-    { id: 8, name: "Structural Engineering" },
-    { id: 9, name: "Geotechnical Engineering" },
-    { id: 10, name: "Chemical Engineering" },
-  ];
+  // Regular expression for phone number validation
   const phoneRegExp =
     /^(\+\d{1,2}\s?)?1?\-?\.?\s?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
 
-  //handle validations
-  const userSchema = yup.object().shape({
-    first_name: yup.string().required("First Name is required"), // Updated messages for clarity
+  // Validation schema for owner creation using yup
+  const ownerSchema = yup.object().shape({
+    first_name: yup.string().required("First Name is required"),
     last_name: yup.string().required("Last Name is required"),
     email: yup.string().email("Invalid email").required("Email is required"),
+    password: yup.string().min(8, "Password must be at least 8 characters").required("Password is required"),
     phone_number: yup
       .string()
       .matches(phoneRegExp, "Phone number is invalid")
       .required("Phone Number is required"),
-    engineer_specialization_id: yup.string().required("Specialization is required"),
-    password: yup.string().required("Password is required").min(6, "Password must be at least 6 characters"), // Added min length
-    years_of_experience: yup
-      .number()
-      .typeError("Experience must be a number")
-      .required("Years of Experience is required")
-      .min(0, "Cannot be negative"),
+    address: yup.string().required("Address is required"),
+    national_id: yup.string().required("National ID is required"),
   });
 
-  // the main return
+  // The main return
   return (
     <Box m="10px">
       <Header
-        title="Create New Engineer"
-        subtitle="Add a new engineer to the system"
+        title="Create New Owner"
+        subtitle="Add a new owner to the system"
       ></Header>
       <Box
         sx={{
           display: "flex",
           justifyContent: "center",
-          alignItems: "flex-start", // Align content to the top
+          alignItems: "flex-start",
           mt: "20px",
-          mb: "20px", // Add bottom margin for spacing
+          mb: "20px",
         }}
       >
         <Formik
           onSubmit={handleFormSubmit}
           initialValues={initialValues}
-          validationSchema={userSchema} // Use the updated validation schema
+          validationSchema={ownerSchema}
         >
           {({
             values,
@@ -170,13 +156,13 @@ const AddEngineer = () => {
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  width: isNonMobile ? "75%" : "100%", // Responsive width for form container
-                  maxWidth: "900px", // Max width for large screens
-                  p: "30px", // Padding around the form sections
-                  backgroundColor: colors.primary[800], // Background for the form container
-                  borderRadius: "12px", // Slightly more rounded corners
-                  boxShadow: `0px 6px 15px ${colors.grey[900]}`, // Subtle shadow
-                  gap: "25px", // Gap between main sections
+                  width: isNonMobile ? "75%" : "100%",
+                  maxWidth: "900px",
+                  p: "30px",
+                  backgroundColor: colors.primary[800],
+                  borderRadius: "12px",
+                  boxShadow: `0px 6px 15px ${colors.grey[900]}`,
+                  gap: "25px",
                 }}
               >
                 {/* --- Personal Details Section --- */}
@@ -192,7 +178,7 @@ const AddEngineer = () => {
                   <Grid item xs={12} sm={6}>
                     <TextField
                       fullWidth
-                      variant="outlined" // Changed to outlined
+                      variant="outlined"
                       type="text"
                       label="First Name"
                       onBlur={handleBlur}
@@ -207,7 +193,7 @@ const AddEngineer = () => {
                   <Grid item xs={12} sm={6}>
                     <TextField
                       fullWidth
-                      variant="outlined" // Changed to outlined
+                      variant="outlined"
                       type="text"
                       label="Last Name"
                       onBlur={handleBlur}
@@ -233,7 +219,7 @@ const AddEngineer = () => {
                   <Grid item xs={12} sm={6}>
                     <TextField
                       fullWidth
-                      variant="outlined" // Changed to outlined
+                      variant="outlined"
                       type="email"
                       label="Email"
                       onBlur={handleBlur}
@@ -248,8 +234,8 @@ const AddEngineer = () => {
                   <Grid item xs={12} sm={6}>
                     <TextField
                       fullWidth
-                      variant="outlined" // Changed to outlined
-                      type="tel" // Use type="tel" for phone number
+                      variant="outlined"
+                      type="tel"
                       label="Phone Number"
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -260,92 +246,37 @@ const AddEngineer = () => {
                       InputProps={{ startAdornment: <InputAdornment position="start"><LocalPhoneIcon sx={{ color: colors.grey[500] }} /></InputAdornment> }}
                     />
                   </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      type="text"
+                      label="Address"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.address}
+                      name="address"
+                      error={!!touched.address && !!errors.address}
+                      helperText={touched.address && errors.address}
+                      InputProps={{ startAdornment: <InputAdornment position="start"><HomeIcon sx={{ color: colors.grey[500] }} /></InputAdornment> }}
+                    />
+                  </Grid>
                 </Grid>
 
-                {/* --- Professional Details Section --- */}
+                {/* --- Security & Identification Section --- */}
                 <Typography
                   variant="h5"
                   color={colors.greenAccent[400]}
                   sx={{ mb: 1, mt: 3, width: "100%", textAlign: "left", pb: "8px", borderBottom: `1px solid ${colors.grey[600]}` }}
                 >
-                  Professional Details
+                  Security & Identification
                 </Typography>
                 <Grid container spacing={3} sx={{ width: "100%" }}>
-    <Grid item xs={12} sm={6}>
-        <FormControl
-            fullWidth
-            variant="outlined"
-            name="engineer_specialization_id"
-            error={!!touched.engineer_specialization_id && !!errors.engineer_specialization_id}
-        >
-            <InputLabel htmlFor="specialization-native-select">
-                Specialization
-            </InputLabel>
-            <NativeSelect
-             
-                value={values.engineer_specialization_id}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                inputProps={{
-                    name: "engineer_specialization_id",
-                    id: "specialization-native-select",
-                }}
-
-                sx={{'.MuiNativeSelect-icon': { top: '50%', transform: 'translateY(-50%)' } }}
-            >
-                <option value=""></option>
-                {specializations.map((specializationOption) => (
-                    <option key={specializationOption.id} value={specializationOption.id}>
-                        {specializationOption.name}
-                    </option>
-                ))}
-            </NativeSelect>
-            {touched.engineer_specialization_id &&
-                errors.engineer_specialization_id && (
-                    <Box
-                        sx={{
-                            color: theme.palette.error.main,
-                            fontSize: "0.75rem",
-                            mt: "3px",
-                            ml: "14px",
-                        }}
-                    >
-                        {errors.engineer_specialization_id}
-                    </Box>
-                )}
-        </FormControl>
-    </Grid>
-    <Grid item xs={12} sm={6}>
-        <TextField
-            fullWidth
-            variant="outlined"
-            type="number"
-            label="Years of Experience"
-            onBlur={handleBlur}
-            onChange={handleChange}
-            value={values.years_of_experience}
-            name="years_of_experience"
-            error={!!touched.years_of_experience && !!errors.years_of_experience}
-            helperText={touched.years_of_experience && errors.years_of_experience}
-            InputProps={{ startAdornment: <InputAdornment position="start"><WorkIcon sx={{ color: colors.grey[500] }} /></InputAdornment> }}
-        />
-    </Grid>
-</Grid>
-
-                {/* --- Account Details Section --- */}
-                <Typography
-                  variant="h5"
-                  color={colors.greenAccent[400]}
-                  sx={{ mb: 1, mt: 3, width: "100%", textAlign: "left", pb: "8px", borderBottom: `1px solid ${colors.grey[700]}` }}
-                >
-                  Account Details
-                </Typography>
-                <Grid container spacing={3} sx={{ width: "100%" }}>
-                  <Grid item xs={12}> {/* Password full width */}
+                  <Grid item xs={12} sm={6}>
                     <TextField
                       fullWidth
-                      variant="outlined" // Changed to outlined
-                      type={showPassword ? "text" : "password"}
+                      variant="outlined"
+                      type={showPassword ? 'text' : 'password'}
                       label="Password"
                       onBlur={handleBlur}
                       onChange={handleChange}
@@ -354,7 +285,7 @@ const AddEngineer = () => {
                       error={!!touched.password && !!errors.password}
                       helperText={touched.password && errors.password}
                       InputProps={{
-                        startAdornment: <InputAdornment position="start"><LockIcon sx={{ color: colors.grey[500] }} /></InputAdornment>,
+                        startAdornment: <InputAdornment position="start"><LockOutlinedIcon sx={{ color: colors.grey[500] }} /></InputAdornment>,
                         endAdornment: (
                           <InputAdornment position="end">
                             <IconButton
@@ -370,23 +301,36 @@ const AddEngineer = () => {
                       }}
                     />
                   </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      type="text"
+                      label="National ID"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.national_id}
+                      name="national_id"
+                      error={!!touched.national_id && !!errors.national_id}
+                      helperText={touched.national_id && errors.national_id}
+                      InputProps={{ startAdornment: <InputAdornment position="start"><ArticleIcon sx={{ color: colors.grey[500] }} /></InputAdornment> }}
+                    />
+                  </Grid>
                 </Grid>
 
                 {/* --- Submit Button --- */}
                 <Box display="flex" justifyContent="end" mt="30px" width="100%">
                   <Button
                     type="submit"
-                    style={{
+                    variant="contained"
+                    disabled={isLoading}
+                    sx={{
                       backgroundColor: colors.greenAccent[700],
                       color: colors.blueAccent[100],
                       padding: "12px 25px",
                       fontWeight: "bold",
                       borderRadius: "5px",
                       transition: "background-color 0.3s ease-in-out, transform 0.2s ease-in-out",
-                    }}
-                    variant="contained"
-                    disabled={isLoading}
-                    sx={{
                       '&:hover': {
                         backgroundColor: colors.greenAccent[800],
                         transform: 'translateY(-2px)',
@@ -396,7 +340,7 @@ const AddEngineer = () => {
                     {isLoading ? (
                       <CircularProgress size={24} color="inherit" />
                     ) : (
-                      "Create Engineer" // Updated button text
+                      "Create Owner"
                     )}
                   </Button>
                 </Box>
@@ -411,4 +355,4 @@ const AddEngineer = () => {
   );
 };
 
-export default AddEngineer;
+export default AddOwner;
