@@ -15,6 +15,7 @@ import ConsultingCompanies from "./scenes/consultingCompanies";
 import AddConsultingCompany from "./scenes/consultingCompanies/addConsultingCompany";
 import Owners from "./scenes/owners";
 import AddOwner from "./scenes/owners/addOwner";
+import AddProject from "./scenes/projects/addProject";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -69,9 +70,11 @@ function App() {
                 <Route path="/ConsultingCompanies/add" element={<AddConsultingCompany/>} />
                 <Route path="/ConsultingEngineers" element={<ConsultingEngineers />} />
                 <Route path="/projects" element={<Projects />} />
+                <Route path="/projects/add" element={<AddProject />} />
                 <Route path="/salesManagers" element={<SalesManagers />} />
                 <Route path="/owners" element={<Owners />} />
                 <Route path="/owners/add" element={<AddOwner />} />
+              
                 <Route path="*" element={<div>404</div>} />
               </Routes>
             </Box>

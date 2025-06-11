@@ -9,3 +9,5 @@ export const createConsultingCompanyApi="/api/consultingCompany/create";
 export const getAllOwnersApi="/api/owner/all";
 export const deleteOwnerApi="/api/owner/delete/";
 export const createOwnerApi="/api/owner/create";
+export const createProjectApi="/api/project/create";
+export const getAllProjectsApi="/api/project/all";
