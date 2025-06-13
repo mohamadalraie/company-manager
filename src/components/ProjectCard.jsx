@@ -1,5 +1,3 @@
-// src/scenes/projects/ProjectCard.jsx (Updated)
-
 import {
   Box,
   Typography,
@@ -7,20 +5,23 @@ import {
   Chip,
   useTheme,
   Grid,
-  Divider, // Added for visual separation
+  Divider,
+  Stack,
 } from "@mui/material";
-import { tokens } from "../theme";// Corrected path assumption
-import LocationOnIcon from "@mui/icons-material/LocationOnOutlined"; // Changed to Outlined for subtlety
+import { tokens } from "../theme";
+import LocationOnIcon from "@mui/icons-material/LocationOnOutlined";
 import CategoryIcon from "@mui/icons-material/CategoryOutlined";
 import LayersIcon from "@mui/icons-material/LayersOutlined";
 import CalendarTodayIcon from "@mui/icons-material/CalendarTodayOutlined";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoneyOutlined";
+// import AttachMoneyIcon from "@mui.icons-material/AttachMoney";
 import PersonIcon from "@mui/icons-material/PersonOutline";
 import BusinessIcon from "@mui/icons-material/BusinessOutlined";
 import CodeIcon from "@mui/icons-material/CodeOutlined";
 import AspectRatioIcon from "@mui/icons-material/AspectRatioOutlined";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined"; // For description section title
-import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined'; // For financial details
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp'; // New icon for Progress
+import { green, yellow } from "@mui/material/colors";
 
 const ProjectCard = ({ project }) => {
   const theme = useTheme();
@@ -42,7 +43,7 @@ const ProjectCard = ({ project }) => {
     if (amount === null || amount === undefined) return "N/A";
     return new Intl.NumberFormat("en-US", {
       style: "currency",
-      currency: "USD", // You can change this currency code
+      currency: "USD",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
@@ -51,162 +52,171 @@ const ProjectCard = ({ project }) => {
   const getStatusChipColor = (status) => {
     switch (status) {
       case "ForSale":
-        return colors.greenAccent[600]; // Slightly darker for better contrast
+        return colors.greenAccent[500]; // Brighter green
       case "Sold":
-        return colors.redAccent[600];
+        return colors.redAccent[500]; // Brighter red
       case "Pre-sale":
-        return colors.blueAccent[600];
+        return colors.blueAccent[500]; // Brighter blue
       default:
-        return colors.grey[600];
+        return colors.grey[500];
     }
   };
 
   const getProgressChipColor = (progress) => {
     switch (progress) {
       case "Completed":
-        return colors.greenAccent[600];
+        return green[600]; // Adjusted for consistency
       case "In Progress":
-        return colors.blueAccent[600];
+        return colors.blueAccent[500];
       case "Not Started":
-        return colors.grey[600];
+        return colors.grey[500];
       case "On Hold":
-        return colors.yellowAccent[600];
+        return yellow[700]; // Darker yellow for better contrast
       case "Cancelled":
-        return colors.redAccent[600];
+        return colors.redAccent[500];
       default:
-        return colors.grey[600];
+        return colors.blueAccent[500];
     }
   };
+
+  const renderDetailItem = (Icon, label, value) => (
+    <Grid item xs={12} sm={6}>
+      <Box display="flex" alignItems="center">
+        <Icon sx={{ mr: 1, fontSize: "1.2rem", color: colors.blueAccent[200] }} />
+        <Typography variant="body2" color={colors.grey[300]}>
+          <Box component="span" fontWeight="bold">{label}:</Box> {value}
+        </Typography>
+      </Box>
+    </Grid>
+  );
 
   return (
     <Paper
       sx={{
-        p: 3,
+        p: 0, // Remove padding from the main Paper to control it inside
         mb: 3,
-        backgroundColor: colors.primary[800],
-        borderRadius: "12px", // Slightly more rounded corners
-        boxShadow: `0px 6px 15px ${colors.grey[900]}`, // More pronounced shadow
-        transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+        borderRadius: "20px", // More pronounced rounded corners
+        boxShadow: `0px 5px 20px ${colors.greenAccent[900]}`, // Deeper shadow
+        transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
         "&:hover": {
-          transform: "translateY(-8px)", // More pronounced lift
-          boxShadow: `0px 10px 20px ${colors.grey[900]}`, // Larger shadow on hover
+          transform: "translateY(-12px)", // More dramatic lift on hover
+          boxShadow: `0px 5px 30px ${colors.greenAccent[700]}`, // Even larger shadow on hover
         },
-        border: `1px solid ${colors.grey[700]}`, // Subtle border
+        overflow: 'hidden', // Ensures rounded corners clip content
+        position: 'relative',
       }}
     >
-      {/* Header Section: Title, Project Code, and Sale Status Chip */}
-      <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
+      {/* Top Section: Title, Project Code, and Sale Status */}
+      <Box
+        sx={{
+          p: 3,
+          backgroundColor: colors.primary[700], // Lighter dark shade for the header
+          borderBottom: `1px solid ${colors.grey[700]}`,
+          display: "flex",
+          flexDirection: { xs: 'column', sm: 'row' }, // Stack on small screens, row on larger
+          justifyContent: "space-between",
+          alignItems: { xs: 'flex-start', sm: 'center' },
+          gap: 1.5, // Space between elements in header
+        }}
+      >
         <Box>
-          <Typography variant="h4" color={colors.greenAccent[400]} fontWeight="bold" sx={{ mb: 0.5 }}>
+          <Typography variant="h3" color={colors.greenAccent[300]} fontWeight="bold" sx={{ mb: 0.5 }}>
             {project.title}
           </Typography>
-          <Typography variant="h6" color={colors.grey[400]}>
-            <CodeIcon sx={{ verticalAlign: "middle", mr: 0.5, fontSize: "1.1rem" }} />
+          <Typography variant="h6" color={colors.grey[400]} display="flex" alignItems="center">
+            <CodeIcon sx={{ mr: 0.8, fontSize: "1.3rem" }} />
             {project.project_code}
           </Typography>
         </Box>
         <Chip
           label={project.status_of_sale}
-          size="medium" // Slightly larger chip
+          size="medium"
           sx={{
             backgroundColor: getStatusChipColor(project.status_of_sale),
             color: colors.grey[100],
             fontWeight: "bold",
-            fontSize: "0.85rem",
-            py: 0.5, // Padding on y-axis
-            px: 1, // Padding on x-axis
+            fontSize: "1rem", // Larger chip font
+            py: 0.8, // More vertical padding
+            px: 2, // More horizontal padding
+            borderRadius: "10px", // More rounded chip
           }}
         />
       </Box>
 
-      <Divider sx={{ my: 2, borderColor: colors.grey[700] }} /> {/* Divider */}
-
-      {/* Description Section */}
-      <Box mb={2}>
-        <Typography variant="h6" color={colors.grey[300]} sx={{ mb: 1 }}>
-          <InfoOutlinedIcon sx={{ verticalAlign: "middle", mr: 0.5, fontSize: "1.2rem" }} />
-          Description
-        </Typography>
-        <Typography variant="body2" color={colors.grey[400]} sx={{ pl: 3, lineHeight: 1.6 }}>
-          {project.description}
-        </Typography>
-      </Box>
-
-      <Divider sx={{ my: 2, borderColor: colors.grey[700] }} /> {/* Divider */}
-
-      {/* Key Details Section */}
-      <Typography variant="h6" color={colors.greenAccent[400]} sx={{ mb: 1 }}>
-        Project Details
-      </Typography>
-      <Grid container spacing={2} mb={2}> {/* Increased spacing */}
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body2" color={colors.grey[300]}>
-            <LocationOnIcon sx={{ verticalAlign: "middle", mr: 0.5, fontSize: "1rem", color: colors.blueAccent[300] }} />
-            <Box component="span" fontWeight="bold">Location:</Box> {project.location}
+      {/* Main Content Section */}
+      <Box sx={{ p: 3, backgroundColor: colors.primary[800] }}> {/* Slightly lighter background for content */}
+        {/* Description Section */}
+        <Box mb={3}>
+          <Typography variant="h6" color={colors.grey[300]} sx={{ mb: 1 }} display="flex" alignItems="center">
+            <InfoOutlinedIcon sx={{ mr: 0.8, fontSize: "1.4rem", color: colors.greenAccent[300] }} />
+            Description
           </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body2" color={colors.grey[300]}>
-            <CategoryIcon sx={{ verticalAlign: "middle", mr: 0.5, fontSize: "1rem", color: colors.blueAccent[300] }} />
-            <Box component="span" fontWeight="bold">Type:</Box> {project.type}
+          <Typography variant="body2" color={colors.grey[400]} sx={{ pl: 3.5, lineHeight: 1.7 }}>
+            {project.description}
           </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body2" color={colors.grey[300]}>
-            <LayersIcon sx={{ verticalAlign: "middle", mr: 0.5, fontSize: "1rem", color: colors.blueAccent[300] }} />
-            <Box component="span" fontWeight="bold">Floors:</Box> {project.number_of_floor}
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body2" color={colors.grey[300]}>
-            <AspectRatioIcon sx={{ verticalAlign: "middle", mr: 0.5, fontSize: "1rem", color: colors.blueAccent[300] }} />
-            <Box component="span" fontWeight="bold">Area:</Box> {project.area} sqm
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body2" color={colors.grey[300]}>
-            <CalendarTodayIcon sx={{ verticalAlign: "middle", mr: 0.5, fontSize: "1rem", color: colors.blueAccent[300] }} />
-            <Box component="span" fontWeight="bold">Completion:</Box> {formatDate(project.expected_date_of_completed)}
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="body2" color={colors.grey[300]}>
-            <AccountBalanceWalletOutlinedIcon sx={{ verticalAlign: "middle", mr: 0.5, fontSize: "1rem", color: colors.blueAccent[300] }} />
-            <Box component="span" fontWeight="bold">Cost:</Box> {formatCurrency(project.expected_cost)}
-          </Typography>
-        </Grid>
-      </Grid>
-
-      <Divider sx={{ my: 2, borderColor: colors.grey[700] }} /> {/* Divider */}
-
-      {/* Footer Section: Progress Chip and Associated Parties */}
-      <Box display="flex" justifyContent="space-between" alignItems="flex-end" mt={2} flexWrap="wrap" rowGap={1}>
-        <Chip
-          label={`Progress: ${project.progress_status}`}
-          size="medium"
-          sx={{
-            backgroundColor: getProgressChipColor(project.progress_status),
-            color: colors.grey[100],
-            fontWeight: "bold",
-            fontSize: "0.85rem",
-            py: 0.5,
-            px: 1,
-          }}
-        />
-        <Box display="flex" flexDirection="column" alignItems="flex-end">
-          {project.owner && (
-            <Typography variant="caption" color={colors.grey[400]} sx={{ mb: 0.5, display: 'flex', alignItems: 'center' }}>
-              <PersonIcon sx={{ mr: 0.5, fontSize: "1rem", color: colors.blueAccent[300] }} />
-              <Box component="span" fontWeight="bold">Owner:</Box> {project.owner.first_name} {project.owner.last_name}
-            </Typography>
-          )}
-          {project.consulting_company && (
-            <Typography variant="caption" color={colors.grey[400]} sx={{ display: 'flex', alignItems: 'center' }}>
-              <BusinessIcon sx={{ mr: 0.5, fontSize: "1rem", color: colors.blueAccent[300] }} />
-              <Box component="span" fontWeight="bold">Consulting:</Box> {project.consulting_company.name}
-            </Typography>
-          )}
         </Box>
+
+        <Divider sx={{ my: 3, borderColor: colors.grey[700] }} />
+
+        {/* Key Details Section */}
+        <Typography variant="h6" color={colors.greenAccent[400]} sx={{ mb: 1.5 }} display="flex" alignItems="center">
+          Project Details
+        </Typography>
+        <Grid container spacing={2.5} mb={3}> {/* Increased spacing */}
+          {renderDetailItem(LocationOnIcon, "Location", project.location)}
+          {renderDetailItem(CategoryIcon, "Type", project.type)}
+          {renderDetailItem(LayersIcon, "Floors", project.number_of_floor)}
+          {renderDetailItem(AspectRatioIcon, "Area", `${project.area} sqm`)}
+          {renderDetailItem(CalendarTodayIcon, "Completion", formatDate(project.expected_date_of_completed))}
+          {renderDetailItem(AccountBalanceWalletOutlinedIcon, "Cost", formatCurrency(project.expected_cost))}
+        </Grid>
+
+        <Divider sx={{ my: 3, borderColor: colors.grey[700] }} />
+
+        {/* Progress and Associated Parties Section */}
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 2, sm: 4 }} justifyContent="space-between" alignItems="flex-start" flexWrap="wrap">
+          {/* Progress Status Chip */}
+          <Box display="flex" alignItems="center" gap={1}>
+            <TrendingUpIcon sx={{ fontSize: "1.5rem", color: colors.blueAccent[300] }} /> {/* New icon for progress */}
+            <Chip
+              label={`Progress: ${project.progress_status}`}
+              size="large" // Larger chip
+              sx={{
+                backgroundColor: getProgressChipColor(project.progress_status),
+                color: colors.grey[100],
+                fontWeight: "bold",
+                fontSize: "0.95rem",
+                py: 0.8,
+                px: 1.8,
+                borderRadius: "10px",
+              }}
+            />
+          </Box>
+
+          {/* Owner and Consulting Company */}
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 1.5, sm: 3 }} alignItems="flex-start" flexWrap="wrap">
+            {project.owner && (
+              <Box display="flex" alignItems="center">
+                <PersonIcon sx={{ mr: 1, fontSize: "1.5rem", color: colors.greenAccent[400] }} />
+                <Typography variant="subtitle1" color={colors.grey[200]} fontWeight="bold">
+                  Owner: <Box component="span" fontWeight="normal" color={colors.grey[300]}>
+                    {project.owner.first_name} {project.owner.last_name}
+                  </Box>
+                </Typography>
+              </Box>
+            )}
+            {project.consulting_company && (
+              <Box display="flex" alignItems="center">
+                <BusinessIcon sx={{ mr: 1, fontSize: "1.5rem", color: colors.greenAccent[400] }} />
+                <Typography variant="subtitle1" color={colors.grey[200]} fontWeight="bold">
+                  Consulting: <Box component="span" fontWeight="normal" color={colors.grey[300]}>
+                    {project.consulting_company.name}
+                  </Box>
+                </Typography>
+              </Box>
+            )}
+          </Stack>
+        </Stack>
       </Box>
     </Paper>
   );
