@@ -1,11 +1,11 @@
 // src/scenes/engineers/addEngineer/index.jsx (path based on your initial prompt)
 
 // imports
-import { Header } from "../../../components/Header";
-import { tokens } from "../../../theme";
-import { baseUrl } from "../../../shared/baseUrl";
-import { createEngineerApi } from "../../../shared/APIs";
-import CustomSnackbar from "../../../components/CustomSnackbar";
+import { Header } from "../../../../components/Header";
+import { tokens } from "../../../../theme";
+import { baseUrl } from "../../../../shared/baseUrl";
+import { createConsultingEngineerApi } from "../../../../shared/APIs";
+import CustomSnackbar from "../../../../components/CustomSnackbar";
 
 // react
 import { useState, useRef } from "react";
@@ -41,10 +41,17 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
 
-const AddEngineer = () => {
+import { useParams } from 'react-router-dom';
+
+const AddConsultingEngineer = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const { id } = useParams();
+
+
+
 
   // password visibility state
   const [showPassword, setShowPassword] = useState(false);
@@ -60,9 +67,17 @@ const AddEngineer = () => {
   const handleFormSubmit = async (values, { resetForm }) => {
     setIsLoading(true); // Set loading state to true
     try {
+        // الآن، المتغير 'consultingCompanyId' سيحتوي على الرقم الذي مررته (مثلاً '2') كـ سلسلة نصية.
+  console.log("معرف شركة الاستشارات المستلم من الـ URL هو:", id);
+
+  // إذا احتجت إلى الرقم كقيمة عددية لإجراء عمليات حسابية أو لإرساله إلى API، قم بتحويله:
+  const companyIdAsNumber = parseInt(id, 10);
+  console.log("معرف شركة الاستشارات كقيمة عددية هو:", companyIdAsNumber);
+
+
       console.log("Submitting values:", values);
       const response = await axios.post(
-        `${baseUrl}${createEngineerApi}`,
+        `${baseUrl}${createConsultingEngineerApi}`,
         values,
         {
           headers: {
@@ -99,6 +114,7 @@ const AddEngineer = () => {
     engineer_specialization_id: "",
     password: "",
     years_of_experience: "",
+    consulting_company_id: id
   };
 
   const specializations = [
@@ -132,6 +148,7 @@ const AddEngineer = () => {
       .typeError("Experience must be a number")
       .required("Years of Experience is required")
       .min(0, "Cannot be negative"),
+     
   });
 
   // the main return
@@ -411,4 +428,4 @@ const AddEngineer = () => {
   );
 };
 
-export default AddEngineer;
+export default AddConsultingEngineer;

@@ -199,7 +199,7 @@ const AddProject = () => {
                     p: "30px",
                     backgroundColor: colors.primary[800],
                     borderRadius: "12px",
-                    boxShadow: `0px 6px 15px ${colors.grey[900]}`,
+                    boxShadow: `0px 0px 15px -5px ${colors.greenAccent[600]}`,
                     gap: "25px",
                   }}
                 >

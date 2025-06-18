@@ -163,13 +163,13 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
+            {/* <Item
               title="Consulting Engineers"
               to="/consultingEngineers"
               icon={<PeopleOutlinedIcon />} // Consider a different icon for distinction
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
                  <Item
               title="Consulting Companies"
               to="/consultingCompanies"
@@ -177,13 +177,13 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
+            {/* <Item
               title="Sales Managers"
               to="/salesManagers"
               icon={<RealEstateAgentSharpIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
             <Item
               title="Projects"
               to="/projects"
@@ -199,6 +199,14 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
               setSelected={setSelected}
             />
           </Box>
+
+          {!isCollapsed && (
+          <Box p="16px" textAlign="center">
+            <Typography variant="caption" color={colors.grey[500]}>
+              v2.0.0
+            </Typography>
+          </Box>
+        )}
         </Menu>
       </Box>
     </Sidebar>

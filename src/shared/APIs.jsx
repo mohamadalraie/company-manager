@@ -1,8 +1,11 @@
+export const LoginApi="/api/login"
 export const getAllEngineersApi="/api/engineers/all";
 export const createEngineerApi="/api/engineers/create";
 export const deleteEngineerApi="/api/engineers/delete/"; //it takes the Engineer id
 // export const activateEngineerApi="/api/users/activate";
-export const getAllCunsultingEngineersApi="/api/consultingEngineers/all";
+export const getAllConsultingEngineersApi="/api/consultingEngineers/";
+export const createConsultingEngineerApi="/api/consultingEngineers/create";
+export const deleteConsultingEngineerApi="/api/consultingEngineers/delete/";
 export const getAllConsultingCompaniesApi="/api/consultingCompany/all";
 export const deleteConsultingCompanyApi="/api/consultingCompany/delete/";
 export const createConsultingCompanyApi="/api/consultingCompany/create";
@@ -11,3 +14,4 @@ export const deleteOwnerApi="/api/owner/delete/";
 export const createOwnerApi="/api/owner/create";
 export const createProjectApi="/api/project/create";
 export const getAllProjectsApi="/api/project/all";
+export const getOneProjectApi="/api/project/";

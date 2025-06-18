@@ -1,6 +1,6 @@
 // src/components/DeleteConfirmationComponent.jsx
 
-import React, { useState } from 'react';
+import React, { useState,useRef } from 'react';
 import
  MuiAlert from '@mui/material/Alert';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { tokens } from '../theme';
+import CustomSnackbar from './CustomSnackbar';
 
 // Helper Alert component for Snackbar
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -26,9 +27,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 function DeleteConfirmationComponent({ itemId, deleteApi, onDeleteSuccess, onDeleteError }) {
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const snackbarRef = useRef(null);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -50,21 +49,26 @@ function DeleteConfirmationComponent({ itemId, deleteApi, onDeleteSuccess, onDel
 
       // --- CRITICAL CHANGE HERE ---
       // Ensure snackbar state is set BEFORE calling onDeleteSuccess
-      setSnackbarMessage(`Item ${itemId} deleted successfully!`);
-      setSnackbarSeverity('success');
-      setSnackbarOpen(true); // Open the Snackbar
 
       // Now call the parent's success handler
       if (onDeleteSuccess) {
-        // onDeleteSuccess(itemId);
-  
+        if (snackbarRef.current) {
+          snackbarRef.current.showSnackbar(
+            "Login successful! Redirecting..."+{itemId},
+            "success"
+          );
+        }
       }
 
     } catch (error) {
       console.error('Error during deletion:', error.response?.data || error.message);
-      setSnackbarMessage(`Failed to delete item ${itemId}. Please try again.`);
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true); // Open the Snackbar with an error message
+      const errorMessage =
+        error.response?.data?.message ||
+        "Login failed. Please check your credentials.";
+
+      if (snackbarRef.current) {
+        snackbarRef.current.showSnackbar(errorMessage, "error");
+      }
 
       if (onDeleteError) {
         onDeleteError(itemId, error);
@@ -72,12 +76,7 @@ function DeleteConfirmationComponent({ itemId, deleteApi, onDeleteSuccess, onDel
     }
   };
 
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setSnackbarOpen(false);
-  };
+
 
   return (
     <Stack direction="row" spacing={2} alignItems="center">
@@ -142,7 +141,9 @@ function DeleteConfirmationComponent({ itemId, deleteApi, onDeleteSuccess, onDel
         </DialogActions>
       </Dialog>
 
-      <Snackbar
+
+      <CustomSnackbar ref={snackbarRef} />
+      {/* <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000} // Stay open for 6 seconds
         onClose={handleSnackbarClose}
@@ -151,7 +152,7 @@ function DeleteConfirmationComponent({ itemId, deleteApi, onDeleteSuccess, onDel
         <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
     </Stack>
   );
 }

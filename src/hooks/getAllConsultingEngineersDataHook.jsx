@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "../shared/baseUrl"; // Adjust path as needed
-import { getAllCunsultingEngineersApi } from "../shared/APIs"; // Adjust path as needed
+import { getAllConsultingEngineersApi } from "../shared/APIs"; // Adjust path as needed
 
 const useConsultingEngineersData = () => {
   const [engineers, setEngineers] = useState([]);
@@ -12,7 +12,7 @@ const useConsultingEngineersData = () => {
   useEffect(() => {
     const fetchEngineers = async () => {
       try {
-        const response = await axios.get(`${baseUrl}${getAllCunsultingEngineersApi}`);
+        const response = await axios.get(`${baseUrl}${getAllConsultingEngineersApi}1`);
         const engineersData = response.data.data;
 
         const formattedEngineers = engineersData.map((engineer) => ({
