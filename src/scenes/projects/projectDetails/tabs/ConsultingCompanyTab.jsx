@@ -78,13 +78,13 @@ const ProjectConsultingCompanyTab = ({ consultingCompany }) => {
     <Box m="0px">
      
       <Box
-        sx={{
-          p: { xs: 2, md: 4 },
-          backgroundColor: colors.primary[700],
-          borderRadius: "18px",
-          border: `1px solid ${colors.grey[700]}`,
-          // boxShadow: `0px 10px 30px -5px ${colors.grey[900]}`,
-        }}
+        // sx={{
+        //   p: { xs: 2, md: 4 },
+        //   backgroundColor: colors.primary[700],
+        //   borderRadius: "18px",
+        //   border: `1px solid ${colors.grey[700]}`,
+        //   // boxShadow: `0px 10px 30px -5px ${colors.grey[900]}`,
+        // }}
       >
         {/* --- HEADER SECTION --- */}
         <Box

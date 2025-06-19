@@ -148,7 +148,6 @@ const AddConsultingEngineer = () => {
       .typeError("Experience must be a number")
       .required("Years of Experience is required")
       .min(0, "Cannot be negative"),
-     
   });
 
   // the main return

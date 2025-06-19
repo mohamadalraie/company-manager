@@ -19,6 +19,7 @@ import AddProject from "./scenes/projects/addProject";
 import ProjectDetails from "./scenes/projects/projectDetails";
 import Login from "./scenes/auth/Login";
 import AddConsultingEngineer from "./scenes/consultingCompanies/consultingEngineers/addConsultingEngineer";
+import AddParticipant from "./scenes/projects/projectDetails/AddParticipant";
 
 function App() {
   const [theme, colorMode] = useMode();

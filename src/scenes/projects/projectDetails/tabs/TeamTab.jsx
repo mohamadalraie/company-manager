@@ -1,238 +1,264 @@
-import React from "react";
+
+import { useState } from "react"; // For Snackbar state management
+
+import { Header } from "../../../../components/Header";
+import { tokens } from "../../../../theme";
+
+// Import action icons
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add"; // Icon for the Add button
+
+// Import the new Delete Confirmation component
+import DeleteConfirmationComponent from "../../../../components/DeleteConfirmation"; // Ensure correct path
+
+import { baseUrl } from "../../../../shared/baseUrl";
+import { deleteEngineerApi } from "../../../../shared/APIs";
+
+import { Link } from "react-router-dom"; // For navigation links
+
 import {
   Box,
-  Paper,
   Typography,
-  Grid,
-  Divider,
-  Stack,
-  Avatar,
   useTheme,
-  Chip,
+  Button,
+  CircularProgress,
+  Snackbar,
   Alert,
+  IconButton, // For button icons
 } from "@mui/material";
-import { tokens } from "../../../../theme"; // Adjust path to your theme file
+import { DataGrid } from "@mui/x-data-grid";
+import AddParticipant from "../AddParticipant";
 
-// --- Icons ---
-import BusinessIcon from "@mui/icons-material/Business";
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
-import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
-import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
-import PersonPinOutlinedIcon from "@mui/icons-material/PersonPinOutlined";
-import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
-import CardMembershipOutlinedIcon from "@mui/icons-material/CardMembershipOutlined";
-import ConsultingEngineers from "../../../consultingCompanies/consultingEngineers/Index";
-
-// Helper component for displaying information rows
-const InfoRow = ({ icon, label, value, colors }) => (
-  <Box display="flex" alignItems="center" gap={2} mb={2.5}>
-    <Avatar
-      sx={{
-        backgroundColor: colors.greenAccent[800],
-        color: colors.greenAccent[200],
-      }}
-    >
-      {icon}
-    </Avatar>
-    <Box>
-      <Typography variant="body2" color={colors.grey[300]}>
-        {label}
-      </Typography>
-      <Typography variant="h6" fontWeight="bold" color={colors.grey[100]}>
-        {value || "N/A"}
-      </Typography>
-    </Box>
-  </Box>
-);
-
-const TeamTab = ({ consultingCompany }) => {
+const TeamTab = ({ participants,projectId }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  // Guard clause in case no data is passed
-  if (!consultingCompany) {
-    return (
-      <Box m="20px">
-        <Alert severity="warning">No consulting company data provided.</Alert>
-      </Box>
-    );
-  }
+  const [isAddParticipantOpen, setIsAddParticipantOpen] = useState(false); // حالة للتحكم في فتح/إغلاق الـ Dialog
+  const handleOpenAddParticipant = () => {
+    setIsAddParticipantOpen(true);
+  };
 
-  const {
-    name,
-    email,
-    focal_point_first_name,
-    focal_point_last_name,
-    address,
-    phone_number,
-    land_line,
-    license_number,
-  } = consultingCompany;
+  const handleCloseAddParticipant = () => {
+    setIsAddParticipantOpen(false);
+  };
 
-  const focalPointName = `${focal_point_first_name || ""} ${
-    focal_point_last_name || ""
-  }`.trim();
+  const formattedParticipants = participants.map((participant) => ({
+    id: participant.participant.user.id,
+    first_name: participant.participant.user.first_name,
+    last_name: participant.participant.user.last_name,
+    email: participant.participant.user.email,
+    phone_number: participant.participant.user.phone_number,
+    status: participant.participant.user.is_active,
+    specialization_name: participant.participant.specialization.name_of_major,
+  }));
+
+
+  // State for Snackbar messages (notifications)
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Can be: 'success' | 'error' | 'warning' | 'info'
+
+  // Function to open the Snackbar
+  const showSnackbar = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  // Function to close the Snackbar
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+
+  // Define DataGrid columns
+  const columns =[
+    {
+      field: "id",
+      headerName: "ID",
+      flex: 0.5,
+
+    },
+    {
+      field: "first_name",
+      headerName: "First Name",
+      flex: 1,
+      cellClassName: "name-column--cell", // Custom class for name styling
+    },
+    {
+      field: "last_name",
+      headerName: "Last Name",
+      flex: 1,
+      cellClassName: "name-column--cell", // Custom class for name styling
+    },
+    {
+      field: "specialization_name",
+      headerName: "Specialization",
+      flex: 1,
+    },
+    {
+      field: "email",
+      headerName: "Email",
+      flex: 1,
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      sortable: false,
+      filterable: false,
+      renderCell: (params) => {
+        // Determine button color based on engineer's status
+        const statusColor =
+          params.value === 1 ? colors.greenAccent[600] : colors.redAccent[600];
+
+        return (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="100%"
+            width="100%"
+          >
+            <Button
+              sx={{
+                fontSize: "10px",
+                color: colors.primary[100], // Text color inside the button
+                backgroundColor: statusColor, // Button background color based on status
+                "&:hover": {
+                  backgroundColor:
+                    params.value === "active" ? colors.greenAccent[700] : colors.redAccent[700],
+                },
+              }}
+              onClick={() => showSnackbar(`Engineer Status: ${params.value}`, "info")}
+            >
+              {params.value ? params.value : "Undefined"}
+            </Button>
+          </Box>
+        );
+      },
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      sortable: false,
+      filterable: false,
+      // flex: 1, // Give more space for icons
+      renderCell: (params) => {
+        return (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="100%"
+            width="100%"
+          >
+       
+ 
+
+            {/* Delete Confirmation Component */}
+            <DeleteConfirmationComponent
+              itemId={params.row.id}
+              deleteApi={`${baseUrl}${deleteEngineerApi}`}
+              onDeleteSuccess={() => {
+                showSnackbar("Engineer deleted successfully!", "success");
+                // refetchEngineers(); // 🚨 Refetch data to update the table
+              }}
+              onDeleteError={(errorMessage) => {
+                showSnackbar(`Failed to delete engineer: ${errorMessage}`, "error");
+              }}
+              // Pass the delete icon to be rendered inside the component's button
+              icon={<DeleteOutlineIcon sx={{ color: colors.redAccent[500] }} />}
+              // You can also pass custom confirmation text if needed
+              confirmationText="Are you sure you want to delete this engineer?"
+            />
+          </Box>
+        );
+      },
+    },];
+
+
 
   return (
-    <Box m="0px">
-      {/* <Typography
-        variant="h2"
-        color={colors.grey[100]}
-        fontWeight="bold"
-        sx={{ mb: 4 }}
-      >
-        Company Profile
-      </Typography> */}
-
+    <Box m="10px">
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb="20px">
+        <Header
+          title={"Participants"}
+          subtitle={"Managing the engineers participating in the project. "}
+        />
+        {/* <Link to="/project/:id/addParticipant" style={{ textDecoration: "none" }}> */}
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: colors.greenAccent[700],
+              color: colors.primary[100],
+              "&:hover": {
+                backgroundColor: colors.greenAccent[800],
+              },
+            }}
+            startIcon={<AddIcon />} // Icon for the Add button
+          onClick={handleOpenAddParticipant}
+          >
+            Add Participant
+          </Button>
+        {/* </Link> */}
+      </Box>
       <Box
+        m="20px 0 0 0"
+        height="90vh" // Fixed height for DataGrid
         sx={{
-          p: { xs: 2, md: 4 },
-          backgroundColor: colors.primary[700],
-          borderRadius: "18px",
-          border: `1px solid ${colors.grey[700]}`,
-          // boxShadow: `0px 10px 30px -5px ${colors.grey[900]}`,
+          // Custom styles for DataGrid
+          "& .MuiDataGrid-root": {
+            border: "none", // Remove outer border of the table
+          },
+          "& .MuiDataGrid-cell": {
+            borderBottom: "none", // Remove bottom borders between cells
+          },
+          "& .name-column--cell": {
+            // color: colors.greenAccent[300], // Distinct color for engineer names
+            fontWeight: "bold", // Bold font for names
+          },
+          "& .MuiDataGrid-columnHeaders": {
+            
+            color: colors.greenAccent[400],
+            // backgroundColor: colors.primary[800], // Background color for column headers
+            borderBottom: "none",
+            // fontSize: "1rem", // Larger font size for column headers
+            fontWeight: "bold",
+          },
+
         }}
       >
-        {/* --- HEADER SECTION --- */}
-        <Box
-          display="flex"
-          flexDirection={{ xs: "column", md: "row" }}
-          alignItems="center"
-          gap={3}
-          mb={3}
-        >
-          <Avatar
-            sx={{
-              width: 80,
-              height: 80,
-              backgroundColor: colors.greenAccent[700],
-            }}
-          >
-            <BusinessIcon sx={{ fontSize: 50 }} />
-          </Avatar>
-          <Box flexGrow={1}>
-            <Typography
-              variant="h3"
-              color={colors.greenAccent[300]}
-              fontWeight="bold"
-            >
-              {name}
-            </Typography>
-            <Typography variant="h6" color={colors.grey[400]}>
-              Consulting & Advisory Services
-            </Typography>
-          </Box>
-          <Chip
-            icon={<CardMembershipOutlinedIcon />}
-            label={`License: ${license_number}`}
-            variant="outlined"
-            sx={{
-              borderColor: colors.greenAccent[400],
-              color: colors.greenAccent[300],
-              p: 2,
-              fontSize: "0.9rem",
-              fontWeight: "bold",
-            }}
-          />
-        </Box>
-
-        <Divider sx={{ my: 4, borderColor: colors.grey[700] }} />
-
-        {/* --- DETAILS GRID --- */}
-        <Grid
-          container
-          justifyContent="space-between"
-          sx={{ flexGrow: 1, overflowY: "auto", p: 1 }}
-        >
-          {/* Left Column: Contact Information */}
-          <Grid item xs={12} md={7}>
-            <Typography
-              variant="h4"
-              color={colors.grey[200]}
-              fontWeight={600}
-              mb={3}
-            >
-              Contact Information
-            </Typography>
-            <Stack>
-              <InfoRow
-                icon={<EmailOutlinedIcon />}
-                label="Email Address"
-                value={email}
-                colors={colors}
-              />
-              <InfoRow
-                icon={<PhoneOutlinedIcon />}
-                label="Phone Number"
-                value={phone_number}
-                colors={colors}
-              />
-              <InfoRow
-                icon={<CallOutlinedIcon />}
-                label="Landline"
-                value={land_line}
-                colors={colors}
-              />
-              <InfoRow
-                icon={<LocationOnOutlinedIcon />}
-                label="Address"
-                value={address}
-                colors={colors}
-              />
-            </Stack>
-          </Grid>
-
-          {/* Right Column: Focal Point */}
-          <Grid item xs={12} md={5}>
-            <Paper
-              sx={{
-                p: 3,
-                backgroundColor: colors.primary[900],
-                borderRadius: "12px",
-                border: `1px solid ${colors.grey[700]}`,
-                textAlign: "center",
-                height: "100%",
-              }}
-            >
-              <Typography
-                variant="h5"
-                color={colors.grey[200]}
-                fontWeight={600}
-                mb={2}
-              >
-                Company Representative
-              </Typography>
-              <Avatar
-                sx={{
-                  width: 60,
-                  height: 60,
-                  backgroundColor: colors.blueAccent[700],
-                  margin: "0 auto 16px auto",
-                }}
-              >
-                <PersonPinOutlinedIcon sx={{ fontSize: 35 }} />
-              </Avatar>
-              <Typography
-                variant="h4"
-                fontWeight="bold"
-                color={colors.blueAccent[300]}
-              >
-                {focalPointName}
-              </Typography>
-              <Typography variant="body1" color={colors.grey[400]}>
-                Primary Contact
-              </Typography>
-            </Paper>
-          </Grid>
-        </Grid>
-
-        {/* Company Engineer */}
-        <Divider sx={{ my: 4, borderColor: colors.grey[700] }} />
-
-        <Grid item xs={12} md={5}>
-          <ConsultingEngineers />
-        </Grid>
+        <DataGrid
+          rows={formattedParticipants}
+          columns={columns}
+          pageSize={10} // Default number of rows per page
+          rowsPerPageOptions={[5, 10, 20]} // Options for rows per page
+          disableSelectionOnClick // Prevent row selection on click
+        />
       </Box>
+
+
+      <AddParticipant
+        open={isAddParticipantOpen}    // تمرير حالة الفتح
+        onClose={handleCloseAddParticipant} // تمرير دالة الإغلاق
+        projectId={projectId}
+      />
+   
+
+      {/* Snackbar for notifications at the bottom right */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000} // Snackbar disappears after 6 seconds
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

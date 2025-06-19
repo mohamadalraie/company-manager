@@ -151,7 +151,8 @@ const ProjectDetails = () => {
 
           <TabPanel value={value} index={2}>
           <TeamTab
-           consultingCompany={project.consultingCompany}
+           participants={project.participants}
+           projectId={project.id}
            />
             </TabPanel>
 

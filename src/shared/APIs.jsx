@@ -15,3 +15,4 @@ export const createOwnerApi="/api/owner/create";
 export const createProjectApi="/api/project/create";
 export const getAllProjectsApi="/api/project/all";
 export const getOneProjectApi="/api/project/";
+export const addParticipantApi="/api/projectParticipant/create";

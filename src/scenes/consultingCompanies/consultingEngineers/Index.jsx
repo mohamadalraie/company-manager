@@ -184,15 +184,32 @@ const ConsultingEngineers = ({consultingCompanyId}) => {
         m="20px 0 0 0"
         height="70vh"
         sx={{
-          "& .MuiDataGrid-cell": {},
+          // Custom styles for DataGrid
+          "& .MuiDataGrid-root": {
+            border: "none", // Remove outer border of the table
+          },
+          "& .MuiDataGrid-cell": {
+            borderBottom: "none", // Remove bottom borders between cells
+          },
+          "& .name-column--cell": {
+            // color: colors.greenAccent[300], // Distinct color for engineer names
+            fontWeight: "bold", // Bold font for names
+          },
           "& .MuiDataGrid-columnHeaders": {
+            
             color: colors.greenAccent[400],
-            backgroundColor: colors.greenAccent[100],
+            // backgroundColor: colors.primary[800], // Background color for column headers
+            borderBottom: "none",
+            // fontSize: "1rem", // Larger font size for column headers
+            fontWeight: "bold",
           },
         }}
       >
       
-          <DataGrid rows={engineers} columns={columns} />
+          <DataGrid rows={engineers} columns={columns}     
+               pageSize={10} // Default number of rows per page
+          rowsPerPageOptions={[5, 10, 20]} // Options for rows per page 
+          />
       </Box>
     )}
   </Box>
