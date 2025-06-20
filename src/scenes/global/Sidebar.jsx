@@ -163,13 +163,13 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
               selected={selected}
               setSelected={setSelected}
             />
-            {/* <Item
-              title="Consulting Engineers"
-              to="/consultingEngineers"
+            <Item
+              title="Project Managers"
+              to="/projectManagers"
               icon={<PeopleOutlinedIcon />} // Consider a different icon for distinction
               selected={selected}
               setSelected={setSelected}
-            /> */}
+            />
                  <Item
               title="Consulting Companies"
               to="/consultingCompanies"

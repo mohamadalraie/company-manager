@@ -20,6 +20,8 @@ import ProjectDetails from "./scenes/projects/projectDetails";
 import Login from "./scenes/auth/Login";
 import AddConsultingEngineer from "./scenes/consultingCompanies/consultingEngineers/addConsultingEngineer";
 import AddParticipant from "./scenes/projects/projectDetails/AddParticipant";
+import ProjectManagers from "./scenes/projectManagers/Index";
+import AddProjectManager from "./scenes/projectManagers/addProjectManger";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -97,6 +99,8 @@ function App() {
                 <Route path="/salesManagers" element={<SalesManagers />} />
                 <Route path="/owners" element={<Owners />} />
                 <Route path="/owners/add" element={<AddOwner />} />
+                <Route path="/projectManagers" element={<ProjectManagers />} />
+                <Route path="/projectManagers/add" element={<AddProjectManager />} />
                 
                 {/* A catch-all route for 404 Not Found pages */}
                 <Route path="*" element={<div>404 - Page Not Found</div>} />

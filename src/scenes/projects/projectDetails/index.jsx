@@ -32,6 +32,7 @@ import useOneProjectData from "../../../hooks/getOneProjectDataHook";
 import GeneralInfoTab from "./tabs/GeneralInfoTab";
 import ConsultingCompanyTab from "./tabs/ConsultingCompanyTab";
 import TeamTab from "./tabs/TeamTab"
+import DocumentTab from "./tabs/DocumentsTab";
 
 
   function TabPanel(props) {
@@ -160,6 +161,9 @@ const ProjectDetails = () => {
             <Typography variant="h5" color={colors.grey[300]}>Documents</Typography>
             <Typography color={colors.grey[400]}>A list of project-related documents (e.g., contracts, blueprints) will be available here.</Typography>
           </TabPanel>
+          <TabPanel value={value} index={4}>
+         <DocumentTab/>
+         </TabPanel>
         </Box>
       </Box>
     </Fade>

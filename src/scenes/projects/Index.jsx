@@ -88,15 +88,10 @@ const ProjectsList = () => {
           variant="contained"
           onClick={handleAddProjectClick}
           sx={{
-            backgroundColor: colors.greenAccent[600],
-            color: colors.grey[100],
-            fontWeight: "bold",
-            padding: "10px 20px",
-            borderRadius: "8px",
-            transition: "background-color 0.3s ease, transform 0.2s ease",
-            '&:hover': {
-              backgroundColor: colors.greenAccent[700],
-              transform: 'translateY(-2px)',
+            backgroundColor: colors.greenAccent[700],
+            color: colors.primary[100],
+            "&:hover": {
+              backgroundColor: colors.greenAccent[800],
             },
           }}
           startIcon={<AddCircleOutlineIcon />}
