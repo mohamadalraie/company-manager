@@ -23,7 +23,7 @@ import AspectRatioIcon from "@mui/icons-material/AspectRatioOutlined";
 import PersonIcon from "@mui/icons-material/PersonOutline";
 import  PeopleOutlineOutlined  from "@mui/icons-material/PeopleOutlineOutlined";
 import BusinessIcon from "@mui/icons-material/BusinessOutlined";
-import CodeIcon from "@mui/icons-material/CodeOutlined";
+
 import DescriptionIcon from '@mui/icons-material/DescriptionOutlined';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOnOutlined';
 import ArticleIcon from '@mui/icons-material/ArticleOutlined';
@@ -162,7 +162,7 @@ const ProjectDetails = () => {
             <Typography color={colors.grey[400]}>A list of project-related documents (e.g., contracts, blueprints) will be available here.</Typography>
           </TabPanel>
           <TabPanel value={value} index={4}>
-         <DocumentTab/>
+         <DocumentTab projectId={id}/>
          </TabPanel>
         </Box>
       </Box>
