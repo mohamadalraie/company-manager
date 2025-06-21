@@ -188,7 +188,7 @@ const TeamTab = ({ participants,projectId }) => {
           title={"Participants"}
           subtitle={"Managing the engineers participating in the project. "}
         />
-        {/* <Link to="/project/:id/addParticipant" style={{ textDecoration: "none" }}> */}
+
           <Button
             variant="contained"
             sx={{
@@ -203,7 +203,7 @@ const TeamTab = ({ participants,projectId }) => {
           >
             Add Participant
           </Button>
-        {/* </Link> */}
+
       </Box>
       <Box
         m="20px 0 0 0"

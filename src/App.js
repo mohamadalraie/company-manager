@@ -22,6 +22,8 @@ import AddConsultingEngineer from "./scenes/consultingCompanies/consultingEngine
 import AddParticipant from "./scenes/projects/projectDetails/AddParticipant";
 import ProjectManagers from "./scenes/projectManagers/Index";
 import AddProjectManager from "./scenes/projectManagers/addProjectManger";
+import AddFile from "./scenes/projects/projectDetails/AddFile";
+import AddProjectFile from "./scenes/projects/projectDetails/AddFile";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -96,6 +98,7 @@ function App() {
                 <Route path="/projects" element={<Projects />} />
                 <Route path="/projects/add" element={<AddProject />} />
                 <Route path="/projects/:id" element={<ProjectDetails />} />
+                <Route path="/projects/:id/files/add" element={<AddProjectFile />} />
                 <Route path="/salesManagers" element={<SalesManagers />} />
                 <Route path="/owners" element={<Owners />} />
                 <Route path="/owners/add" element={<AddOwner />} />
