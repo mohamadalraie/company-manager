@@ -24,7 +24,6 @@ const useProjectFilesData = ({projectId}) => {
         setLoading(false);
         return;
       }
-console.log(`${getProjectFilesApi({projectId})}`);
 
       const response = await axios.get(`${baseUrl}${getProjectFilesApi(projectId)}`);
       console.log(`${baseUrl}${getProjectFilesApi({projectId})}`);
