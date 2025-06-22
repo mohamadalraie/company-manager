@@ -50,7 +50,16 @@ function DeleteConfirmationComponent({ itemId, deleteApi, onDeleteSuccess, onDel
       // Ensure snackbar state is set BEFORE calling onDeleteSuccess
 
       // Now call the parent's success handler
-    onDeleteSuccess();
+      if (onDeleteSuccess) {
+        if (snackbarRef.current) {
+          snackbarRef.current.showSnackbar(
+            "File deleted successfully!",
+            "success"
+          );
+        }
+      }
+
+     
 
     } catch (error) {
       console.error('Error during deletion:', error.response?.data || error.message);
@@ -135,7 +144,16 @@ function DeleteConfirmationComponent({ itemId, deleteApi, onDeleteSuccess, onDel
 
 
       <CustomSnackbar ref={snackbarRef} />
-
+      {/* <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000} // Stay open for 6 seconds
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar> */}
     </Stack>
   );
 }

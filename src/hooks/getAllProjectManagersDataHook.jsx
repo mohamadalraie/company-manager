@@ -9,35 +9,40 @@ const useProjectManagersData = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+
+  const refetchManagers = async () => {
+    setLoading(true);
+    setError(null); // Clear previous errors
+    try {
+      const response = await axios.get(`${baseUrl}${getAllProjectManagersApi}`);
+      const mangersData = response.data.data;
+
+      const formattedManagers = mangersData.map((manager) => ({
+        id: manager.id,
+        first_name: manager.user.first_name,
+        last_name: manager.user.last_name,
+        email: manager.user.email,
+        phone_number: manager.user.phone_number,
+        status: manager.user.status,
+      }));
+
+      setManagers(formattedManagers);
+    } catch (err) {
+      console.error("Error fetching managers:", err);
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+
+
   useEffect(() => {
-    const fetchManagers = async () => {
-      try {
-        const response = await axios.get(`${baseUrl}${getAllProjectManagersApi}`);
-        const mangersData = response.data.data;
 
-        const formattedManagers = mangersData.map((manager) => ({
-          id: manager.id,
-          first_name: manager.user.first_name,
-          last_name: manager.user.last_name,
-          email: manager.user.email,
-          phone_number: manager.user.phone_number,
-          status: manager.user.status,
-          specialization_name: manager.specialization.name,
-        }));
-
-        setManagers(formattedManagers);
-      } catch (err) {
-        console.error("Error fetching managers:", err);
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchManagers();
+    refetchManagers();
   }, []);
 
-  return { managers, loading, error };
+  return { managers, loading, error,refetchManagers };
 };
 
 export default useProjectManagersData;

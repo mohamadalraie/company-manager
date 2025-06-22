@@ -40,7 +40,7 @@ const ProjectManagers = () => {
   const colors = tokens(theme.palette.mode);
 
   // Update your hook to return engineers, loading, error, AND refetchEngineers
-  const {  managers, loading, error} =useProjectManagersData();
+  const {  managers, loading, error,refetchManagers} =useProjectManagersData();
 
   // State for Snackbar messages (notifications)
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -234,7 +234,7 @@ const ProjectManagers = () => {
           Error loading data: {error.message}
         </Typography>
         <Button
-          // onClick={refetchEngineers} // Button to retry fetching data
+          onClick={refetchManagers} // Button to retry fetching data
           variant="outlined"
           sx={{ mt: 2, color: colors.blueAccent[500], borderColor: colors.blueAccent[500] }}
         >
