@@ -45,6 +45,7 @@ const AddOwner = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const token=localStorage.getItem("authToken");
 
   // State for API loading
   const [isLoading, setIsLoading] = useState(false);
@@ -60,15 +61,16 @@ const AddOwner = () => {
   const handleFormSubmit = async (values, { resetForm }) => {
     setIsLoading(true);
     try {
+
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }}
       console.log("Submitting values:", values);
       const response = await axios.post(
         `${baseUrl}${createOwnerApi}`,
         values,
-        {
-          headers: {
-            // Add any required headers here (e.g., Authorization token)
-          },
-        }
+        config
       );
 
       console.log("Owner created successfully:", response.data);

@@ -11,12 +11,18 @@ const useProjectFilesData = ({projectId}) => {
   const [projectFiles, setProjectFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const token=localStorage.getItem("authToken");
 
   // Function to refetch files (useful for updates or retries)
   const refetchFiles = async () => {
     setLoading(true);
     setError(null); // Clear previous errors
     try {
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      };
       if (!projectId) {
         
         // If projectId is not available, don't fetch and just set loading to false
@@ -25,7 +31,7 @@ const useProjectFilesData = ({projectId}) => {
         return;
       }
 
-      const response = await axios.get(`${baseUrl}${getProjectFilesApi(projectId)}`);
+      const response = await axios.get(`${baseUrl}${getProjectFilesApi(projectId)}`,config);
       console.log(`${baseUrl}${getProjectFilesApi({projectId})}`);
       const filesData = response.data.data; // Access the 'data' array from your API response
       console.log(response);

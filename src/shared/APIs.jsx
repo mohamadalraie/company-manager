@@ -16,6 +16,7 @@ export const createProjectApi="/api/project/create";
 export const getAllProjectsApi="/api/project/all";
 export const getOneProjectApi="/api/project/";
 export const addParticipantApi="/api/projectParticipant/create";
+export const deleteParticipantApi="/api/projectParticipant/delete/"
 export const createProjectManagerApi="/api/projectManagers/create";
 export const getAllProjectManagersApi="/api/projectManagers/all";
 export const deleteProjectManagerApi="/api/projectManagers/delete/";

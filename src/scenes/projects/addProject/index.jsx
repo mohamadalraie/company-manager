@@ -1,9 +1,10 @@
-// src/scenes/projects/addProject/index.jsx (Create this new file)
+// src/scenes/projects/addProject/index.jsx
 
 // imports
 import { Header } from "../../../components/Header";
 import { tokens } from "../../../theme";
 import { baseUrl } from "../../../shared/baseUrl";
+
 // Assuming you have an API endpoint for creating projects
 import { createProjectApi } from "../../../shared/APIs"; // **UPDATE THIS PATH/API**
 import CustomSnackbar from "../../../components/CustomSnackbar";
@@ -41,43 +42,70 @@ import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import PersonIcon from "@mui/icons-material/Person"; // For owner_id
 import BusinessIcon from "@mui/icons-material/Business"; // For consulting_company_id
+import EngineeringIcon from "@mui/icons-material/Engineering"; // New icon for Project Manager
 
 //External libraries
 import { Formik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
 
-// Assuming you have API endpoints to fetch owners and consulting companies
+// Assuming you have API endpoints to fetch owners, consulting companies, and project managers
 // You'll need to create these if they don't exist
-import { getAllOwnersApi, getAllConsultingCompaniesApi } from "../../../shared/APIs";
-import { projectTypeOptions,progressStatusOptions,statusOfSaleOptions } from "../../../shared/statics.jsx/projectStatics";
-
+import {
+  getAllOwnersApi,
+  getAllConsultingCompaniesApi,
+  getAllProjectManagersApi, // New API import
+} from "../../../shared/APIs";
+import {
+  projectTypeOptions,
+  progressStatusOptions,
+  statusOfSaleOptions,
+} from "../../../shared/statics.jsx/projectStatics"; // Ensure this path is correct based on your project structure
 
 const AddProject = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const token=localStorage.getItem("authToken");
+
 
   // State for API loading and data for dropdowns
   const [isLoading, setIsLoading] = useState(false);
   const [owners, setOwners] = useState([]);
   const [consultingCompanies, setConsultingCompanies] = useState([]);
+  const [projectManagers, setProjectManagers] = useState([]); // New state for project managers
   const [isDataLoading, setIsDataLoading] = useState(true); // For initial data fetch
   const snackbarRef = useRef(null);
 
-  // Fetch owners and consulting companies on component mount
+  const config = {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  };
+  // Fetch owners, consulting companies, and project managers on component mount
   useEffect(() => {
     const fetchDropdownData = async () => {
       try {
-        const ownersResponse = await axios.get(`${baseUrl}${getAllOwnersApi}`);
+        // Fetch Owners
+        const ownersResponse = await axios.get(`${baseUrl}${getAllOwnersApi}`,config);
         setOwners(ownersResponse.data.data);
 
-        const companiesResponse = await axios.get(`${baseUrl}${getAllConsultingCompaniesApi}`);
+        // Fetch Consulting Companies
+        const companiesResponse = await axios.get(
+          `${baseUrl}${getAllConsultingCompaniesApi}`,config
+        );
         setConsultingCompanies(companiesResponse.data.data);
+
+
+        // Fetch Project Managers
+        const managersResponse = await axios.get(
+          `${baseUrl}${getAllProjectManagersApi}`,config
+        );
+        setProjectManagers(managersResponse.data.data);
       } catch (error) {
         console.error("Error fetching dropdown data:", error);
         snackbarRef.current.showSnackbar(
-          "Failed to load owners or consulting companies.",
+          "Failed to load owners, consulting companies, or project managers.",
           "error"
         );
       } finally {
@@ -94,11 +122,7 @@ const AddProject = () => {
       const response = await axios.post(
         `${baseUrl}${createProjectApi}`,
         values,
-        {
-          headers: {
-            // Add any required headers here (e.g., Authorization token)
-          },
-        }
+        config
       );
 
       console.log("Project created successfully:", response.data);
@@ -136,6 +160,7 @@ const AddProject = () => {
     expected_cost: "",
     owner_id: "",
     consulting_company_id: "",
+    project_manager_id: "", // New field for project manager
   };
 
   // Validation schema for project creation using yup
@@ -144,18 +169,33 @@ const AddProject = () => {
     project_code: yup.string().required("Project Code is required"),
     description: yup.string().required("Description is required"),
     location: yup.string().required("Location is required"),
-    area: yup.number().typeError("Area must be a number").positive("Area must be positive").required("Area is required"),
-    number_of_floor: yup.number().typeError("Number of floors must be a number").integer("Number of floors must be an integer").min(0, "Cannot be negative").required("Number of floors is required"),
+    area: yup
+      .number()
+      .typeError("Area must be a number")
+      .positive("Area must be positive")
+      .required("Area is required"),
+    number_of_floor: yup
+      .number()
+      .typeError("Number of floors must be a number")
+      .integer("Number of floors must be an integer")
+      .min(0, "Cannot be negative")
+      .required("Number of floors is required"),
     status_of_sale: yup.string().required("Status of Sale is required"),
-    expected_date_of_completed: yup.date().typeError("Invalid date").required("Expected Date of Completion is required"),
+    expected_date_of_completed: yup
+      .date()
+      .typeError("Invalid date")
+      .required("Expected Date of Completion is required"),
     type: yup.string().required("Type is required"),
     progress_status: yup.string().required("Progress Status is required"),
-    expected_cost: yup.number().typeError("Expected Cost must be a number").positive("Expected Cost must be positive").required("Expected Cost is required"),
+    expected_cost: yup
+      .number()
+      .typeError("Expected Cost must be a number")
+      .positive("Expected Cost must be positive")
+      .required("Expected Cost is required"),
     owner_id: yup.string().required("Owner is required"),
     consulting_company_id: yup.string().required("Consulting Company is required"),
+    project_manager_id: yup.string().required("Project Manager is required"), // New validation
   });
-
-
 
   return (
     <Box m="10px">
@@ -188,7 +228,14 @@ const AddProject = () => {
               handleChange,
               handleSubmit,
             }) => (
-              <form onSubmit={handleSubmit} style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+              <form
+                onSubmit={handleSubmit}
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
                 <Box
                   sx={{
                     display: "flex",
@@ -207,7 +254,14 @@ const AddProject = () => {
                   <Typography
                     variant="h5"
                     color={colors.greenAccent[400]}
-                    sx={{ mb: 1, mt: 1, width: "100%", textAlign: "left", pb: "8px", borderBottom: `1px solid ${colors.grey[600]}` }}
+                    sx={{
+                      mb: 1,
+                      mt: 1,
+                      width: "100%",
+                      textAlign: "left",
+                      pb: "8px",
+                      borderBottom: `1px solid ${colors.grey[600]}`,
+                    }}
                   >
                     Basic Information
                   </Typography>
@@ -224,7 +278,11 @@ const AddProject = () => {
                         name="title"
                         error={!!touched.title && !!errors.title}
                         helperText={touched.title && errors.title}
-                        InputProps={{ startAdornment: <TitleIcon sx={{ color: colors.grey[500] }} /> }}
+                        InputProps={{
+                          startAdornment: (
+                            <TitleIcon sx={{ color: colors.grey[500] }} />
+                          ),
+                        }}
                       />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -239,7 +297,11 @@ const AddProject = () => {
                         name="project_code"
                         error={!!touched.project_code && !!errors.project_code}
                         helperText={touched.project_code && errors.project_code}
-                        InputProps={{ startAdornment: <CodeIcon sx={{ color: colors.grey[500] }} /> }}
+                        InputProps={{
+                          startAdornment: (
+                            <CodeIcon sx={{ color: colors.grey[500] }} />
+                          ),
+                        }}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -256,7 +318,13 @@ const AddProject = () => {
                         name="description"
                         error={!!touched.description && !!errors.description}
                         helperText={touched.description && errors.description}
-                        InputProps={{ startAdornment: <DescriptionIcon sx={{ color: colors.grey[500], mr: 1 }} /> }}
+                        InputProps={{
+                          startAdornment: (
+                            <DescriptionIcon
+                              sx={{ color: colors.grey[500], mr: 1 }}
+                            />
+                          ),
+                        }}
                       />
                     </Grid>
                   </Grid>
@@ -265,7 +333,14 @@ const AddProject = () => {
                   <Typography
                     variant="h5"
                     color={colors.greenAccent[400]}
-                    sx={{ mb: 1, mt: 3, width: "100%", textAlign: "left", pb: "8px", borderBottom: `1px solid ${colors.grey[600]}` }}
+                    sx={{
+                      mb: 1,
+                      mt: 3,
+                      width: "100%",
+                      textAlign: "left",
+                      pb: "8px",
+                      borderBottom: `1px solid ${colors.grey[600]}`,
+                    }}
                   >
                     Project Details
                   </Typography>
@@ -282,7 +357,11 @@ const AddProject = () => {
                         name="location"
                         error={!!touched.location && !!errors.location}
                         helperText={touched.location && errors.location}
-                        InputProps={{ startAdornment: <LocationOnIcon sx={{ color: colors.grey[500] }} /> }}
+                        InputProps={{
+                          startAdornment: (
+                            <LocationOnIcon sx={{ color: colors.grey[500] }} />
+                          ),
+                        }}
                       />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -297,7 +376,13 @@ const AddProject = () => {
                         name="area"
                         error={!!touched.area && !!errors.area}
                         helperText={touched.area && errors.area}
-                        InputProps={{ startAdornment: <AspectRatioIcon sx={{ color: colors.grey[500] }} /> }}
+                        InputProps={{
+                          startAdornment: (
+                            <AspectRatioIcon
+                              sx={{ color: colors.grey[500] }}
+                            />
+                          ),
+                        }}
                       />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -310,16 +395,29 @@ const AddProject = () => {
                         onChange={handleChange}
                         value={values.number_of_floor}
                         name="number_of_floor"
-                        error={!!touched.number_of_floor && !!errors.number_of_floor}
-                        helperText={touched.number_of_floor && errors.number_of_floor}
-                        InputProps={{ startAdornment: <LayersIcon sx={{ color: colors.grey[500] }} /> }}
+                        error={
+                          !!touched.number_of_floor && !!errors.number_of_floor
+                        }
+                        helperText={
+                          touched.number_of_floor && errors.number_of_floor
+                        }
+                        InputProps={{
+                          startAdornment: (
+                            <LayersIcon sx={{ color: colors.grey[500] }} />
+                          ),
+                        }}
                       />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <FormControl fullWidth variant="outlined" error={!!touched.type && !!errors.type} sx={{
-      '& .MuiOutlinedInput-root': { borderRadius: '8px' },
-      minWidth: '220px', // أضف هذا لفرض عرض أدنى للمكون
-    }}>
+                      <FormControl
+                        fullWidth
+                        variant="outlined"
+                        error={!!touched.type && !!errors.type}
+                        sx={{
+                          "& .MuiOutlinedInput-root": { borderRadius: "8px" },
+                          minWidth: "220px",
+                        }}
+                      >
                         <InputLabel>Project Type</InputLabel>
                         <Select
                           value={values.type}
@@ -327,7 +425,11 @@ const AddProject = () => {
                           onBlur={handleBlur}
                           label="Project Type"
                           name="type"
-                          startAdornment={<CategoryIcon sx={{ color: colors.grey[500], mr: 1 }} />}
+                          startAdornment={
+                            <CategoryIcon
+                              sx={{ color: colors.grey[500], mr: 1 }}
+                            />
+                          }
                         >
                           <MenuItem value="">
                             <em>None</em>
@@ -339,7 +441,11 @@ const AddProject = () => {
                           ))}
                         </Select>
                         {touched.type && errors.type && (
-                          <Typography variant="caption" color="error" sx={{ ml: 1.5, mt: 0.5 }}>
+                          <Typography
+                            variant="caption"
+                            color="error"
+                            sx={{ ml: 1.5, mt: 0.5 }}
+                          >
                             {errors.type}
                           </Typography>
                         )}
@@ -355,10 +461,20 @@ const AddProject = () => {
                         onChange={handleChange}
                         value={values.expected_date_of_completed}
                         name="expected_date_of_completed"
-                        error={!!touched.expected_date_of_completed && !!errors.expected_date_of_completed}
-                        helperText={touched.expected_date_of_completed && errors.expected_date_of_completed}
+                        error={
+                          !!touched.expected_date_of_completed &&
+                          !!errors.expected_date_of_completed
+                        }
+                        helperText={
+                          touched.expected_date_of_completed &&
+                          errors.expected_date_of_completed
+                        }
                         InputLabelProps={{ shrink: true }} // Ensures label is always above input
-                        InputProps={{ startAdornment: <EventIcon sx={{ color: colors.grey[500], mr: 1 }} /> }}
+                        InputProps={{
+                          startAdornment: (
+                            <EventIcon sx={{ color: colors.grey[500], mr: 1 }} />
+                          ),
+                        }}
                       />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -373,7 +489,11 @@ const AddProject = () => {
                         name="expected_cost"
                         error={!!touched.expected_cost && !!errors.expected_cost}
                         helperText={touched.expected_cost && errors.expected_cost}
-                        InputProps={{ startAdornment: <AttachMoneyIcon sx={{ color: colors.grey[500] }} /> }}
+                        InputProps={{
+                          startAdornment: (
+                            <AttachMoneyIcon sx={{ color: colors.grey[500] }} />
+                          ),
+                        }}
                       />
                     </Grid>
                   </Grid>
@@ -382,16 +502,30 @@ const AddProject = () => {
                   <Typography
                     variant="h5"
                     color={colors.greenAccent[400]}
-                    sx={{ mb: 1, mt: 3, width: "100%", textAlign: "left", pb: "8px", borderBottom: `1px solid ${colors.grey[600]}` }}
+                    sx={{
+                      mb: 1,
+                      mt: 3,
+                      width: "100%",
+                      textAlign: "left",
+                      pb: "8px",
+                      borderBottom: `1px solid ${colors.grey[600]}`,
+                    }}
                   >
                     Status & Progress
                   </Typography>
                   <Grid container spacing={3} sx={{ width: "100%" }}>
                     <Grid item xs={12} sm={6}>
-                      <FormControl fullWidth variant="outlined" error={!!touched.status_of_sale && !!errors.status_of_sale} sx={{
-      '& .MuiOutlinedInput-root': { borderRadius: '8px' },
-      minWidth: '220px', // أضف هذا لفرض عرض أدنى للمكون
-    }}>
+                      <FormControl
+                        fullWidth
+                        variant="outlined"
+                        error={
+                          !!touched.status_of_sale && !!errors.status_of_sale
+                        }
+                        sx={{
+                          "& .MuiOutlinedInput-root": { borderRadius: "8px" },
+                          minWidth: "220px",
+                        }}
+                      >
                         <InputLabel>Status of Sale</InputLabel>
                         <Select
                           value={values.status_of_sale}
@@ -399,7 +533,11 @@ const AddProject = () => {
                           onBlur={handleBlur}
                           label="Status of Sale"
                           name="status_of_sale"
-                          startAdornment={<CheckCircleOutlineIcon sx={{ color: colors.grey[500], mr: 1 }} />}
+                          startAdornment={
+                            <CheckCircleOutlineIcon
+                              sx={{ color: colors.grey[500], mr: 1 }}
+                            />
+                          }
                         >
                           <MenuItem value="">
                             <em>None</em>
@@ -411,17 +549,28 @@ const AddProject = () => {
                           ))}
                         </Select>
                         {touched.status_of_sale && errors.status_of_sale && (
-                          <Typography variant="caption" color="error" sx={{ ml: 1.5, mt: 0.5 }}>
+                          <Typography
+                            variant="caption"
+                            color="error"
+                            sx={{ ml: 1.5, mt: 0.5 }}
+                          >
                             {errors.status_of_sale}
                           </Typography>
                         )}
                       </FormControl>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <FormControl fullWidth variant="outlined" error={!!touched.progress_status && !!errors.progress_status} sx={{
-      '& .MuiOutlinedInput-root': { borderRadius: '8px' },
-      minWidth: '220px', // أضف هذا لفرض عرض أدنى للمكون
-    }}>
+                      <FormControl
+                        fullWidth
+                        variant="outlined"
+                        error={
+                          !!touched.progress_status && !!errors.progress_status
+                        }
+                        sx={{
+                          "& .MuiOutlinedInput-root": { borderRadius: "8px" },
+                          minWidth: "220px",
+                        }}
+                      >
                         <InputLabel>Progress Status</InputLabel>
                         <Select
                           value={values.progress_status}
@@ -429,7 +578,11 @@ const AddProject = () => {
                           onBlur={handleBlur}
                           label="Progress Status"
                           name="progress_status"
-                          startAdornment={<TrendingUpIcon sx={{ color: colors.grey[500], mr: 1 }} />}
+                          startAdornment={
+                            <TrendingUpIcon
+                              sx={{ color: colors.grey[500], mr: 1 }}
+                            />
+                          }
                         >
                           <MenuItem value="">
                             <em>None</em>
@@ -441,7 +594,11 @@ const AddProject = () => {
                           ))}
                         </Select>
                         {touched.progress_status && errors.progress_status && (
-                          <Typography variant="caption" color="error" sx={{ ml: 1.5, mt: 0.5 }}>
+                          <Typography
+                            variant="caption"
+                            color="error"
+                            sx={{ ml: 1.5, mt: 0.5 }}
+                          >
                             {errors.progress_status}
                           </Typography>
                         )}
@@ -453,16 +610,28 @@ const AddProject = () => {
                   <Typography
                     variant="h5"
                     color={colors.greenAccent[400]}
-                    sx={{ mb: 1, mt: 3, width: "100%", textAlign: "left", pb: "8px", borderBottom: `1px solid ${colors.grey[600]}` }}
+                    sx={{
+                      mb: 1,
+                      mt: 3,
+                      width: "100%",
+                      textAlign: "left",
+                      pb: "8px",
+                      borderBottom: `1px solid ${colors.grey[600]}`,
+                    }}
                   >
                     Associations
                   </Typography>
                   <Grid container spacing={3} sx={{ width: "100%" }}>
                     <Grid item xs={12} sm={6}>
-                      <FormControl fullWidth variant="outlined" error={!!touched.owner_id && !!errors.owner_id} sx={{
-      '& .MuiOutlinedInput-root': { borderRadius: '8px' },
-      minWidth: '220px', // أضف هذا لفرض عرض أدنى للمكون
-    }}>
+                      <FormControl
+                        fullWidth
+                        variant="outlined"
+                        error={!!touched.owner_id && !!errors.owner_id}
+                        sx={{
+                          "& .MuiOutlinedInput-root": { borderRadius: "8px" },
+                          minWidth: "220px",
+                        }}
+                      >
                         <InputLabel>Owner</InputLabel>
                         <Select
                           value={values.owner_id}
@@ -470,7 +639,11 @@ const AddProject = () => {
                           onBlur={handleBlur}
                           label="Owner"
                           name="owner_id"
-                          startAdornment={<PersonIcon sx={{ color: colors.grey[500], mr: 1 }} />}
+                          startAdornment={
+                            <PersonIcon
+                              sx={{ color: colors.grey[500], mr: 1 }}
+                            />
+                          }
                         >
                           <MenuItem value="">
                             <em>None</em>
@@ -482,17 +655,29 @@ const AddProject = () => {
                           ))}
                         </Select>
                         {touched.owner_id && errors.owner_id && (
-                          <Typography variant="caption" color="error" sx={{ ml: 1.5, mt: 0.5 }}>
+                          <Typography
+                            variant="caption"
+                            color="error"
+                            sx={{ ml: 1.5, mt: 0.5 }}
+                          >
                             {errors.owner_id}
                           </Typography>
                         )}
                       </FormControl>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <FormControl fullWidth variant="outlined" error={!!touched.consulting_company_id && !!errors.consulting_company_id} sx={{
-      '& .MuiOutlinedInput-root': { borderRadius: '8px' },
-      minWidth: '220px', // أضف هذا لفرض عرض أدنى للمكون
-    }}>
+                      <FormControl
+                        fullWidth
+                        variant="outlined"
+                        error={
+                          !!touched.consulting_company_id &&
+                          !!errors.consulting_company_id
+                        }
+                        sx={{
+                          "& .MuiOutlinedInput-root": { borderRadius: "8px" },
+                          minWidth: "220px",
+                        }}
+                      >
                         <InputLabel>Consulting Company</InputLabel>
                         <Select
                           value={values.consulting_company_id}
@@ -500,7 +685,11 @@ const AddProject = () => {
                           onBlur={handleBlur}
                           label="Consulting Company"
                           name="consulting_company_id"
-                          startAdornment={<BusinessIcon sx={{ color: colors.grey[500], mr: 1 }} />}
+                          startAdornment={
+                            <BusinessIcon
+                              sx={{ color: colors.grey[500], mr: 1 }}
+                            />
+                          }
                         >
                           <MenuItem value="">
                             <em>None</em>
@@ -511,11 +700,65 @@ const AddProject = () => {
                             </MenuItem>
                           ))}
                         </Select>
-                        {touched.consulting_company_id && errors.consulting_company_id && (
-                          <Typography variant="caption" color="error" sx={{ ml: 1.5, mt: 0.5 }}>
-                            {errors.consulting_company_id}
-                          </Typography>
-                        )}
+                        {touched.consulting_company_id &&
+                          errors.consulting_company_id && (
+                            <Typography
+                              variant="caption"
+                              color="error"
+                              sx={{ ml: 1.5, mt: 0.5 }}
+                            >
+                              {errors.consulting_company_id}
+                            </Typography>
+                          )}
+                      </FormControl>
+                    </Grid>
+                    {/* New Grid item for Project Manager */}
+                    <Grid item xs={12} sm={6}>
+                      <FormControl
+                        fullWidth
+                        variant="outlined"
+                        error={
+                          !!touched.project_manager_id &&
+                          !!errors.project_manager_id
+                        }
+                        sx={{
+                          "& .MuiOutlinedInput-root": { borderRadius: "8px" },
+                          minWidth: "220px",
+                        }}
+                      >
+                        <InputLabel>Project Manager</InputLabel>
+                        <Select
+                          value={values.project_manager_id}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          label="Project Manager"
+                          name="project_manager_id"
+                          startAdornment={
+                            <EngineeringIcon
+                              sx={{ color: colors.grey[500], mr: 1 }}
+                            />
+                          }
+                        >
+                          <MenuItem value="">
+                            <em>None</em>
+                          </MenuItem>
+                          {projectManagers.map((manager) => (
+                            <MenuItem key={manager.id} value={manager.id}>
+                              {manager.user.first_name}{" "}
+                              {manager.user.last_name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {touched.project_manager_id &&
+                          errors.project_manager_id && (
+                            <Typography
+                              variant="caption"
+                              color="error"
+                              sx={{ ml: 1.5, mt: 0.5 }}
+                            >
+                              {errors.project_manager_id}
+                            </Typography>
+                          )}
                       </FormControl>
                     </Grid>
                   </Grid>
@@ -532,11 +775,12 @@ const AddProject = () => {
                         padding: "12px 25px",
                         fontWeight: "bold",
                         borderRadius: "5px",
-                        transition: "background-color 0.3s ease-in-out, transform 0.2s ease-in-out",
-                        '&:hover': {
+                        transition:
+                          "background-color 0.3s ease-in-out, transform 0.2s ease-in-out",
+                        "&:hover": {
                           backgroundColor: colors.greenAccent[800],
-                          transform: 'translateY(-2px)',
-                        }
+                          transform: "translateY(-2px)",
+                        },
                       }}
                     >
                       {isLoading ? (

@@ -8,13 +8,18 @@ const useProjectManagersData = () => {
   const [managers, setManagers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const token=localStorage.getItem("authToken");
 
   const refetchManagers = async () => {
     setLoading(true);
     setError(null); // Clear previous errors
     try {
-      const response = await axios.get(`${baseUrl}${getAllProjectManagersApi}`);
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      };
+      const response = await axios.get(`${baseUrl}${getAllProjectManagersApi}`,config);
       const mangersData = response.data.data;
 
       const formattedManagers = mangersData.map((manager) => ({

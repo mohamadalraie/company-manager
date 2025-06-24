@@ -45,6 +45,7 @@ const AddProjectManager = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const token=localStorage.getItem("authToken");
 
   // password visibility state
   const [showPassword, setShowPassword] = useState(false);
@@ -60,15 +61,16 @@ const AddProjectManager = () => {
   const handleFormSubmit = async (values, { resetForm }) => {
     setIsLoading(true); // Set loading state to true
     try {
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }}
+        
       console.log("Submitting values:", values);
       const response = await axios.post(
         `${baseUrl}${createProjectManagerApi}`,
         values,
-        {
-          headers: {
-            // Add any required headers here
-          },
-        }
+        config
       );
 
       console.log("Manager created successfully:", response.data);

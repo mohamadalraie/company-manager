@@ -8,11 +8,17 @@ const useOwnersData = () => {
   const [owners, setOwners] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const token=localStorage.getItem("authToken");
 
   useEffect(() => {
     const fetchOwners= async () => {
       try {
-        const response = await axios.get(`${baseUrl}${getAllOwnersApi}`);
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        };
+        const response = await axios.get(`${baseUrl}${getAllOwnersApi}`,config);
         const OwnersData = response.data.data;
         console.log(response);
 

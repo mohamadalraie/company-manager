@@ -17,14 +17,20 @@ const useProjectsData = () => {
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const token=localStorage.getItem("authToken");
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        };
         setIsLoading(true);
         setError(null); // Clear any previous errors
 
-        const response = await axios.get(`${baseUrl}${getAllProjectsApi}`);
+        const response = await axios.get(`${baseUrl}${getAllProjectsApi}`,config);
 
         // Check the API response structure to correctly access the projects array
         // Your provided structure has `data: { data: [...] }`

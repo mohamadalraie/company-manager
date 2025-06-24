@@ -13,7 +13,7 @@ import AddIcon from "@mui/icons-material/Add"; // Icon for the Add button
 import DeleteConfirmationComponent from "../../../../components/DeleteConfirmation"; // Ensure correct path
 
 import { baseUrl } from "../../../../shared/baseUrl";
-import { deleteEngineerApi } from "../../../../shared/APIs";
+import { deleteParticipantApi } from "../../../../shared/APIs";
 
 import { Link } from "react-router-dom"; // For navigation links
 
@@ -161,7 +161,7 @@ const TeamTab = ({ participants,projectId }) => {
             {/* Delete Confirmation Component */}
             <DeleteConfirmationComponent
               itemId={params.row.id}
-              deleteApi={`${baseUrl}${deleteEngineerApi}`}
+              deleteApi={`${baseUrl}${deleteParticipantApi}`}
               onDeleteSuccess={() => {
                 showSnackbar("Engineer deleted successfully!", "success");
                 // refetchEngineers(); // 🚨 Refetch data to update the table

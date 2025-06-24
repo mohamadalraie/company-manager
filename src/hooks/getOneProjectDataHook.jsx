@@ -17,14 +17,20 @@ const useOneProjectData = (id) => {
   const [project, setProject] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const token=localStorage.getItem("authToken");
 
   useEffect(() => {
     const fetchProject = async () => {
       try {
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        };
         setIsLoading(true);
         setError(null); // Clear any previous errors
 
-        const response = await axios.get(`${baseUrl}${getOneProjectApi}${id}`);
+        const response = await axios.get(`${baseUrl}${getOneProjectApi}${id}`,config);
 
         // Check the API response structure to correctly access the projects array
         // Your provided structure has `data: { data: [...] }`

@@ -36,10 +36,12 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
 
+
 const AddConsultingCompany = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const token=localStorage.getItem("authToken");
 
   const [isLoading, setIsLoading] = useState(false);
   const snackbarRef = useRef(null);
@@ -47,15 +49,16 @@ const AddConsultingCompany = () => {
   const handleFormSubmit = async (values, { resetForm }) => {
     setIsLoading(true);
     try {
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }
+
       console.log("Submitting values:", values);
       const response = await axios.post(
         `${baseUrl}${createConsultingCompanyApi}`,
-        values,
-        {
-          headers: {
-            // Add any required headers here
-          },
-        }
+        values,config
       );
 
       console.log("Company created successfully:", response.data);

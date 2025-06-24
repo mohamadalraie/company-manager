@@ -39,6 +39,11 @@ import axios from "axios";
 const AddParticipant = ({ open, onClose, projectId }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const token=localStorage.getItem("authToken");
+  const config = {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }}
 
   // جلب بيانات المهندسين وحالة التحميل والخطأ
   const {
@@ -96,11 +101,7 @@ const AddParticipant = ({ open, onClose, projectId }) => {
         const response = await axios.post(
           `${baseUrl}${addParticipantApi}`,
           values,
-          {
-            headers: {
-              // Add any required headers here (e.g., Authorization token)
-            },
-          }
+  config
         );
         showSnackbar(
           `تم تأكيد المهندس ذو الـ ID: ${selectedEngineerId}`,

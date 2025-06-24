@@ -29,6 +29,7 @@ function DeleteConfirmationComponent({ itemId, deleteApi, onDeleteSuccess, onDel
   const snackbarRef = useRef(null);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const token=localStorage.getItem("authToken");
 
   const handleClickOpen = () => {
     setOpenConfirmDialog(true);
@@ -42,8 +43,14 @@ function DeleteConfirmationComponent({ itemId, deleteApi, onDeleteSuccess, onDel
     setOpenConfirmDialog(false); // Close the confirmation dialog
 
     try {
-      console.log(`Attempting to delete item with ID: ${itemId} from API: ${deleteApi}${itemId}`);
-      const response = await axios.delete(`${deleteApi}${itemId}`);
+
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      };
+      console.log(`Attempting to delete item with ID: ${itemId} from API: ${deleteApi}${itemId}`,config);
+      const response = await axios.delete(`${deleteApi}${itemId}`,config);
       console.log("Delete successful:", response.data);
 
       // --- CRITICAL CHANGE HERE ---

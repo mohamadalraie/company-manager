@@ -59,6 +59,7 @@ const AddConsultingEngineer = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+  const token=localStorage.getItem("authToken");
 
   // handling create engineer Api
   const [isLoading, setIsLoading] = useState(false);
@@ -67,6 +68,10 @@ const AddConsultingEngineer = () => {
   const handleFormSubmit = async (values, { resetForm }) => {
     setIsLoading(true); // Set loading state to true
     try {
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }}
         // الآن، المتغير 'consultingCompanyId' سيحتوي على الرقم الذي مررته (مثلاً '2') كـ سلسلة نصية.
   console.log("معرف شركة الاستشارات المستلم من الـ URL هو:", id);
 
@@ -79,11 +84,7 @@ const AddConsultingEngineer = () => {
       const response = await axios.post(
         `${baseUrl}${createConsultingEngineerApi}`,
         values,
-        {
-          headers: {
-            // Add any required headers here
-          },
-        }
+        config
       );
 
       console.log("Engineer created successfully:", response.data);

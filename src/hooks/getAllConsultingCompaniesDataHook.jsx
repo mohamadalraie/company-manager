@@ -8,11 +8,17 @@ const useConsultingCompaniesData = () => {
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const token=localStorage.getItem("authToken");
 
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await axios.get(`${baseUrl}${getAllConsultingCompaniesApi}`);
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        };
+        const response = await axios.get(`${baseUrl}${getAllConsultingCompaniesApi}`,config);
         const companiesData = response.data.data;
 
         const formattedCompanies = companiesData.map((company) => ({

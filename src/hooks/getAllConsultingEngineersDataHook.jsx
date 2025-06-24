@@ -8,11 +8,17 @@ const useConsultingEngineersData = () => {
   const [engineers, setEngineers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const token=localStorage.getItem("authToken");
 
   useEffect(() => {
     const fetchEngineers = async () => {
       try {
-        const response = await axios.get(`${baseUrl}${getAllConsultingEngineersApi}1`);
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        };
+        const response = await axios.get(`${baseUrl}${getAllConsultingEngineersApi}1`,config);
         const engineersData = response.data.data;
 
         const formattedEngineers = engineersData.map((engineer) => ({

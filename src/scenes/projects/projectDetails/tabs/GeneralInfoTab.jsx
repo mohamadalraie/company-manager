@@ -199,7 +199,7 @@ const GeneralInfoTab = ({ project }) => {
                 }
                 label="Consulting Company"
               >
-                {project.consultingCompany.name || "N/A"}
+                {/* {project.consultingCompany.name || "N/A"} */}
               </DetailItem>
             </Grid>
           </Grid>
