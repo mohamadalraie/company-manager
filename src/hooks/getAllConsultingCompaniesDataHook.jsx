@@ -3,19 +3,20 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "../shared/baseUrl"; // Adjust path as needed
 import { getAllConsultingCompaniesApi } from "../shared/APIs"; // Adjust path as needed
+import { getAuthToken } from "../shared/Permissions";
 
 const useConsultingCompaniesData = () => {
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token=localStorage.getItem("authToken");
+ 
 
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
         const config = {
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${getAuthToken()}`
           }
         };
         const response = await axios.get(`${baseUrl}${getAllConsultingCompaniesApi}`,config);

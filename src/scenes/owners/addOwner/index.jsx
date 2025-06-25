@@ -40,12 +40,13 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Formik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
+import { getAuthToken } from "../../../shared/Permissions";
 
 const AddOwner = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const token=localStorage.getItem("authToken");
+
 
   // State for API loading
   const [isLoading, setIsLoading] = useState(false);
@@ -64,7 +65,7 @@ const AddOwner = () => {
 
       const config = {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${getAuthToken()}`
         }}
       console.log("Submitting values:", values);
       const response = await axios.post(

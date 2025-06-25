@@ -35,13 +35,14 @@ import NumbersIcon from '@mui/icons-material/Numbers';
 import { Formik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
+import { getAuthToken } from "../../../shared/Permissions";
 
 
 const AddConsultingCompany = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const token=localStorage.getItem("authToken");
+
 
   const [isLoading, setIsLoading] = useState(false);
   const snackbarRef = useRef(null);
@@ -51,7 +52,7 @@ const AddConsultingCompany = () => {
     try {
       const config = {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${getAuthToken()}`
         }
       }
 

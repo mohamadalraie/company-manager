@@ -29,6 +29,7 @@ import { tokens } from "../../../theme";
 import axios from "axios";
 import { baseUrl } from "../../../shared/baseUrl";
 import { addProjectFileApi } from "../../../shared/APIs";
+import { getAuthToken } from "../../../shared/Permissions";
 
 const AddProjectFile = ({ open, onClose, projectId, onUploadSuccess }) => {
   const theme = useTheme();
@@ -41,12 +42,12 @@ const AddProjectFile = ({ open, onClose, projectId, onUploadSuccess }) => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("info");
   const [fileError, setFileError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
-  const token=localStorage.getItem("authToken");
+
 
 
   const config = {
     headers: {
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${getAuthToken()}`
     }}
 
   const showSnackbar = (message, severity) => {

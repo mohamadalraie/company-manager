@@ -25,7 +25,7 @@ import { tokens } from "../../theme";
 import CustomSnackbar from "../../components/CustomSnackbar";
 import ProjectCard from "../../components/ProjectCard";
 import useProjectsData from "../../hooks/getAllProjectsDataHook"; // Your custom data fetching hook
-import { projectTypeOptions,progressStatusOptions,statusOfSaleOptions } from "../../shared/statics.jsx/projectStatics";
+import { projectTypeOptions,progressStatusOptions,statusOfSaleOptions } from "../../shared/projectStatics";
 
 // Icons
 import InfoIcon from '@mui/icons-material/Info';

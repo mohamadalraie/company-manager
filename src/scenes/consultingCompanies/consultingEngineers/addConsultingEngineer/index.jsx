@@ -42,6 +42,7 @@ import * as yup from "yup";
 import axios from "axios";
 
 import { useParams } from 'react-router-dom';
+import { getAuthToken } from "../../../../shared/Permissions";
 
 const AddConsultingEngineer = () => {
   const theme = useTheme();
@@ -59,7 +60,7 @@ const AddConsultingEngineer = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  const token=localStorage.getItem("authToken");
+
 
   // handling create engineer Api
   const [isLoading, setIsLoading] = useState(false);
@@ -70,7 +71,7 @@ const AddConsultingEngineer = () => {
     try {
       const config = {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${getAuthToken()}`
         }}
         // الآن، المتغير 'consultingCompanyId' سيحتوي على الرقم الذي مررته (مثلاً '2') كـ سلسلة نصية.
   console.log("معرف شركة الاستشارات المستلم من الـ URL هو:", id);

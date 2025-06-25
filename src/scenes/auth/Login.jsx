@@ -37,6 +37,7 @@ import CustomSnackbar from "../../components/CustomSnackbar";
 import { tokens } from "../../theme";
 import { baseUrl } from "../../shared/baseUrl";
 import { LoginApi } from "../../shared/APIs";
+import { setAuthToken } from "../../shared/Permissions";
 
 // =================================================================
 
@@ -72,7 +73,8 @@ const Login = () => {
 
       const token =response.data.data.token;
       console.log("token"+token)
-      localStorage.setItem("authToken", token);
+      // localStorage.setItem("authToken", token);
+      setAuthToken(token);
       // Show success message
       if (snackbarRef.current) {
         snackbarRef.current.showSnackbar(

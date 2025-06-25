@@ -3,19 +3,19 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "../shared/baseUrl"; // Adjust path as needed
 import { getAllOwnersApi } from "../shared/APIs"; // Adjust path as needed
+import { getAuthToken } from "../shared/Permissions";
 
 const useOwnersData = () => {
   const [owners, setOwners] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token=localStorage.getItem("authToken");
 
   useEffect(() => {
     const fetchOwners= async () => {
       try {
         const config = {
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${getAuthToken()}`
           }
         };
         const response = await axios.get(`${baseUrl}${getAllOwnersApi}`,config);

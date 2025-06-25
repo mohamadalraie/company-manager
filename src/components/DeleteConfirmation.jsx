@@ -18,6 +18,7 @@ import {
 import axios from "axios";
 import { tokens } from '../theme';
 import CustomSnackbar from './CustomSnackbar';
+import { getAuthToken } from '../shared/Permissions';
 
 // Helper Alert component for Snackbar
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -29,7 +30,7 @@ function DeleteConfirmationComponent({ itemId, deleteApi, onDeleteSuccess, onDel
   const snackbarRef = useRef(null);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const token=localStorage.getItem("authToken");
+  
 
   const handleClickOpen = () => {
     setOpenConfirmDialog(true);
@@ -46,7 +47,7 @@ function DeleteConfirmationComponent({ itemId, deleteApi, onDeleteSuccess, onDel
 
       const config = {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${getAuthToken()}`
         }
       };
       console.log(`Attempting to delete item with ID: ${itemId} from API: ${deleteApi}${itemId}`,config);

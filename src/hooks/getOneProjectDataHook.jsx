@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "../shared/baseUrl"; // Assuming baseUrl is defined here
 import { getOneProjectApi } from "../shared/APIs"; // Assuming getProjectsApi is defined here
+import { getAuthToken } from "../shared/Permissions";
 
 /**
  * Custom React Hook to fetch project data from the API.
@@ -17,14 +18,14 @@ const useOneProjectData = (id) => {
   const [project, setProject] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token=localStorage.getItem("authToken");
+
 
   useEffect(() => {
     const fetchProject = async () => {
       try {
         const config = {
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${getAuthToken()}`
           }
         };
         setIsLoading(true);

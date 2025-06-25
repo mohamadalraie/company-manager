@@ -6,12 +6,12 @@ import { baseUrl } from "../shared/baseUrl"; // Adjust path as needed
 // e.g., in src/shared/APIs.js
 // export const getProjectFilesApi = (projectId) => `/api/projectFiles/${projectId}/all`;
 import { getProjectFilesApi } from "../shared/APIs"; 
+import { getAuthToken } from "../shared/Permissions";
 
 const useProjectFilesData = ({projectId}) => {
   const [projectFiles, setProjectFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token=localStorage.getItem("authToken");
 
   // Function to refetch files (useful for updates or retries)
   const refetchFiles = async () => {
@@ -20,7 +20,7 @@ const useProjectFilesData = ({projectId}) => {
     try {
       const config = {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${getAuthToken()}`
         }
       };
       if (!projectId) {

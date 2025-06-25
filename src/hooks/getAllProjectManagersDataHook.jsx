@@ -3,12 +3,13 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "../shared/baseUrl"; // Adjust path as needed
 import {  getAllProjectManagersApi } from "../shared/APIs"; // Adjust path as needed
+import { getAuthToken } from "../shared/Permissions";
 
 const useProjectManagersData = () => {
   const [managers, setManagers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token=localStorage.getItem("authToken");
+
 
   const refetchManagers = async () => {
     setLoading(true);
@@ -16,7 +17,7 @@ const useProjectManagersData = () => {
     try {
       const config = {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${getAuthToken()}`
         }
       };
       const response = await axios.get(`${baseUrl}${getAllProjectManagersApi}`,config);

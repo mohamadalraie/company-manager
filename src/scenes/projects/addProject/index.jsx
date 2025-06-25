@@ -60,13 +60,14 @@ import {
   projectTypeOptions,
   progressStatusOptions,
   statusOfSaleOptions,
-} from "../../../shared/statics.jsx/projectStatics"; // Ensure this path is correct based on your project structure
+} from "../../../shared/projectStatics"; // Ensure this path is correct based on your project structure
+import { getAuthToken } from "../../../shared/Permissions";
 
 const AddProject = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const token=localStorage.getItem("authToken");
+
 
 
   // State for API loading and data for dropdowns
@@ -79,7 +80,7 @@ const AddProject = () => {
 
   const config = {
     headers: {
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${getAuthToken()}`
     }
   };
   // Fetch owners, consulting companies, and project managers on component mount

@@ -26,6 +26,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { addParticipantApi } from "../../../shared/APIs";
 import { baseUrl } from "../../../shared/baseUrl";
 import axios from "axios";
+import { getAuthToken } from "../../../shared/Permissions";
 
 /**
  * مكون Dialog مخصص وقابل لإعادة الاستخدام.
@@ -39,10 +40,10 @@ import axios from "axios";
 const AddParticipant = ({ open, onClose, projectId }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const token=localStorage.getItem("authToken");
+
   const config = {
     headers: {
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${getAuthToken()}`
     }}
 
   // جلب بيانات المهندسين وحالة التحميل والخطأ

@@ -40,12 +40,13 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { Formik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
+import { getAuthToken } from "../../../shared/Permissions";
 
 const AddProjectManager = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const token=localStorage.getItem("authToken");
+
 
   // password visibility state
   const [showPassword, setShowPassword] = useState(false);
@@ -63,7 +64,7 @@ const AddProjectManager = () => {
     try {
       const config = {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${getAuthToken()}`
         }}
         
       console.log("Submitting values:", values);
