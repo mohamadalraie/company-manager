@@ -36,8 +36,8 @@ import { Header } from "../../components/Header";
 import CustomSnackbar from "../../components/CustomSnackbar";
 import { tokens } from "../../theme";
 import { baseUrl } from "../../shared/baseUrl";
-import { LoginApi } from "../../shared/APIs";
-import { setAuthToken } from "../../shared/Permissions";
+import { LoginApi,getMyPermissions } from "../../shared/APIs";
+import { getAuthToken, setAuthToken, setPermissions, setRole } from "../../shared/Permissions";
 
 // =================================================================
 
@@ -67,14 +67,22 @@ const Login = () => {
       });
 
       // Handle successful login
-    //   console.log("Login Successful:", response.data);
-      
-      // Store authentication token and user data
-
+      //token
       const token =response.data.data.token;
-      console.log("token"+token)
-      // localStorage.setItem("authToken", token);
+      console.log("login successeded"+ token)
       setAuthToken(token);
+      
+      //permissions
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${getAuthToken()}`
+        }
+      };
+      const permissionResponse= await axios.get(`${baseUrl}${getMyPermissions}`,config);
+
+      setRole(permissionResponse.data.data.role);
+      setPermissions(permissionResponse.data.data.permissions);
+
       // Show success message
       if (snackbarRef.current) {
         snackbarRef.current.showSnackbar(

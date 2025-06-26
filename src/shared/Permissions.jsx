@@ -24,12 +24,40 @@ export const removeRole = () => {
 
 //permissions
 export const setPermissions = (permissions) => {
-  localStorage.setItem("userPermissions", permissions);
+  // تحويل المصفوفة إلى سلسلة نصية بصيغة JSON قبل التخزين
+  // هذا يضمن أن بنية المصفوفة (بما في ذلك الأقواس والفواصل) يتم حفظها بشكل صحيح
+  localStorage.setItem("userPermissions", JSON.stringify(permissions));
 };
+
 export const getPermissions = () => {
-  const permissions = localStorage.getItem("userPermissions");
-  return permissions;
+  // استرداد السلسلة النصية المخزنة من localStorage
+  const permissionsString = localStorage.getItem("userPermissions");
+
+  // التحقق مما إذا كانت هناك بيانات مخزنة
+  if (!permissionsString) {
+    // إذا لم تكن هناك بيانات، أرجع مصفوفة فارغة لتجنب الأخطاء
+    return [];
+  }
+
+  // محاولة تحليل السلسلة النصية (JSON string) إلى مصفوفة JavaScript
+  try {
+    return JSON.parse(permissionsString);
+  } catch (e) {
+    // في حالة حدوث خطأ أثناء التحليل (مثلاً، إذا كانت البيانات تالفة أو ليست بصيغة JSON)
+    console.error("Error parsing user permissions from localStorage:", e);
+    // أرجع مصفوفة فارغة لتجنب الأعطال في التطبيق
+    return [];
+  }
 };
 export const removePermissions = () => {
   localStorage.removeItem("userPermissions");
 };
+
+
+
+
+
+export function  havePermission(permission){
+  const permissions= getPermissions();
+  return permissions.includes(permission);
+}

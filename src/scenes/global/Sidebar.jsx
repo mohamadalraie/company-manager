@@ -17,6 +17,7 @@ import { tokens } from "../../theme";
 
 import userImage from "../../assets/user.jpg";
 import { GridAddIcon } from "@mui/x-data-grid";
+import { havePermission } from "../../shared/Permissions";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -52,10 +53,10 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
       style={{
         border: "none",
         position: "fixed", // Keep fixed positioning
-        height: "100vh",   // Full viewport height
+        height: "100vh", // Full viewport height
         top: 0,
         left: 0,
-        zIndex: 100,       // Ensures it's above other content
+        zIndex: 100, // Ensures it's above other content
         width: isCollapsed ? collapsedSidebarWidth : expandedSidebarWidth, // Dynamic width based on state
         transition: "width 0.3s ease-in-out", // Smooth transition for width change
       }}
@@ -102,7 +103,9 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
                 <Typography variant="h3" color={colors.grey[100]}>
                   Orient
                 </Typography>
-                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}> {/* Use the prop setter */}
+                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+                  {" "}
+                  {/* Use the prop setter */}
                   <MenuOutlinedIcon />
                 </IconButton>
               </Box>
@@ -156,27 +159,34 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
               </Typography>
             )}
 
-            <Item
-              title="Engineers"
-              to="/engineers"
-              icon={<PeopleOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Project Managers"
-              to="/projectManagers"
-              icon={<PeopleOutlinedIcon />} // Consider a different icon for distinction
-              selected={selected}
-              setSelected={setSelected}
-            />
-                 <Item
-              title="Consulting Companies"
-              to="/consultingCompanies"
-              icon={<PeopleOutlinedIcon />} // Consider a different icon for distinction
-              selected={selected}
-              setSelected={setSelected}
-            />
+            {havePermission("view engineers") && (
+              <Item
+                title="Engineers"
+                to="/engineers"
+                icon={<PeopleOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
+
+            {havePermission("view project managers") && (
+              <Item
+                title="Project Managers"
+                to="/projectManagers"
+                icon={<PeopleOutlinedIcon />} // Consider a different icon for distinction
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
+            {havePermission("view consulting company") && (
+              <Item
+                title="Consulting Companies"
+                to="/consultingCompanies"
+                icon={<PeopleOutlinedIcon />} // Consider a different icon for distinction
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
             {/* <Item
               title="Sales Managers"
               to="/salesManagers"
@@ -184,6 +194,7 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
               selected={selected}
               setSelected={setSelected}
             /> */}
+            {havePermission("view projects")&&
             <Item
               title="Projects"
               to="/projects"
@@ -191,22 +202,26 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
               selected={selected}
               setSelected={setSelected}
             />
+            }
+
+            {havePermission("view owners") && (
               <Item
-              title="Owners"
-              to="/owners"
-              icon={<BarChartOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+                title="Owners"
+                to="/owners"
+                icon={<BarChartOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
           </Box>
 
           {!isCollapsed && (
-          <Box p="16px" textAlign="center">
-            <Typography variant="caption" color={colors.grey[500]}>
-              v2.0.0
-            </Typography>
-          </Box>
-        )}
+            <Box p="16px" textAlign="center">
+              <Typography variant="caption" color={colors.grey[500]}>
+                v2.0.0
+              </Typography>
+            </Box>
+          )}
         </Menu>
       </Box>
     </Sidebar>
