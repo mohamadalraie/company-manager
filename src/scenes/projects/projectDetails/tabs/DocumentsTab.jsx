@@ -30,6 +30,7 @@ import { deleteProjectFileApi } from '../../../../shared/APIs';
 import { baseUrl } from '../../../../shared/baseUrl';
 import { Header } from '../../../../components/Header';
 import AddProjectFile from '../AddFile';// Import the new Dialog component
+import { havePermission } from '../../../../shared/Permissions';
 
 
 const DocumentsTab = ({ projectId }) => {
@@ -188,6 +189,7 @@ const DocumentsTab = ({ projectId }) => {
  title={"Project Files"}
  subtitle={"Managing the Files of the project"}
  />
+ {havePermission("export reports resource management")&&
  <Button
  variant="contained"
  onClick={handleOpenAddFileDialog}
@@ -201,6 +203,7 @@ const DocumentsTab = ({ projectId }) => {
  >
  Add File
  </Button>
+}
  </Box>
  <Typography
  variant="h4"
@@ -293,6 +296,7 @@ const DocumentsTab = ({ projectId }) => {
  Download
  </Button>
  )}
+ {havePermission("delete reports resource management")&&
  <DeleteConfirmationComponent
  itemId={file.id}
  deleteApi={`${baseUrl}${deleteProjectFileApi}`}
@@ -305,7 +309,7 @@ const DocumentsTab = ({ projectId }) => {
  }}
  icon={<DeleteOutlineIcon sx={{ color: colors.redAccent[500] }} />}
  confirmationText="Are you sure you want to delete this file?"
- />
+ />}
  </Box>
  ) : (
  <Button

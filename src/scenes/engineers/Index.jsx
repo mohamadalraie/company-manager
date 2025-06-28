@@ -32,6 +32,7 @@ import DeleteConfirmationComponent from "../../components/DeleteConfirmation"; /
 
 import { baseUrl } from "../../shared/baseUrl";
 import { deleteEngineerApi } from "../../shared/APIs";
+import { havePermission } from "../../shared/Permissions";
 
 
 const Engineers = () => {
@@ -146,7 +147,7 @@ const Engineers = () => {
             height="100%"
             width="100%"
           >
-            {/* Edit Button */}
+            {havePermission("edit engineers")&&
             <Link to={`/engineers/edit/${params.row.id}`} style={{ textDecoration: "none" }}>
               <IconButton
                 aria-label="edit"
@@ -154,9 +155,9 @@ const Engineers = () => {
               >
                 <EditIcon />
               </IconButton>
-            </Link>
+            </Link>}
 
-            {/* Delete Confirmation Component */}
+            {havePermission("delete engineers")&&
             <DeleteConfirmationComponent
               itemId={params.row.id}
               deleteApi={`${baseUrl}${deleteEngineerApi}`}
@@ -171,7 +172,7 @@ const Engineers = () => {
               icon={<DeleteOutlineIcon sx={{ color: colors.redAccent[500] }} />}
               // You can also pass custom confirmation text if needed
               confirmationText="Are you sure you want to delete this engineer?"
-            />
+            />}
           </Box>
         );
       },
@@ -187,6 +188,7 @@ const Engineers = () => {
             title={"Engineers"}
             subtitle={"Managing the Engineers in the Company"}
           />
+          {havePermission("create engineers")&&
           <Link to="/engineers/add" style={{ textDecoration: "none" }}>
             <Button
               variant="contained" // Use contained for a more prominent button
@@ -201,7 +203,7 @@ const Engineers = () => {
             >
               Add Engineer
             </Button>
-          </Link>
+          </Link>}
         </Box>
         <Box
           display="flex"
@@ -262,6 +264,7 @@ const Engineers = () => {
           title={"Engineers"}
           subtitle={"Managing the Engineers in the Company"}
         />
+        {havePermission("create engineers")&&
         <Link to="/engineers/add" style={{ textDecoration: "none" }}>
           <Button
             variant="contained"
@@ -276,7 +279,7 @@ const Engineers = () => {
           >
             Add Engineer
           </Button>
-        </Link>
+        </Link>}
       </Box>
       <Box
         m="20px 0 0 0"

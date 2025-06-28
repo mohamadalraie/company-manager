@@ -33,6 +33,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'; // For add button
 import SearchIcon from '@mui/icons-material/Search'; // For search input
 import FilterListIcon from '@mui/icons-material/FilterList'; // Generic filter icon for select fields
+import { havePermission } from "../../shared/Permissions";
 
 const ProjectsList = () => {
   const theme = useTheme();
@@ -84,6 +85,7 @@ const ProjectsList = () => {
       {/* Header and Add Project Button */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Header title="Projects" subtitle="View and manage all registered projects" />
+        {havePermission("create projects")&&
         <Button
           variant="contained"
           onClick={handleAddProjectClick}
@@ -97,7 +99,7 @@ const ProjectsList = () => {
           startIcon={<AddCircleOutlineIcon />}
         >
           Add New Project
-        </Button>
+        </Button>}
       </Box>
 
       {/* --- Filter and Search Section --- */}

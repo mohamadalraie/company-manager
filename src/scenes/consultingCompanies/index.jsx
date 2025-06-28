@@ -19,6 +19,7 @@ import DeleteConfirmationComponent from "../../components/DeleteConfirmation";//
 
 import { baseUrl } from "../../shared/baseUrl";
 import { deleteConsultingCompanyApi } from "../../shared/APIs";
+import { havePermission } from "../../shared/Permissions";
 
 
 const ConsultingCompanies = () => {
@@ -62,7 +63,7 @@ const ConsultingCompanies = () => {
           height="100%"
           width="100%"
           >
-            {/* Edit Button */}
+            {havePermission("edit consulting company")&&
             <Link to={`/ConsultingCompanies/edit/${params.row.id}`} style={{ textDecoration: "none" }}>
               <IconButton
                 aria-label="edit"
@@ -71,14 +72,14 @@ const ConsultingCompanies = () => {
                 <EditIcon />
               </IconButton>
             </Link>
-
-            {/* Delete Confirmation Component */}
+      }
+            {havePermission("delete consulting company")&&
           <DeleteConfirmationComponent
             itemId={params.row.id}
             deleteApi={`${baseUrl}${deleteConsultingCompanyApi}`}
             onDeleteSuccess={()=>{}} // 🚨 استدعاء refetchEngineers عند النجاح
             onDeleteError={() => { /* يمكنك وضع منطق للتعامل مع الأخطاء هنا إذا أردت */ }}
-          />
+          />}
           </Box>
         );
       },
@@ -90,6 +91,7 @@ const ConsultingCompanies = () => {
       <Box m="10px">
          <Box display="flex" justifyContent="space-between" alignItems="center">
          <Header title={"Consulting Companies"} subtitle={"Managing The Consulting Companies that work with us"} />
+         {havePermission("create consulting company")&&
          <Link to="/ConsultingCompanies/add">
          <Button
               variant="contained" // Use contained for a more prominent button
@@ -105,6 +107,7 @@ const ConsultingCompanies = () => {
               Add Company
             </Button>
         </Link>
+  }
       </Box>
       <Box
         display="flex"
@@ -149,6 +152,7 @@ const ConsultingCompanies = () => {
     <Box m="10px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
       <Header title={"Consulting Companies"} subtitle={"Managing The Consulting Companies that work with us"} />
+      {havePermission("create consulting company")&&
          <Link to="/ConsultingCompanies/add">
          <Button
               variant="contained" // Use contained for a more prominent button
@@ -164,6 +168,7 @@ const ConsultingCompanies = () => {
               Add Company
             </Button>
         </Link>
+}
       </Box>
       <Box
         m="20px 0 0 0"

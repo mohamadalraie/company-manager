@@ -19,15 +19,11 @@ import LayersIcon from "@mui/icons-material/LayersOutlined";
 import AspectRatioIcon from "@mui/icons-material/AspectRatioOutlined";
 import CalendarTodayIcon from "@mui/icons-material/CalendarTodayOutlined";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
-import PersonIcon from "@mui/icons-material/PersonOutline";
 import BusinessIcon from "@mui/icons-material/BusinessOutlined";
 import CodeIcon from "@mui/icons-material/CodeOutlined";
-import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import { green, yellow } from "@mui/material/colors";
-
 import DetailItem from "../../../../components/DetailItem";
+import UserCard from "../../../../components/UserCard";
 
 const GeneralInfoTab = ({ project }) => {
   const theme = useTheme();
@@ -199,7 +195,7 @@ const GeneralInfoTab = ({ project }) => {
                 }
                 label="Consulting Company"
               >
-                {/* {project.consultingCompany.name || "N/A"} */}
+                {project.consultingCompany.name || "N/A"}
               </DetailItem>
             </Grid>
           </Grid>
@@ -233,7 +229,6 @@ const GeneralInfoTab = ({ project }) => {
                   label={project.progress_status}
                   sx={getProgressChipStyle(project.progress_status)}
                 />
-     
               </Stack>
             </Box>
             <Box
@@ -244,7 +239,7 @@ const GeneralInfoTab = ({ project }) => {
                 border: `1px solid ${colors.greenAccent[600]}`,
               }}
             >
-                <Typography
+              <Typography
                 variant="h6"
                 fontWeight="600"
                 color={colors.grey[300]}
@@ -253,10 +248,12 @@ const GeneralInfoTab = ({ project }) => {
               >
                 Sale Status
               </Typography>
-              <Stack direction="row" spacing={1.5} sx={{justifyContent:"center"}}>
-        
+              <Stack
+                direction="row"
+                spacing={1.5}
+                sx={{ justifyContent: "center" }}
+              >
                 <Chip
-                
                   label={project.status_of_sale}
                   sx={getStatusChipStyle(project.status_of_sale)}
                 />
@@ -265,66 +262,16 @@ const GeneralInfoTab = ({ project }) => {
           </Stack>
 
           {/* Card 2: Project Owner (New and Detailed) */}
-          {project.owner && (
-            <Box
-              sx={{
-                p: 3,
-                backgroundColor: colors.primary[700],
-                borderRadius: "12px",
-                border: `1px solid ${colors.greenAccent[600]}`,
-              }}
-            >
-              <Typography
-                variant="h5"
-                fontWeight="600"
-                color={colors.grey[200]}
-                mb={2}
-              >
-                Project Owner
-              </Typography>
-              <Box display="flex" alignItems="center" gap={2}>
-                <Avatar
-                  sx={{
-                    width: 56,
-                    height: 56,
-                    backgroundColor: colors.greenAccent[600],
-                  }}
-                >
-                  <PersonIcon />
-                </Avatar>
-                <Typography
-                  variant="h4"
-                  fontWeight="bold"
-                  color={colors.grey[100]}
-                >
-                  {project.owner.user.first_name} {project.owner.user.last_name}
-                </Typography>
-              </Box>
-              <Divider sx={{ my: 2, borderColor: colors.grey[800] }} />
-              <Stack spacing={1.5}>
-                <Box display="flex" alignItems="center" gap={1.5}>
-                  <PhoneOutlinedIcon sx={{ color: colors.greenAccent[300] }} />
-                  <Typography variant="body1" color={colors.grey[300]}>
-                    {project.owner.user.phone_number || "N/A"}
-                  </Typography>
-                </Box>
-                <Box display="flex" alignItems="center" gap={1.5}>
-                  <EmailOutlinedIcon sx={{ color: colors.greenAccent[300] }} />
-                  <Typography variant="body1" color={colors.grey[300]}>
-                    {project.owner.user.email || "N/A"}
-                  </Typography>
-                </Box>
-                <Box display="flex" alignItems="center" gap={1.5}>
-                  <HomeOutlinedIcon sx={{ color: colors.greenAccent[300] }} />
-                  <Typography variant="body1" color={colors.grey[300]}>
-                    {project.owner.address || "N/A"}
-                  </Typography>
-                </Box>
-              </Stack>
-            </Box>
-          )}
+          {project.owner &&
+            <UserCard
+              label="Project Owner"
+              firstName= {project.owner.user.first_name}
+              lastName= {project.owner.user.last_name}
+              email= {project.owner.user.email}
+              phoneNumber= {project.owner.user.phone_number}
+              address= {project.owner.address}
+            />}
 
-          {/* Card 3: Consulting Company */}
         </Stack>
       </Grid>
     </Grid>

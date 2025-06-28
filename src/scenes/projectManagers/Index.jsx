@@ -33,6 +33,7 @@ import DeleteConfirmationComponent from "../../components/DeleteConfirmation"; /
 import { baseUrl } from "../../shared/baseUrl";
 import { deleteEngineerApi, deleteProjectManagerApi } from "../../shared/APIs";
 import useProjectManagersData from "../../hooks/getAllProjectManagersDataHook";
+import { havePermission } from "../../shared/Permissions";
 
 
 const ProjectManagers = () => {
@@ -147,7 +148,7 @@ const ProjectManagers = () => {
             height="100%"
             width="100%"
           >
-            {/* Edit Button */}
+            {havePermission("edit project managers")&&
             <Link to={`/engineers/edit/${params.row.id}`} style={{ textDecoration: "none" }}>
               <IconButton
                 aria-label="edit"
@@ -155,9 +156,9 @@ const ProjectManagers = () => {
               >
                 <EditIcon />
               </IconButton>
-            </Link>
+            </Link>}
 
-            {/* Delete Confirmation Component */}
+            {havePermission("delete project managers")&&
             <DeleteConfirmationComponent
               itemId={params.row.id}
               deleteApi={`${baseUrl}${deleteProjectManagerApi}`}
@@ -172,7 +173,7 @@ const ProjectManagers = () => {
               icon={<DeleteOutlineIcon sx={{ color: colors.redAccent[500] }} />}
               // You can also pass custom confirmation text if needed
               confirmationText="Are you sure you want to delete this Manager?"
-            />
+            />}
           </Box>
         );
       },
@@ -188,6 +189,7 @@ const ProjectManagers = () => {
             title={"Project Managers"}
             subtitle={"Managing the Managers in the Company."}
           />
+          {havePermission("create project managers")&&
           <Link to="/projectManagers/add" style={{ textDecoration: "none" }}>
             <Button
               variant="contained" // Use contained for a more prominent button
@@ -202,7 +204,7 @@ const ProjectManagers = () => {
             >
               Add Engineer
             </Button>
-          </Link>
+          </Link>}
         </Box>
         <Box
           display="flex"

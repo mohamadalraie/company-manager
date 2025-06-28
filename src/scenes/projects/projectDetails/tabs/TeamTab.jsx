@@ -22,13 +22,12 @@ import {
   Typography,
   useTheme,
   Button,
-  CircularProgress,
   Snackbar,
-  Alert,
-  IconButton, // For button icons
-} from "@mui/material";
+  Alert,} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import AddParticipant from "../AddParticipant";
+import UserCard from "../../../../components/UserCard";
+import { useEffect } from "react";
 
 const TeamTab = ({ participants,projectId }) => {
   const theme = useTheme();
@@ -43,15 +42,40 @@ const TeamTab = ({ participants,projectId }) => {
     setIsAddParticipantOpen(false);
   };
 
-  const formattedParticipants = participants.map((participant) => ({
-    id: participant.participant.user.id,
-    first_name: participant.participant.user.first_name,
-    last_name: participant.participant.user.last_name,
-    email: participant.participant.user.email,
-    phone_number: participant.participant.user.phone_number,
-    status: participant.participant.user.is_active,
-    specialization_name: participant.participant.specialization.name_of_major,
-  }));
+
+
+  const formattedData = participants.reduce((acc, participant) => {
+    const user = participant.participant.user;
+    const specialization = participant.participant.specialization;
+  
+    const formattedParticipant = {
+      id: user.id,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      phone_number: user.phone_number,
+      status: user.is_active,
+      specialization_name: user.first_name,
+    };
+  
+    if (participant.participant_type === 'project_manager') { 
+      acc.projectManager = formattedParticipant;
+    } else if (participant.participant_type === 'engineer') {
+      acc.formatedEngineers.push(formattedParticipant);
+    }
+  
+    return acc;
+  }, { formatedEngineers: [], projectManager: null });
+  
+  // Now you can access the formatted data like this:
+  const formatedEngineers = formattedData.formatedEngineers;
+  const projectManager = formattedData.projectManager;
+  
+  console.log('Engineers:', formatedEngineers);
+  console.log('Project Manager:', projectManager);
+
+
+
 
 
   // State for Snackbar messages (notifications)
@@ -205,40 +229,22 @@ const TeamTab = ({ participants,projectId }) => {
           </Button>
 
       </Box>
-      <Box
-        m="20px 0 0 0"
-        height="90vh" // Fixed height for DataGrid
-        sx={{
-          // Custom styles for DataGrid
-          "& .MuiDataGrid-root": {
-            border: "none", // Remove outer border of the table
-          },
-          "& .MuiDataGrid-cell": {
-            borderBottom: "none", // Remove bottom borders between cells
-          },
-          "& .name-column--cell": {
-            // color: colors.greenAccent[300], // Distinct color for engineer names
-            fontWeight: "bold", // Bold font for names
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            
-            color: colors.greenAccent[400],
-            // backgroundColor: colors.primary[800], // Background color for column headers
-            borderBottom: "none",
-            // fontSize: "1rem", // Larger font size for column headers
-            fontWeight: "bold",
-          },
+  
+             <UserCard
+              label="Project Manager"
+              firstName= {projectManager.first_name}
+              lastName= {projectManager.last_name}
+              email= {projectManager.email}
+              phoneNumber= {projectManager.phone_number}
+              address= {"N/A"}
+            />
+            <Box mt="30px" mb="15px">
+           <Header 
+          title={"Engineers"}
+          subtitle={"all the Engineers in the project"}
+        /></Box>
 
-        }}
-      >
-        <DataGrid
-          rows={formattedParticipants}
-          columns={columns}
-          pageSize={10} // Default number of rows per page
-          rowsPerPageOptions={[5, 10, 20]} // Options for rows per page
-          disableSelectionOnClick // Prevent row selection on click
-        />
-      </Box>
+   <YourComponent columns={columns} formatedEngineers={formatedEngineers}/>
 
 
       <AddParticipant
@@ -264,3 +270,53 @@ const TeamTab = ({ participants,projectId }) => {
 };
 
 export default TeamTab;
+
+
+
+// Your component
+const YourComponent = ({ formatedEngineers, columns }) => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
+  return (
+    <Box  
+    m="20px 0 0 0"
+    height="70vh" // Fixed height for DataGrid
+    sx={{
+      // Custom styles for DataGrid
+      "& .MuiDataGrid-root": {
+        border: "none", // Remove outer border of the table
+      },
+      "& .MuiDataGrid-cell": {
+        borderBottom: "none", // Remove bottom borders between cells
+      },
+      "& .name-column--cell": {
+        // color: colors.greenAccent[300], // Distinct color for engineer names
+        fontWeight: "bold", // Bold font for names
+      },
+      "& .MuiDataGrid-columnHeaders": {
+        
+        color: colors.greenAccent[400],
+        // backgroundColor: colors.primary[800], // Background color for column headers
+        borderBottom: "none",
+        // fontSize: "1rem", // Larger font size for column headers
+        fontWeight: "bold",
+      },
+
+    }}>
+    
+    <DataGrid
+      rows={formatedEngineers}
+      columns={columns}
+      initialState={{
+        pagination: {
+          paginationModel: {
+            pageSize: 10,
+          },
+        },
+      }}
+      pageSizeOptions={[5, 10, 20]}
+    />
+    </Box>
+  );
+};

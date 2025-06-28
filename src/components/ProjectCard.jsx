@@ -22,6 +22,7 @@ import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalance
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { green } from "@mui/material/colors";
 import { useNavigate  } from "react-router-dom";
+import { havePermission } from "../shared/Permissions";
 
 const ProjectCard = ({ project }) => {
   const theme = useTheme();
@@ -85,7 +86,8 @@ const ProjectCard = ({ project }) => {
     </Grid>
   );
 const handleCardClick =() =>{
-  navigate(`/projects/${project.id}`);
+  {havePermission("details projects")&&
+  navigate(`/projects/${project.id}`);}
 }
   return (
     <Paper

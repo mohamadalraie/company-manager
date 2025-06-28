@@ -32,6 +32,7 @@ import DeleteConfirmationComponent from "../../components/DeleteConfirmation"; /
 
 import { baseUrl } from "../../shared/baseUrl";
 import { deleteOwnerApi } from "../../shared/APIs";
+import { havePermission } from "../../shared/Permissions";
 
 
 const Owners = () => {
@@ -142,7 +143,7 @@ const Owners = () => {
             height="100%"
             width="100%"
           >
-            {/* Edit Button */}
+            {havePermission("edit owners")&&
             <Link to={`/owners/edit/${params.row.id}`} style={{ textDecoration: "none" }}>
               <IconButton
                 aria-label="edit"
@@ -150,9 +151,9 @@ const Owners = () => {
               >
                 <EditIcon />
               </IconButton>
-            </Link>
+            </Link>}
 
-            {/* Delete Confirmation Component */}
+            {havePermission("delete owners")&&
             <DeleteConfirmationComponent
               itemId={params.row.id}
               deleteApi={`${baseUrl}${deleteOwnerApi}`}
@@ -167,7 +168,7 @@ const Owners = () => {
               icon={<DeleteOutlineIcon sx={{ color: colors.redAccent[500] }} />}
               // You can also pass custom confirmation text if needed
               confirmationText="Are you sure you want to delete this Owner?"
-            />
+            />}
           </Box>
         );
       },
@@ -183,6 +184,7 @@ const Owners = () => {
             title={"Owners"}
             subtitle={"Managing the Owners that have Projects we work on in the Company"}
           />
+          {havePermission("create owners")&&
           <Link to="/Owners/add" style={{ textDecoration: "none" }}>
             <Button
               variant="contained" // Use contained for a more prominent button
@@ -198,6 +200,7 @@ const Owners = () => {
               Add Owner
             </Button>
           </Link>
+          }
         </Box>
         <Box
           display="flex"
@@ -258,6 +261,7 @@ const Owners = () => {
           title={"Owners"}
           subtitle={"Managing the Owners that have Projects we work on in the Company"}
         />
+        {havePermission("create owner")&&
         <Link to="/Owners/add" style={{ textDecoration: "none" }}>
           <Button
             variant="contained"
@@ -272,7 +276,7 @@ const Owners = () => {
           >
             Add Owner
           </Button>
-        </Link>
+        </Link>}
       </Box>
       <Box
         m="20px 0 0 0"
