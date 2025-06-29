@@ -14,13 +14,6 @@ import {
 import { tokens } from "../../../theme";
 
 // --- Icons ---
-import LocationOnIcon from "@mui/icons-material/LocationOnOutlined";
-import CategoryIcon from "@mui/icons-material/CategoryOutlined";
-import LayersIcon from "@mui/icons-material/LayersOutlined";
-import CalendarTodayIcon from "@mui/icons-material/CalendarTodayOutlined";
-import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
-import AspectRatioIcon from "@mui/icons-material/AspectRatioOutlined";
-import PersonIcon from "@mui/icons-material/PersonOutline";
 import PeopleOutlineOutlined from "@mui/icons-material/PeopleOutlineOutlined";
 import BusinessIcon from "@mui/icons-material/BusinessOutlined";
 
@@ -34,6 +27,7 @@ import ConsultingCompanyTab from "./tabs/ConsultingCompanyTab";
 import TeamTab from "./tabs/TeamTab";
 import DocumentTab from "./tabs/DocumentsTab";
 import { havePermission } from "../../../shared/Permissions";
+import ProjectStagesComponent from "./tabs/ProjectTimeLine";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -144,19 +138,17 @@ const ProjectDetails = () => {
               onChange={handleChange}
               aria-label="project details tabs"
               TabIndicatorProps={{
-                sx: { backgroundColor: colors.greenAccent[500], height: 3 },
+                sx: { backgroundColor: colors.greenAccent[500], height: 2 },
               }}
               textColor="inherit"
               variant="fullWidth"
               // backgroundColor={colors.primary[100]}
               sx={{
-                // يمكنك تغيير هذه القيمة حسب الارتفاع الذي تريده
-                // الارتفاع الافتراضي هو 48px
-                minHeight: "48px",
+                minHeight: "40px",
 
                 // هذا السطر يستهدف كل تبويب (Tab) داخل حاوية الـ Tabs
                 "& .MuiTab-root": {
-                  minHeight: "48px", // تأكد من تطابق هذه القيمة مع القيمة أعلاه
+                  minHeight: "40px", // تأكد من تطابق هذه القيمة مع القيمة أعلاه
                   // يمكنك تعديل حجم الخط ليتناسب مع الارتفاع الجديد
                 },
               }}
@@ -233,12 +225,25 @@ const ProjectDetails = () => {
                   },
                 }}
               />
+                      <Tab
+                icon={<ArticleIcon />}
+                iconPosition="start"
+                label="Stages"
+                {...a11yProps(5)}
+                sx={{
+                  color: colors.grey[300],
+                  "&.Mui-selected": {
+                    color: colors.greenAccent[300],
+                    fontWeight: "bold",
+                  },
+                }}
+              />
             </Tabs>
           </Box>
 
           {/* Tabs */}
         
-          <TabPanel value={value} index={0}>
+          <TabPanel value={value} index={0} >
           {havePermission("details projects") && 
             <GeneralInfoTab project={project} />}
           </TabPanel>
@@ -276,6 +281,13 @@ const ProjectDetails = () => {
             <DocumentTab projectId={id} />
               }
           </TabPanel>
+          <TabPanel value={value} index={5}>
+         
+         {havePermission("view reports resource management")&&
+             
+           <ProjectStagesComponent projectId={id} />
+             }
+         </TabPanel>
         </Box>
       </Box>
     </Fade>
