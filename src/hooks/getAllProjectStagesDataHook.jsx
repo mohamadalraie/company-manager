@@ -41,7 +41,7 @@ const useProjectStagesData = (projectId) => {
           title: stage.name,
           description: stage.description,
           startDate: stage.start_date,
-          endDate: stage.expected_close_date,
+          endDate: stage.expected_closed_date,
           priority: stage.priority,
           tasks: stage.tasks || [], // Ensure tasks is always an array
         }));

@@ -5,18 +5,10 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime'; // Icon for estimat
 
 // --- 1. Sample Task Data ---
 const initialTasks = [
- { id: 'task-1', number: 'T-01', name: "Analyze User Feedback", description: "Review and categorize feedback from the last user survey.", estimated_time: "4h", status: 'not_started' },
-  { id: 'task-2', number: 'T-02', name: "Design New Login Flow", description: "Create wireframes and mockups for the SSO integration.", estimated_time: "8h", status: 'in_progress' },
-  { id: 'task-2', number: 'T-02', name: "Design New Login Flow", description: "Create wireframes and mockups for the SSO integration.", estimated_time: "8h", status: 'in_progress' },
-  { id: 'task-3', number: 'T-03', name: "Fix API Rate Limiting Bug", description: "The /v2/users endpoint is not correctly enforcing rate limits.", estimated_time: "6h", status: 'in_progress' },
-  { id: 'task-4', number: 'T-04', name: "Awaiting Legal Approval", description: "Waiting for the legal team to approve the new privacy policy text.", estimated_time: "N/A", status: 'waiting' },
-  { id: 'task-5', number: 'T-05', name: "Setup Staging Server", description: "Deploy the latest build to the staging environment for QA testing.", estimated_time: "2h", status: 'not_started' },
-  { id: 'task-6', number: 'T-06', name: "Write End-to-End Tests", description: "Cover the entire user registration and profile update flow.", estimated_time: "10h", status: 'done' },
-  { id: 'task-7', number: 'T-07', name: "Update Documentation", description: "Reflect the latest API changes in the developer docs.", estimated_time: "3h", status: 'done' },
 ];
 
 // --- The Kanban Board Component ---
-const TasksKanbanView = () => {
+const TasksKanbanView = ({}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [tasks, setTasks] = useState(initialTasks);
@@ -62,6 +54,7 @@ const TasksKanbanView = () => {
           <Box
             key={columnId}
             sx={{
+              flex:1,
               display: 'flex',
               flexDirection: 'column',
               backgroundColor: colors.primary[900],
