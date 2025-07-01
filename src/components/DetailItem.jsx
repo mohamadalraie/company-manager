@@ -9,7 +9,7 @@ const DetailItem = ({ icon, label, children }) => {
     return (
         <Paper
             sx={{
-                p: 2.5, // Increased padding slightly for more breathing room
+                p: 2, // Increased padding slightly for more breathing room
                 display: "flex",
                 alignItems: "center",
                 gap: 2,

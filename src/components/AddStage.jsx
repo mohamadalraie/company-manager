@@ -180,7 +180,7 @@ const AddNewStage = ({ projectId }) => {
     }
     // --- The "Add" Button ---
     return (
-      <Box onClick={() => setIsAdding(true)} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3, mt: 1, border: `2px dashed ${colors.grey[700]}`, borderRadius: '8px', color: colors.grey[400], cursor: 'pointer', transition: 'all 0.2s ease-in-out', '&:hover': { color: colors.greenAccent[400], borderColor: colors.greenAccent[400], backgroundColor: colors.primary[800] } }}>
+      <Box onClick={() => setIsAdding(true)} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2, mt: 1, border: `2px dashed ${colors.grey[700]}`, borderRadius: '8px', color: colors.grey[400], cursor: 'pointer', transition: 'all 0.2s ease-in-out', '&:hover': { color: colors.greenAccent[400], borderColor: colors.greenAccent[400], backgroundColor: colors.primary[800] } }}>
         <AddCircleOutlineIcon sx={{ mr: 1 }} />
         <Typography fontWeight="600">Add New Stage</Typography>
       </Box>
