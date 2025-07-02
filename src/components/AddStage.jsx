@@ -31,7 +31,7 @@ import LowPriorityIcon from '@mui/icons-material/LowPriority';
 
 
 // --- The Refactored Add Stage Component ---
-const AddNewStage = ({ projectId }) => {
+const AddNewStage = ({ projectId,onStageAdded }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -53,6 +53,7 @@ const AddNewStage = ({ projectId }) => {
       setSnackbar({ open: true, message: errorMessage, severity: "error" });
     } finally {
       setIsLoading(false);
+      onStageAdded();
     }
   };
 

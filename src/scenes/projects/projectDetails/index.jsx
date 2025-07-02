@@ -16,7 +16,7 @@ import { tokens } from "../../../theme";
 // --- Icons ---
 import PeopleOutlineOutlined from "@mui/icons-material/PeopleOutlineOutlined";
 import BusinessIcon from "@mui/icons-material/BusinessOutlined";
-
+import SplitscreenIcon from "@mui/icons-material/SplitscreenOutlined";
 import DescriptionIcon from "@mui/icons-material/DescriptionOutlined";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOnOutlined";
 import ArticleIcon from "@mui/icons-material/ArticleOutlined";
@@ -226,7 +226,7 @@ const ProjectDetails = () => {
                 }}
               />
                       <Tab
-                icon={<ArticleIcon />}
+                icon={<SplitscreenIcon />}
                 iconPosition="start"
                 label="Stages"
                 {...a11yProps(5)}

@@ -215,7 +215,7 @@ const ProjectManagers = () => {
         >
           <CircularProgress size={60} sx={{ color: colors.greenAccent[400] }} />
           <Typography variant="h6" sx={{ mt: 2, color: colors.grey[500] }}>
-            Loading engineers...
+            Loading Project Managers...
           </Typography>
         </Box>
       </Box>

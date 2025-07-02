@@ -3,26 +3,22 @@ import { Box, Typography, useTheme, Paper, Chip, Avatar,Tooltip } from '@mui/mat
 import { tokens } from "../theme"; // Adjust path to your theme file
 import AccessTimeIcon from '@mui/icons-material/AccessTime'; // Icon for estimated time
 
-// --- 1. Sample Task Data ---
-const initialTasks = [
-];
 
 // --- The Kanban Board Component ---
-const TasksKanbanView = ({}) => {
+const TasksKanbanView = ({tasks}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [tasks, setTasks] = useState(initialTasks);
 
   // --- 2. Configuration for Column appearance ---
   const columnsConfig = {
-    not_started: { title: "Not Started", color: colors.grey[500] },
+    ToDo: { title: "To Do", color: colors.grey[500] },
     in_progress: { title: "In Progress", color: theme.palette.warning.main },
     waiting: { title: "Waiting", color: colors.blueAccent[500] },
     done: { title: "Done", color: colors.greenAccent[500] },
   };
 
   // Define the order of the columns
-  const columnOrder = ['not_started', 'in_progress', 'waiting', 'done'];
+  const columnOrder = ['ToDo', 'in_progress', 'waiting', 'done'];
 
   // --- 3. Group tasks by status for rendering ---
   const taskColumns = useMemo(() => {
@@ -112,9 +108,9 @@ const TasksKanbanView = ({}) => {
                 >
                   <Box display="flex" justifyContent="space-between" alignItems="center" mb={1.5}>
                     <Typography variant="h6" fontWeight="bold" sx={{ color: colors.grey[100] }}>
-                      {task.name}
+                      {task.note}
                     </Typography>
-                    <Chip label={task.number} size="small" sx={{ color: colors.grey[300] }} />
+                    <Chip label={`T-${task.id}`} size="small" sx={{ color: colors.grey[300] }} />
                   </Box>
                   <Typography variant="body2" sx={{ color: colors.grey[300], mb: 2 }}>
                     {task.description}
@@ -124,10 +120,10 @@ const TasksKanbanView = ({}) => {
                   <Box display="flex" alignItems="center" gap={1}>
                     <AccessTimeIcon sx={{ color: colors.grey[400], fontSize: '1rem' }} />
                     <Typography variant="caption" sx={{ color: colors.grey[400] }}>
-                      {task.estimated_time}
+                      {task.expected_period_to_complete}
                     </Typography>
                     </Box>
-                    <Tooltip title="assigned to mohamad alraie"> 
+                    <Tooltip title={`assigned to ${task.emplo}`}> 
                                        <Avatar sx={{ backgroundColor: column.color, color: '#fff', width: 22, height: 22 }}>
                 <Typography variant="subtitle2" fontWeight="bold">{tasksInColumn.length}</Typography>
               </Avatar>

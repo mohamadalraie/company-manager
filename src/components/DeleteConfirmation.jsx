@@ -82,6 +82,8 @@ function DeleteConfirmationComponent({ itemId, deleteApi, onDeleteSuccess, onDel
       if (onDeleteError) {
         onDeleteError(itemId, error);
       }
+    }finally{
+      onDeleteSuccess();
     }
   };
 

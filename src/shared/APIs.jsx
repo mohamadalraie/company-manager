@@ -27,3 +27,4 @@ export const getProjectFilesApi=(projectId) =>{return `/api/projectFiles/${proje
 export const addStageApi="/api/projectStage/create";
 export const deleteStageApi="/api/projectStage/delete/"
 export const getAllProjectStagesApi="/api/projectStage/";
+export const getAllItemsApi="/api/item/all";

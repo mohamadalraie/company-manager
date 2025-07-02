@@ -9,17 +9,27 @@ const useEngineersData = () => {
   const [engineers, setEngineers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // ✅ الخطوة 1: إضافة متغير حالة ليكون "زناد" التحديث
+  const [refetch, setRefetch] = useState(0);
 
+  // ✅ الخطوة 2: إنشاء دالة بسيطة لتغيير قيمة "الزناد"
+  // هذه هي الدالة التي ستعيدها للخارج
+  const refetchEngineers = () => {
+    setRefetch(prev => prev + 1); // أي تغيير في القيمة سيعيد تشغيل useEffect
+  };
 
+  // ✅ الخطوة 3: ربط useEffect بمتغير "الزناد"
   useEffect(() => {
+    // نقل منطق جلب البيانات إلى دالة داخلية
     const fetchEngineers = async () => {
+      setLoading(true); // إعادة التحميل عند كل استدعاء
       try {
         const config = {
           headers: {
             'Authorization': `Bearer ${getAuthToken()}`
           }
         };
-        const response = await axios.get(`${baseUrl}${getAllEngineersApi}`,config);
+        const response = await axios.get(`${baseUrl}${getAllEngineersApi}`, config);
         const engineersData = response.data.data;
 
         const formattedEngineers = engineersData.map((engineer) => ({
@@ -33,6 +43,7 @@ const useEngineersData = () => {
         }));
 
         setEngineers(formattedEngineers);
+        setError(null); // مسح أي أخطاء سابقة عند النجاح
       } catch (err) {
         console.error("Error fetching engineers:", err);
         setError(err);
@@ -42,9 +53,10 @@ const useEngineersData = () => {
     };
 
     fetchEngineers();
-  }, []);
+  }, [refetch]); //  dependents: سيعمل هذا الكود في كل مرة تتغير فيها قيمة 'refetch'
 
-  return { engineers, loading, error };
+  // ✅ الخطوة 4: إرجاع دالة "الزناد" بدلاً من دالة جلب البيانات
+  return { engineers, loading, error, refetchEngineers };
 };
 
 export default useEngineersData;

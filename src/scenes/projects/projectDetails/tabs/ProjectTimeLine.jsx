@@ -145,7 +145,7 @@ const ProjectStagesComponent = ({ projectId }) => {
       color: colors.blueAccent[500],
       label: "Waiting",
     },
-    not_started: {
+    ToDo: {
       icon: <RadioButtonUncheckedIcon />,
       color: colors.grey[500],
       label: "Not Started",

@@ -1,4 +1,4 @@
-// src/hooks/useEngineersData.js
+// src/hooks/useConsultingCompaniesData.js
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "../shared/baseUrl"; // Adjust path as needed
@@ -9,17 +9,26 @@ const useConsultingCompaniesData = () => {
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
- 
+  // ✅ الخطوة 1: إضافة متغير الحالة ليكون "زناد" التحديث
+  const [refetch, setRefetch] = useState(0);
 
+  // ✅ الخطوة 2: إنشاء دالة بسيطة لتغيير قيمة "الزناد"
+  const refetchCompanies = () => {
+    setRefetch(prev => prev + 1);
+  };
+  
+  // ✅ الخطوة 3: ربط useEffect بمتغير "الزناد"
   useEffect(() => {
     const fetchCompanies = async () => {
+      setLoading(true); // إعادة التحميل عند كل استدعاء
+      setError(null); // مسح أي أخطاء سابقة
       try {
         const config = {
           headers: {
             'Authorization': `Bearer ${getAuthToken()}`
           }
         };
-        const response = await axios.get(`${baseUrl}${getAllConsultingCompaniesApi}`,config);
+        const response = await axios.get(`${baseUrl}${getAllConsultingCompaniesApi}`, config);
         const companiesData = response.data.data;
 
         const formattedCompanies = companiesData.map((company) => ({
@@ -43,9 +52,10 @@ const useConsultingCompaniesData = () => {
     };
 
     fetchCompanies();
-  }, []);
+  }, [refetch]); // سيعمل هذا الكود في كل مرة تتغير فيها قيمة 'refetch'
 
-  return { companies, loading, error };
+  // ✅ الخطوة 4: إرجاع دالة "الزناد" مع بقية المتغيرات
+  return { companies, loading, error, refetchCompanies };
 };
 
 export default useConsultingCompaniesData;

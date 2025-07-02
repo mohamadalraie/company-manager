@@ -27,7 +27,7 @@ const ConsultingCompanies = () => {
   const colors = tokens(theme.palette.mode);
 
   // استقبل refetchEngineers من الـ hook
-  const { companies, loading, error } = useConsultingCompaniesData();
+  const { companies, loading, error ,refetchCompanies} = useConsultingCompaniesData();
 
 
 
@@ -77,7 +77,7 @@ const ConsultingCompanies = () => {
           <DeleteConfirmationComponent
             itemId={params.row.id}
             deleteApi={`${baseUrl}${deleteConsultingCompanyApi}`}
-            onDeleteSuccess={()=>{}} // 🚨 استدعاء refetchEngineers عند النجاح
+            onDeleteSuccess={()=>{refetchCompanies()}} // 🚨 استدعاء refetchEngineers عند النجاح
             onDeleteError={() => { /* يمكنك وضع منطق للتعامل مع الأخطاء هنا إذا أردت */ }}
           />}
           </Box>
@@ -120,7 +120,7 @@ const ConsultingCompanies = () => {
       >
         <CircularProgress size={60} sx={{ color: colors.greenAccent[400] }} />
         <Typography variant="h6" sx={{ mt: 2, color: colors.grey[500] }}>
-          Loading engineers...
+          Loading Companies...
         </Typography>
       </Box>
       </Box>
