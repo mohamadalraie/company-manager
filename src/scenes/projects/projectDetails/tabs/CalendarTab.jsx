@@ -1,11 +1,11 @@
 // src/components/ProjectGridCalendar.js
 
 import React, { useState, useMemo } from "react";
-import { 
+import {
   Box, Typography, useTheme, CircularProgress, Paper, Chip, Avatar, Tooltip
 } from "@mui/material";
 import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid"; 
+import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
 // --- استيراد الأيقونات والمكونات الخاصة بك ---
@@ -15,59 +15,91 @@ import { tokens } from "../../../../theme"; // <-- تأكد من صحة المس
 import TaskDetailDialog from "../../../../components/TaskDetailsDialog"; // <-- تأكد من صحة المسار
 
 /**
- * دالة لتخصيص شكل عرض الحدث
+ * دالة لتخصيص شكل عرض الحدث (النسخة المعدّلة)
  */
-const renderEventContent = (eventInfo, columnsConfig, theme) => {
+const renderEventContent = (eventInfo, columnsConfig, theme, colors) => {
   const { type, ...task } = eventInfo.event.extendedProps;
-  
-  // تصميم خاص بالمراحل
+
+  // --- تصميم جديد للمراحل (Stages) ---
   if (type === 'stage') {
     return (
       <Box sx={{
         display: 'flex',
         alignItems: 'center',
-        padding: '2px 6px',
-        overflow: 'hidden',
+        padding: '3px 8px',
+        width: '100%',
         height: '100%',
-        // color: '#fff' // لضمان وضوح النص على الخلفية الملونة
-        border: '1px solid white', // إضافة حدود بيضاء
-        borderRadius: '10px',  
-        
+        backgroundColor: colors.primary[600], // خلفية مميزة
+       
+        border:`1px solid ${colors.greenAccent[500]}`,
+        borderLeft: `5px solid ${colors.greenAccent[500]}`, 
+        borderRight:`5px solid ${colors.greenAccent[500]}`,
+        overflow: 'hidden',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.2)', // ظل خفيف لإعطاء عمق
       }}>
-        <LayersIcon sx={{ mr: 1, fontSize: '0.9rem' }} />
-        <Typography variant="body2" sx={{ fontWeight: 600, whiteSpace: 'nowrap' }}>
+        <LayersIcon sx={{ mr: 1, fontSize: '1rem', color: colors.greenAccent[400] }} />
+        <Typography variant="body2" sx={{ fontWeight: 600, color: colors.grey[100], whiteSpace: 'nowrap' }}>
           {eventInfo.event.title}
         </Typography>
       </Box>
     );
   }
-  
-  // تصميم خاص بالمهام
+
+  // --- تصميم جديد للمهام (Tasks) ---
   const assigneeName = task.employeeAssigned?.name || 'N/A';
-  // مطابقة حالة "Doing" مع البيانات الفعلية
-  const taskStatus = task.status === "in_progress" ? "Doing" : task.status;
-  const eventColor = columnsConfig[taskStatus]?.color || '#888';
+  const assigneeInitial = assigneeName.charAt(0).toUpperCase();
+
+  // مطابقة حالة "Doing" مع البيانات الفعلية وتوفير لون افتراضي
+  const taskStatusKey = task.status === "in_progress" ? "Doing" : task.status;
+  const statusConfig = columnsConfig[taskStatusKey] || { color: colors.grey[600], title: 'Unknown' };
+  const eventColor = statusConfig.color;
 
   return (
-    <Tooltip title={task.title}>
-      <Chip
-        avatar={<Tooltip title={`${assigneeName}`}><Avatar sx={{ width: 25, height: 25, fontSize: '0.8rem' }}>{assigneeName.charAt(0)}</Avatar></Tooltip>}
-        label={eventInfo.event.title}
-        size="small"
-        sx={{
-          width: '100%',
-          justifyContent: 'flex-start',
-          cursor: 'pointer',
-          backgroundColor: 'rgb(50,55,70)',
-          color: theme.palette.getContrastText(eventColor),
-          border: '2px solid', 
-          borderColor: eventColor,
-          color: "white",
-          '& .MuiChip-avatar': {
-            color: theme.palette.getContrastText(eventColor),
-          }
-        }}
-      />
+    <Tooltip title={`${task.title} - Status: ${statusConfig.title}`} placement="top">
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+        padding: '2px 4px',
+        backgroundColor: colors.primary[900], // خلفية داكنة موحدة
+        border: '1px solid',
+        borderColor: eventColor, // الإطار يأخذ لون الحالة
+        borderRadius: '4px',
+        color: colors.grey[100],
+        cursor: 'pointer',
+        '&:hover': {
+          backgroundColor: colors.primary[700],
+          // The 'augmentColor' utility is useful for generating shades, but might not be available directly on the theme palette by default.
+          // A simpler approach is to use a slightly more opaque or different color for hover.
+          borderColor: eventColor, // Keep the border color or lighten it manually if needed
+        }
+      }}>
+        {/* شريط صغير ملون يمثل الحالة */}
+        <Box sx={{
+          width: '4px',
+          height: '16px',
+          backgroundColor: eventColor,
+          borderRadius: '2px',
+          mr: 1,
+        }} />
+
+        <Typography variant="body2" sx={{ flexGrow: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {eventInfo.event.title}
+        </Typography>
+
+        <Tooltip title={`Assigned to: ${assigneeName}`}>
+          <Avatar sx={{
+            width: 22,
+            height: 22,
+            fontSize: '0.75rem',
+            ml: 1,
+            backgroundColor: eventColor,
+            color: theme.palette.getContrastText(eventColor)
+          }}>
+            {assigneeInitial}
+          </Avatar>
+        </Tooltip>
+      </Box>
     </Tooltip>
   );
 };
@@ -102,24 +134,21 @@ const ProjectGridCalendar = ({ projectId }) => {
     const events = [];
 
     stages.forEach((stage, stageIndex) => {
-      // إضافة خصائص الفرز للمرحلة
       if (stage.startDate && stage.endDate) {
         events.push({
           id: `stage-${stage.id}`,
           title: stage.title,
           start: stage.startDate,
           end: stage.endDate,
-          extendedProps: { 
+          allDay: true, // اجعل المراحل تمتد على مدار اليوم بالكامل
+          extendedProps: {
             type: 'stage',
-            sortKey_stage: stageIndex, 
-            sortKey_isStage: 1,      
+            sortKey_stage: stageIndex,
+            sortKey_isStage: 1,
           },
-          color: colors.blueAccent[700],
-          borderColor: colors.blueAccent[400]
         });
       }
-      
-      // إضافة خصائص الفرز للمهام
+
       if (stage.tasks) {
         stage.tasks.forEach(task => {
           if (task.start_date && task.dead_line) {
@@ -128,10 +157,10 @@ const ProjectGridCalendar = ({ projectId }) => {
               title: task.title || task.type_of_task,
               start: task.start_date,
               end: task.dead_line,
-              extendedProps: { 
+              extendedProps: {
                 type: 'task',
-                sortKey_stage: stageIndex, 
-                sortKey_isStage: 0,      
+                sortKey_stage: stageIndex,
+                sortKey_isStage: 0,
                 ...task
               },
             });
@@ -140,8 +169,8 @@ const ProjectGridCalendar = ({ projectId }) => {
       }
     });
     return events;
-  }, [stages, colors]);
-  
+  }, [stages]);
+
   if (loading) return (<Box
     display="flex"
     justifyContent="center"
@@ -160,7 +189,7 @@ const ProjectGridCalendar = ({ projectId }) => {
       <Typography variant="h4" fontWeight="bold" sx={{ mb: 2, color: colors.grey[100] }}>
         Project Calendar
       </Typography>
-      <Paper elevation={1} sx={{ p: 2, backgroundColor: colors.primary[800], ".fc-license-message": { display: "none" }, }}>
+      <Paper elevation={5} sx={{ p: 2, backgroundColor: colors.primary[800], ".fc-license-message": { display: "none" }, }}>
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
@@ -171,40 +200,48 @@ const ProjectGridCalendar = ({ projectId }) => {
           }}
           events={calendarEvents}
           height="80vh"
-          eventContent={(eventInfo) => renderEventContent(eventInfo, columnsConfig, theme)} 
+          eventContent={(eventInfo) => renderEventContent(eventInfo, columnsConfig, theme, colors)}
           eventClick={handleEventClick}
-          // خاصية الترتيب العمودي للأحداث
           eventOrder="sortKey_stage, -sortKey_isStage, start"
         />
       </Paper>
-      
+
       <TaskDetailDialog
         task={selectedTask}
         open={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
       />
-      
+
+      {/* --- تعديلات على الـ CSS --- */}
       <style>{`
-        .fc-event {
-        //   border: none !important;
+        /* إزالة الخلفيات والحدود الافتراضية بشكل كامل */
+        .fc-event, .fc-h-event {
           background-color: transparent !important;
-          padding: 1px 4px;
+          border: none !important;
+          padding: 0; /* Remove padding from the default event container */
         }
-        .fc-h-event {
-            border: none !important;
-            background-color: transparent !important;
+        
+        .fc-event .fc-event-main {
+            height: 100%; /* Ensure the inner container fills the event */
         }
-        .fc .fc-daygrid-event {
-            border-radius: 10px;
-            overflow: hidden; /* ضروري ليعمل الـ border-radius على المحتوى */
+        
+        /* السماح للمحتوى المخصص بملء المساحة المتاحة */
+        .fc-daygrid-event-harness {
+            padding: 2px 0; /* Add vertical spacing between events */
         }
-        .fc .fc-day-other .fc-daygrid-day-top {
-          opacity: 0.5;
+
+        .fc .fc-daygrid-day-top {
+          flex-direction: row; /* لعرض رقم اليوم والنص بجانب بعض */
         }
+        
         /* تلوين خانة تاريخ اليوم الفعلي */
         .fc .fc-day-today {
-            background-color: rgba(100, 116, 150, 0.2) !important;
-            border: 2px solid ${colors.blueAccent[500]};
+            background-color: ${colors.primary[300]} !important;
+            border: 1px solid ${colors.blueAccent[500]};
+        }
+
+        .fc .fc-day-other .fc-daygrid-day-top {
+          opacity: 0.5;
         }
       `}</style>
     </Box>
