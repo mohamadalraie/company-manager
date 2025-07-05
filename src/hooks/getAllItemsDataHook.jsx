@@ -5,13 +5,13 @@ import { baseUrl } from "../shared/baseUrl"; // تأكد من صحة المسا�
 import { getAllItemsApi } from "../shared/APIs"; // 👈 استيراد الـ API الجديد
 import { getAuthToken } from "../shared/Permissions"; // تأكد من صحة المسار
 
-const useItemsData = () => {
+const useMaterialsData = () => {
   // 🔽 تغيير أسماء المتغيرات لتناسب "items"
-  const [items, setItems] = useState([]);
+  const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const refetchItems = async () => {
+  const refetchMaterials = async () => {
     setLoading(true);
     setError(null);
     try {
@@ -22,10 +22,10 @@ const useItemsData = () => {
       };
       // 🔽 استخدام API الخاص بالـ items
       const response = await axios.get(`${baseUrl}${getAllItemsApi}`, config);
-      const itemsData = response.data.data;
+      const materialsData = response.data.data;
 
       // ✅ لا حاجة لعمل map هنا لأن البيانات جاهزة للاستخدام مباشرة
-      setItems(itemsData);
+      setMaterials(materialsData);
 
     } catch (err) {
       console.error("Error fetching items:", err);
@@ -36,11 +36,11 @@ const useItemsData = () => {
   }
 
   useEffect(() => {
-    refetchItems();
+    refetchMaterials();
   }, []); // يعمل مرة واحدة عند تحميل الواجهة
 
   // 🔽 إرجاع المتغيرات والدالة الجديدة
-  return { items, loading, error, refetchItems };
+  return { materials, loading, error, refetchMaterials };
 };
 
-export default useItemsData;
+export default useMaterialsData;

@@ -16,7 +16,7 @@ import { tokens } from "../theme";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import axios from 'axios';
 import { baseUrl } from '../shared/baseUrl';
-import { addStageApi } from '../shared/APIs';
+import { createStageApi } from '../shared/APIs';
 import { getAuthToken } from '../shared/Permissions';
 
 // --- External Libraries ---
@@ -43,7 +43,7 @@ const AddNewStage = ({ projectId,onStageAdded }) => {
     setIsLoading(true);
     try {
       const config = { headers: { 'Authorization': `Bearer ${getAuthToken()}` } };
-      await axios.post(`${baseUrl}${addStageApi}`, values, config);
+      await axios.post(`${baseUrl}${createStageApi}`, values, config);
       setSnackbar({ open: true, message: "Stage created successfully!", severity: "success" });
       resetForm();
       setIsAdding(false);

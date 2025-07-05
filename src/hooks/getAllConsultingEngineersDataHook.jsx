@@ -5,7 +5,7 @@ import { baseUrl } from "../shared/baseUrl"; // Adjust path as needed
 import { getAllConsultingEngineersApi } from "../shared/APIs"; // Adjust path as needed
 import { getAuthToken } from "../shared/Permissions";
 
-const useConsultingEngineersData = () => {
+const useConsultingEngineersData = ({consultingCompanyId}) => {
   const [engineers, setEngineers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,7 +18,8 @@ const useConsultingEngineersData = () => {
             'Authorization': `Bearer ${getAuthToken()}`
           }
         };
-        const response = await axios.get(`${baseUrl}${getAllConsultingEngineersApi}1`,config);
+        console.log("consultingCompanyId"+consultingCompanyId);
+        const response = await axios.get(`${baseUrl}${getAllConsultingEngineersApi}${consultingCompanyId}`,config);
         const engineersData = response.data.data;
 
         const formattedEngineers = engineersData.map((engineer) => ({

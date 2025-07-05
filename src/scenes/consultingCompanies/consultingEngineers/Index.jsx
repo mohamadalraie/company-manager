@@ -25,9 +25,9 @@ import { deleteConsultingEngineerApi } from "../../../shared/APIs";
 const ConsultingEngineers = ({consultingCompanyId}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
+console.log("cons"+consultingCompanyId);
   // استقبل refetchEngineers من الـ hook
-  const { engineers, loading, error } = useConsultingEngineersData();
+  const { engineers, loading, error,refetchEngineers } = useConsultingEngineersData({consultingCompanyId:consultingCompanyId});
 
   const columns = [
     {

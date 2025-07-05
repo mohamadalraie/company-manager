@@ -24,24 +24,28 @@ import {
   DialogTitle,
 } from "@mui/material";
 import StepConnector from "@mui/material/StepConnector";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 // Icons
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { tokens } from "../../../../theme";
-import TasksKanbanView from "../../../../components/Task";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+
+import { tokens } from "../../../../theme";
+import TasksKanbanView from "../../../../components/Task";
 import AddNewStage from "../../../../components/AddStage";
 import useProjectStagesData from "../../../../hooks/getAllProjectStagesDataHook";
 import { baseUrl } from "../../../../shared/baseUrl";
 import { getAuthToken } from "../../../../shared/Permissions";
 import axios from "axios";
 import { deleteStageApi } from "../../../../shared/APIs";
+import AddNewTaskDialog from "../../../../components/AddNewTaskDialog";
 
 // --- Helper function to format dates ---
 const formatDateRange = (start, end) => {
@@ -57,7 +61,7 @@ const formatDateRange = (start, end) => {
   return `${startStr} -> ${endStr}`;
 };
 
-const ProjectStagesComponent = ({ projectId }) => {
+const ProjectStagesComponent = ({ projectId,consultingCompanyId,participants }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const {
@@ -70,6 +74,8 @@ const ProjectStagesComponent = ({ projectId }) => {
   const [isTimelineCollapsed, setIsTimelineCollapsed] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [tasks, setTasks] = useState([]);
+  const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
+  const [stageForNewTask, setStageForNewTask] = useState(null); // لتخزين ID المرحلة المختارة
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentStageId, setCurrentStageId] = useState(null);
@@ -129,6 +135,16 @@ const ProjectStagesComponent = ({ projectId }) => {
     }
   };
 
+  const handleOpenTaskDialog = (stageId) => {
+    setStageForNewTask(stageId);
+    setIsTaskDialogOpen(true);
+  };
+
+  const handleCloseTaskDialog = () => {
+    setIsTaskDialogOpen(false);
+    setStageForNewTask(null);
+  };
+
   const statusConfig = {
     done: {
       icon: <CheckCircleOutlineIcon />,
@@ -148,7 +164,7 @@ const ProjectStagesComponent = ({ projectId }) => {
     ToDo: {
       icon: <RadioButtonUncheckedIcon />,
       color: colors.grey[500],
-      label: "Not Started",
+      label: "To Do",
     },
   };
 
@@ -161,10 +177,10 @@ const ProjectStagesComponent = ({ projectId }) => {
         .filter(Boolean);
       const totalTasksCount = stage.tasks?.length || 0;
       const counts = {
-        done: stageTasks.filter((t) => t.status === "done").length,
-        in_progress: stageTasks.filter((t) => t.status === "in_progress")
+        done: stageTasks.filter((t) => t.status === "Done").length,
+        in_progress: stageTasks.filter((t) => t.status === "Doing")
           .length,
-        waiting: stageTasks.filter((t) => t.status === "waiting").length,
+        waiting: stageTasks.filter((t) => t.status === "pendingApproval").length,
       };
       let stageStatus = "notStarted";
       if (counts.done === totalTasksCount && totalTasksCount > 0) {
@@ -305,6 +321,7 @@ const ProjectStagesComponent = ({ projectId }) => {
                         {stage.description}
                       </Typography>
                     </Box>
+         
                     <Box display="flex" alignItems="center" gap={1}>
                       {stage.totalTasksCount > 0 && (
                         <Box
@@ -321,7 +338,7 @@ const ProjectStagesComponent = ({ projectId }) => {
                             stage.percentages.done
                           )}%`}</Typography>
                           <Tooltip
-                            title={`Done: ${stage.counts.done} | In Progress: ${stage.counts.in_progress} | Waiting: ${stage.counts.waiting}`}
+                            title={`Done: ${stage.counts.done} | in progress: ${stage.counts.in_progress} | waiting: ${stage.counts.waiting}`}
                           >
                             <Box
                               sx={{
@@ -356,6 +373,20 @@ const ProjectStagesComponent = ({ projectId }) => {
                           </Tooltip>
                         </Box>
                       )}
+                              
+                      <Tooltip title="Add Task">
+                        <IconButton
+                          aria-label="add-task"
+                          size="small"
+                          onClick={(e) => {
+                            e.stopPropagation(); // لمنع فتح/إغلاق الأكورديون
+                            handleOpenTaskDialog(stage.id);
+                          }}
+                        >
+                          <AddCircleOutlineIcon />
+                        </IconButton>
+                      </Tooltip>
+                   
                       <IconButton
                         aria-label="stage-actions"
                         size="small"
@@ -369,8 +400,7 @@ const ProjectStagesComponent = ({ projectId }) => {
                 <AccordionDetails
                   sx={{ p: 2, backgroundColor: colors.primary[900] }}
                 >
-                    <TasksKanbanView tasks={stage.tasks}/>
-
+                  <TasksKanbanView tasks={stage.tasks} />
                 </AccordionDetails>
               </Accordion>
             ))}
@@ -552,6 +582,15 @@ const ProjectStagesComponent = ({ projectId }) => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <AddNewTaskDialog
+      consultingCompanyId={consultingCompanyId}
+      participants={participants}
+    open={isTaskDialogOpen}
+    onClose={handleCloseTaskDialog}
+    stageId={stageForNewTask}
+    onTaskAdded={refetchData} // تمرير دالة التحديث لتحديث القائمة بعد الإضافة
+  />
     </>
   );
 };

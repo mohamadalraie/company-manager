@@ -24,7 +24,10 @@ export const deleteProjectManagerApi="/api/projectManagers/delete/";
 export const deleteProjectFileApi="/api/projectFiles/delete/";
 export const addProjectFileApi=(projectId) =>{return `/api/projectFiles/${projectId}/create`; }
 export const getProjectFilesApi=(projectId) =>{return `/api/projectFiles/${projectId}/all`; }
-export const addStageApi="/api/projectStage/create";
+export const createStageApi="/api/projectStage/create";
 export const deleteStageApi="/api/projectStage/delete/"
 export const getAllProjectStagesApi="/api/projectStage/";
+export const createTaskApi="/api/task/create";
+export const deleteTaskApi="/api/task/delete/";
 export const getAllItemsApi="/api/item/all";
+export const getAllProjectItemsApi=(projectId)=>{return `/api/ProjectContainer/${projectId}/all`;};

@@ -20,6 +20,10 @@ import SplitscreenIcon from "@mui/icons-material/SplitscreenOutlined";
 import DescriptionIcon from "@mui/icons-material/DescriptionOutlined";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOnOutlined";
 import ArticleIcon from "@mui/icons-material/ArticleOutlined";
+import Inventory2Icon from '@mui/icons-material/Inventory2';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+
+
 
 import useOneProjectData from "../../../hooks/getOneProjectDataHook";
 import GeneralInfoTab from "./tabs/GeneralInfoTab";
@@ -28,6 +32,9 @@ import TeamTab from "./tabs/TeamTab";
 import DocumentTab from "./tabs/DocumentsTab";
 import { havePermission } from "../../../shared/Permissions";
 import ProjectStagesComponent from "./tabs/ProjectTimeLine";
+import ProjectCalendarView from "./tabs/CalendarTab";
+import ProjectGridCalendar from "./tabs/CalendarTab";
+import ProjectContainer from "./tabs/ProjectContainerTab";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -153,65 +160,61 @@ const ProjectDetails = () => {
                 },
               }}
             >
-              
-                <Tab
-                  icon={<DescriptionIcon />}
-                  iconPosition="start"
-                  label="General Information"
-                  {...a11yProps(0)}
-                  sx={{
-                    color: colors.grey[300],
-                    "&.Mui-selected": {
-                      color: colors.greenAccent[300],
-                      fontWeight: "bold",
-                    },
-                  }}
-                />
-              
-              
-                <Tab
-                  icon={<BusinessIcon />}
-                  iconPosition="start"
-                  label="Consulting Company"
-                  {...a11yProps(1)}
-                  sx={{
-                    color: colors.grey[300],
-                    "&.Mui-selected": {
-                      color: colors.greenAccent[300],
-                      fontWeight: "bold",
-                    },
-                  }}
-                />
-              
-              
-                <Tab
-                  icon={<PeopleOutlineOutlined />}
-                  iconPosition="start"
-                  label="Team"
-                  {...a11yProps(2)}
-                  sx={{
-                    color: colors.grey[300],
-                    "&.Mui-selected": {
-                      color: colors.greenAccent[300],
-                      fontWeight: "bold",
-                    },
-                  }}
-                />
-              
-              
-                <Tab
-                  icon={<MonetizationOnIcon />}
-                  iconPosition="start"
-                  label="Financials"
-                  {...a11yProps(3)}
-                  sx={{
-                    color: colors.grey[300],
-                    "&.Mui-selected": {
-                      color: colors.greenAccent[300],
-                      fontWeight: "bold",
-                    },
-                  }}
-                />
+              <Tab
+                icon={<DescriptionIcon />}
+                iconPosition="start"
+                label="General Information"
+                {...a11yProps(0)}
+                sx={{
+                  color: colors.grey[300],
+                  "&.Mui-selected": {
+                    color: colors.greenAccent[300],
+                    fontWeight: "bold",
+                  },
+                }}
+              />
+
+              <Tab
+                icon={<BusinessIcon />}
+                iconPosition="start"
+                label="Consulting Company"
+                {...a11yProps(1)}
+                sx={{
+                  color: colors.grey[300],
+                  "&.Mui-selected": {
+                    color: colors.greenAccent[300],
+                    fontWeight: "bold",
+                  },
+                }}
+              />
+
+              <Tab
+                icon={<PeopleOutlineOutlined />}
+                iconPosition="start"
+                label="Team"
+                {...a11yProps(2)}
+                sx={{
+                  color: colors.grey[300],
+                  "&.Mui-selected": {
+                    color: colors.greenAccent[300],
+                    fontWeight: "bold",
+                  },
+                }}
+              />
+
+              <Tab
+                icon={<MonetizationOnIcon />}
+                iconPosition="start"
+                label="Financials"
+                {...a11yProps(3)}
+                sx={{
+                  color: colors.grey[300],
+                  "&.Mui-selected": {
+                    color: colors.greenAccent[300],
+                    fontWeight: "bold",
+                  },
+                }}
+              />
               <Tab
                 icon={<ArticleIcon />}
                 iconPosition="start"
@@ -225,7 +228,7 @@ const ProjectDetails = () => {
                   },
                 }}
               />
-                      <Tab
+              <Tab
                 icon={<SplitscreenIcon />}
                 iconPosition="start"
                 label="Stages"
@@ -238,56 +241,99 @@ const ProjectDetails = () => {
                   },
                 }}
               />
+              <Tab
+                icon={<CalendarMonthIcon />}
+                iconPosition="start"
+                label="Calendar"
+                {...a11yProps(6)}
+                sx={{
+                  color: colors.grey[300],
+                  "&.Mui-selected": {
+                    color: colors.greenAccent[300],
+                    fontWeight: "bold",
+                  },
+                }}
+              />
+
+              <Tab
+                icon={<Inventory2Icon />}
+                iconPosition="start"
+                label="Inventory"
+                {...a11yProps(7)}
+                sx={{
+                  color: colors.grey[300],
+                  "&.Mui-selected": {
+                    color: colors.greenAccent[300],
+                    fontWeight: "bold",
+                  },
+                }}
+              />
             </Tabs>
           </Box>
 
           {/* Tabs */}
-        
-          <TabPanel value={value} index={0} >
-          {havePermission("details projects") && 
-            <GeneralInfoTab project={project} />}
+
+          <TabPanel value={value} index={0}>
+            {havePermission("details projects") && (
+              <GeneralInfoTab project={project} />
+            )}
           </TabPanel>
 
           <TabPanel value={value} index={1}>
-          {havePermission("view project department studies") && 
-            <ConsultingCompanyTab
-              consultingCompany={project.consultingCompany}
-            />}
+            {havePermission("view project department studies") && (
+              <ConsultingCompanyTab
+                consultingCompany={project.consultingCompany}
+              />
+            )}
           </TabPanel>
           <TabPanel value={value} index={2}>
-          {havePermission("view project department execution") && 
-            <TeamTab
-              participants={project.participants}
-              projectId={project.id}
-            />}
+            {havePermission("view project department execution") && (
+              <TeamTab
+                participants={project.participants}
+                projectId={project.id}
+              />
+            )}
           </TabPanel>
           <TabPanel value={value} index={3}>
-          {havePermission("csad") &&
-          <Box>
-            <Typography variant="h5" color={colors.grey[300]}>
-              Documents
-            </Typography>
-            <Typography color={colors.grey[400]}>
-              A list of project-related documents (e.g., contracts, blueprints)
-              will be available here.
-            </Typography></Box>}
-
+            {havePermission("csad") && (
+              <Box>
+                <Typography variant="h5" color={colors.grey[300]}>
+                  Documents
+                </Typography>
+                <Typography color={colors.grey[400]}>
+                  A list of project-related documents (e.g., contracts,
+                  blueprints) will be available here.
+                </Typography>
+              </Box>
+            )}
           </TabPanel>
-         
+
           <TabPanel value={value} index={4}>
-         
-          {havePermission("view reports resource management")&&
-              
-            <DocumentTab projectId={id} />
-              }
+            {havePermission("view reports resource management") && (
+              <DocumentTab projectId={id} />
+            )}
           </TabPanel>
           <TabPanel value={value} index={5}>
-         
-         {havePermission("view reports resource management")&&
-             
-           <ProjectStagesComponent projectId={id} />
-             }
-         </TabPanel>
+            {havePermission("view reports resource management") && (
+              <ProjectStagesComponent
+                projectId={id}
+                consultingCompanyId={project.consultingCompany.id}
+                participants={project.participants}
+              />
+            )}
+          </TabPanel>
+
+          <TabPanel value={value} index={6}>
+            {havePermission("view reports resource management") && (
+              <ProjectGridCalendar projectId={id} />
+            )}
+          </TabPanel>
+          
+          <TabPanel value={value} index={7}>
+            {havePermission("view reports resource management") && (
+              <ProjectContainer projectId={id} />
+            )}
+          </TabPanel>
         </Box>
       </Box>
     </Fade>
