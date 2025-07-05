@@ -312,6 +312,7 @@ const ProjectStagesComponent = ({ projectId,consultingCompanyId,participants }) 
                         {stage.isCurrent && (
                           <Chip
                             label="Current Stage"
+                            
                             size="small"
                             color="success"
                           />
@@ -343,7 +344,7 @@ const ProjectStagesComponent = ({ projectId,consultingCompanyId,participants }) 
                             <Box
                               sx={{
                                 display: "flex",
-                                width: "120px",
+                                width: "15vw",
                                 height: "8px",
                                 borderRadius: "4px",
                                 overflow: "hidden",

@@ -194,7 +194,7 @@ const TasksKanbanView = ({ tasks }) => {
                         }}
                       >
                         <Typography variant="subtitle2" fontWeight="bold">
-                          {tasksInColumn.length}
+                          {task.employeeAssigned.name.charAt(0).toUpperCase()}
                         </Typography>
                       </Avatar>
                     </Tooltip>

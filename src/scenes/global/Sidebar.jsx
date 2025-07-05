@@ -1,7 +1,7 @@
-import { useState } from "react"; // Keep useState for internal selected menu item
+import { useState } from "react";
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Box, IconButton, Typography, useTheme, Divider } from "@mui/material";
+import { Link, useLocation } from "react-router-dom";
 
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
@@ -16,35 +16,44 @@ import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import { tokens } from "../../theme";
 
 import userImage from "../../assets/user.jpg";
-import { GridAddIcon } from "@mui/x-data-grid";
 import { havePermission } from "../../shared/Permissions";
 
+// تم التعديل هنا في مكون Item
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const isActive = selected === to; // لتسهيل القراءة
+
   return (
     <MenuItem
-      active={selected === title}
-      onClick={() => {
-        setSelected(title);
-        // console.log(selected, to); // Consider removing console.logs from production code
-      }}
+      active={isActive}
+      onClick={() => setSelected(to)}
       icon={icon}
-      component={<Link to={to} style={{ textDecoration: "none" }} />}
+      component={<Link to={to} />}
+      style={{
+        paddingLeft: "20px",
+      }}
     >
-      <Typography>{title}</Typography>
+      {/* التعديل المطلوب تم هنا: 
+        تمت إضافة خاصية color إلى Typography لتغيير لون النص بناءً على حالته (نشط أو لا)
+      */}
+      <Typography
+        fontWeight={isActive ? 600 : 400}
+        color={isActive ? colors.greenAccent[400] : colors.grey[100]}
+      >
+        {title}
+      </Typography>
     </MenuItem>
   );
 };
 
-// Receive isCollapsed and setIsCollapsed as props
 const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  // const [isCollapsed, setIsCollapsed] = useState(false); // Remove this local state, it's now managed by App.js
-  const [selected, setSelected] = useState("Dashboard"); // Set a default selected value
 
-  // Define sidebar widths (must match App.js for consistent behavior)
+  const location = useLocation();
+  const [selected, setSelected] = useState(location.pathname);
+
   const collapsedSidebarWidth = "80px";
   const expandedSidebarWidth = "270px";
 
@@ -52,41 +61,42 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
     <Sidebar
       style={{
         border: "none",
-        position: "fixed", // Keep fixed positioning
-        height: "100vh", // Full viewport height
+        position: "fixed",
+        height: "100vh",
         top: 0,
         left: 0,
-        zIndex: 100, // Ensures it's above other content
-        width: isCollapsed ? collapsedSidebarWidth : expandedSidebarWidth, // Dynamic width based on state
-        transition: "width 0.3s ease-in-out", // Smooth transition for width change
+        zIndex: 100,
+        width: isCollapsed ? collapsedSidebarWidth : expandedSidebarWidth,
+        transition: "width 0.3s ease-in-out",
       }}
-      scrollbarWidth="none"
-      collapsed={isCollapsed} // Use the prop
+      collapsed={isCollapsed}
       backgroundColor={colors.primary[800]}
     >
-      <Box justifyContent="space-between" alignItems="center">
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+        }}
+      >
         <Menu
           iconShape="square"
           menuItemStyles={{
-            button: ({ level, active, disabled }) => {
-              if (level === 0) {
-                return {
-                  color: disabled ? colors.grey[900] : colors.grey[100],
-                  backgroundColor: active ? colors.primary[700] : undefined,
-                  "&:hover": {
-                    backgroundColor: `${colors.primary[900]} !important`,
-                    color: `${colors.primary[100]} !important`,
-                    borderRadius: "10px !important",
-                    fontWeight: "bold !important",
-                  },
-                };
-              }
-            },
+            button: ({ active }) => ({
+              backgroundColor: "transparent !important",
+              borderLeft: active ? `4px solid ${colors.greenAccent[500]}` : "none",
+              "&:hover": {
+                backgroundColor: `${colors.primary[700]} !important`,
+              },
+            }),
+            icon: ({ active }) => ({
+              color: active ? colors.greenAccent[400] : colors.grey[100],
+            }),
           }}
         >
-          {/* logo / Collapse toggle */}
+          {/* LOGO AND COLLAPSE ICON */}
           <MenuItem
-            onClick={() => setIsCollapsed(!isCollapsed)} // Use the prop setter
+            onClick={() => setIsCollapsed(!isCollapsed)}
             icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
             style={{
               margin: "10px 0 20px 0",
@@ -104,16 +114,16 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
                   Orient
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                  {" "}
-                  {/* Use the prop setter */}
                   <MenuOutlinedIcon />
                 </IconButton>
               </Box>
             )}
           </MenuItem>
+
+          {/* USER PROFILE SECTION */}
           {!isCollapsed && (
-            <Box mb="25px">
-              <Box display="flex" justifyContent="center" alignItems="center">
+            <Box mb="20px">
+              {/* <Box display="flex" justifyContent="center" alignItems="center">
                 <img
                   alt="profile-user"
                   width="100px"
@@ -121,26 +131,26 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
                   src={userImage}
                   style={{ cursor: "pointer", borderRadius: "50%" }}
                 />
-              </Box>
-
-              <Box textAlign="center">
+              </Box> */}
+              <Box textAlign="center" mt="10px">
                 <Typography
                   variant="h4"
                   color={colors.grey[100]}
                   fontWeight="bold"
-                  sx={{ m: "10px 0 0 0" }}
                 >
                   Mohamad Alraie
                 </Typography>
-                <Typography variant="h5" color={colors.greenAccent[200]}>
+                <Typography variant="h6" color={colors.greenAccent[500]}>
                   IT Admin
                 </Typography>
               </Box>
             </Box>
           )}
 
-          {/* Sidebar MENU ITEMS */}
-          <Box>
+          {!isCollapsed && <Divider sx={{ borderColor: colors.grey[700], margin: '0 20px 20px 20px' }} />}
+
+          {/* MENU ITEMS */}
+          <Box flexGrow={1}>
             <Item
               title="Dashboard"
               to="/"
@@ -152,10 +162,10 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
             {!isCollapsed && (
               <Typography
                 variant="h6"
-                color={colors.grey[500]}
-                sx={{ m: "15px 0 5px 30px" }}
+                color={colors.grey[300]}
+                sx={{ m: "15px 0 5px 20px" }}
               >
-                Managment
+                Management
               </Typography>
             )}
 
@@ -168,12 +178,11 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
                 setSelected={setSelected}
               />
             )}
-
             {havePermission("view project managers") && (
               <Item
                 title="Project Managers"
                 to="/projectManagers"
-                icon={<PeopleOutlinedIcon />} // Consider a different icon for distinction
+                icon={<ContactsOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
@@ -182,44 +191,37 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
               <Item
                 title="Consulting Companies"
                 to="/consultingCompanies"
-                icon={<PeopleOutlinedIcon />} // Consider a different icon for distinction
+                icon={<RealEstateAgentSharpIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
             )}
-            {/* <Item
-              title="Sales Managers"
-              to="/salesManagers"
-              icon={<RealEstateAgentSharpIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
-            {havePermission("view projects")&&
-            <Item
-              title="Projects"
-              to="/projects"
-              icon={<BarChartOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            }
-
-            {havePermission("view owners") && (
+            {havePermission("view projects") && (
               <Item
-                title="Owners"
-                to="/owners"
+                title="Projects"
+                to="/projects"
                 icon={<BarChartOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
             )}
+            {havePermission("view owners") && (
+              <Item
+                title="Owners"
+                to="/owners"
+                icon={<PersonOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
           </Box>
-
+        
+          {/* FOOTER */}
           {!isCollapsed && (
-            <Box p="16px" textAlign="center">
-              <Typography variant="caption" color={colors.grey[500]}>
-                v2.0.0
-              </Typography>
+             <Box mt="auto" p="16px" textAlign="center">
+                <Typography variant="caption" color={colors.grey[500]}>
+                    v2.0.0
+                </Typography>
             </Box>
           )}
         </Menu>

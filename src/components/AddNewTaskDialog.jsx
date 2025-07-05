@@ -199,7 +199,7 @@ const AddNewTaskDialog = ({ open, onClose, stageId, onTaskAdded, consultingCompa
                 <Select name="status" label="Status" value={formData.status} onChange={handleChange} startAdornment={<InputAdornment position="start"><PlaylistAddCheckIcon /></InputAdornment>}>
                   <MenuItem value="ToDo">ToDo</MenuItem>
                   <MenuItem value="Doing">In Progress</MenuItem>
-                  <MenuItem value="penApproval">Waiting</MenuItem>
+                  <MenuItem value="pendingApproval">Waiting</MenuItem>
                   <MenuItem value="Done">Done</MenuItem>
                 </Select>
                 {errors.status && <Typography color="error" variant="caption" sx={{ pl: 2, mt: 0.5 }}>{errors.status}</Typography>}

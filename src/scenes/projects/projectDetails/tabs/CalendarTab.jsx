@@ -89,10 +89,10 @@ const renderEventContent = (eventInfo, columnsConfig, theme, colors) => {
 
         <Tooltip title={`Assigned to: ${assigneeName}`}>
           <Avatar sx={{
-            width: 22,
-            height: 22,
-            fontSize: '0.75rem',
-            ml: 1,
+            width: 16,
+            height: 16,
+            fontSize: '0.6rem',
+            m: "3px",
             backgroundColor: eventColor,
             color: theme.palette.getContrastText(eventColor)
           }}>

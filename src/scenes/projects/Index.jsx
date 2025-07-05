@@ -193,12 +193,18 @@ const ProjectsList = () => {
         }}
       >
         {isLoading ? (
-          <Box display="flex" justifyContent="center" alignItems="center" minHeight="300px">
-            <CircularProgress size={50} sx={{ color: colors.greenAccent[500] }} />
-            <Typography variant="h5" color={colors.grey[300]} ml={2}>
-              Loading projects...
-            </Typography>
-          </Box>
+         <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          // minHeight="calc(100vh - 150px)" // Adjust height to fit header
+        >
+          <CircularProgress size={60} sx={{ color: colors.greenAccent[400] }} />
+          <Typography variant="h6" sx={{ mt: 2, color: colors.grey[500] }}>
+            Loading Projects...
+          </Typography>
+        </Box>
         ) : error ? (
           <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" minHeight="300px" p={3} sx={{ backgroundColor: colors.primary[800], borderRadius: "8px", width: '100%', maxWidth: '600px' }}>
             <ErrorOutlineIcon sx={{ fontSize: 60, color: colors.redAccent[500], mb: 2 }} />
