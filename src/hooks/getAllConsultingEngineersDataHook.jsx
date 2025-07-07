@@ -28,7 +28,7 @@ const useConsultingEngineersData = ({consultingCompanyId}) => {
           last_name: engineer.user.last_name,
           email: engineer.user.email,
           phone_number: engineer.user.phone_number,
-          status: engineer.user.status,
+          status: engineer.user.is_active,
           specialization_name: engineer.specialization.name,
         }));
 

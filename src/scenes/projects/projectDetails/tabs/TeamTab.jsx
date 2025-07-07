@@ -22,12 +22,14 @@ import {
   Typography,
   useTheme,
   Button,
+  IconButton,
   Snackbar,
   Alert,} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import AddParticipant from "../AddParticipant";
 import UserCard from "../../../../components/UserCard";
 import { useEffect } from "react";
+import { havePermission } from "../../../../shared/Permissions";
 
 const TeamTab = ({ participants,projectId }) => {
   const theme = useTheme();
@@ -54,7 +56,6 @@ const TeamTab = ({ participants,projectId }) => {
       last_name: user.last_name,
       email: user.email,
       phone_number: user.phone_number,
-      status: user.is_active,
       specialization_name: user.first_name,
     };
   
@@ -129,47 +130,11 @@ const TeamTab = ({ participants,projectId }) => {
       flex: 1,
     },
     {
-      field: "status",
-      headerName: "Status",
-      sortable: false,
-      filterable: false,
-      renderCell: (params) => {
-        // Determine button color based on engineer's status
-        const statusColor =
-          params.value === 1 ? colors.greenAccent[600] : colors.redAccent[600];
-
-        return (
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            height="100%"
-            width="100%"
-          >
-            <Button
-              sx={{
-                fontSize: "10px",
-                color: colors.primary[100], // Text color inside the button
-                backgroundColor: statusColor, // Button background color based on status
-                "&:hover": {
-                  backgroundColor:
-                    params.value === "active" ? colors.greenAccent[700] : colors.redAccent[700],
-                },
-              }}
-              onClick={() => showSnackbar(`Engineer Status: ${params.value}`, "info")}
-            >
-              {params.value ? params.value : "Undefined"}
-            </Button>
-          </Box>
-        );
-      },
-    },
-    {
       field: "actions",
       headerName: "Actions",
       sortable: false,
       filterable: false,
-      // flex: 1, // Give more space for icons
+      flex:0.5,
       renderCell: (params) => {
         return (
           <Box
@@ -181,6 +146,7 @@ const TeamTab = ({ participants,projectId }) => {
           >
        
  
+  
 
             {/* Delete Confirmation Component */}
             <DeleteConfirmationComponent
@@ -198,6 +164,7 @@ const TeamTab = ({ participants,projectId }) => {
               // You can also pass custom confirmation text if needed
               confirmationText="Are you sure you want to delete this engineer?"
             />
+        
           </Box>
         );
       },
