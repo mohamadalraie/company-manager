@@ -108,7 +108,7 @@ const GeneralInfoTab = ({ project }) => {
   };
 
   return (
-    <Paper sx={{ p: { xs: 2, md: 4 }, backgroundColor: colors.primary[800], borderRadius: '12px' }}>
+    <Paper elevation={0} sx={{  backgroundColor: colors.primary[800], borderRadius: '12px' }}>
       <Stack spacing={5}>
         
         {/* --- SECTION 1: HEADER --- */}
