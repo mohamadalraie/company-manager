@@ -1,69 +1,87 @@
 // src/hooks/useProjectFilesData.js
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { baseUrl } from "../shared/baseUrl"; // Adjust path as needed
-// Assuming you define your API endpoints in a central file
-// e.g., in src/shared/APIs.js
-// export const getProjectFilesApi = (projectId) => `/api/projectFiles/${projectId}/all`;
-import { getProjectFilesApi } from "../shared/APIs"; 
+import { baseUrl } from "../shared/baseUrl";
+import { getProjectFilesApi, getOneParticipantApi } from "../shared/APIs"; // تأكد من استيراد API المشارك
 import { getAuthToken } from "../shared/Permissions";
 
-const useProjectFilesData = ({projectId}) => {
+const useProjectFilesData = ({ projectId }) => {
   const [projectFiles, setProjectFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Function to refetch files (useful for updates or retries)
-  const refetchFiles = async () => {
+  const refetchFiles = useCallback(async () => {
+    if (!projectId) {
+      setProjectFiles([]);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
-    setError(null); // Clear previous errors
+    setError(null);
+
     try {
       const config = {
         headers: {
           'Authorization': `Bearer ${getAuthToken()}`
         }
       };
-      if (!projectId) {
-        
-        // If projectId is not available, don't fetch and just set loading to false
-        console.warn("Project ID is missing, cannot fetch project files.");
+
+      // --- الخطوة 1: جلب قائمة الملفات الأساسية ---
+      const filesResponse = await axios.get(`${baseUrl}${getProjectFilesApi(projectId)}`, config);
+      const filesData = filesResponse.data.data;
+
+      if (!filesData || filesData.length === 0) {
+        setProjectFiles([]);
         setLoading(false);
         return;
       }
+      
+      // --- الخطوة 2: المرور على كل ملف واستدعاء الـ API الثانية ---
+      // نستخدم Promise.all لجعل الطلبات متوازية وأكثر كفاءة
+      const enhancedFilesPromises = filesData.map(async (file) => {
+        let uploaderName = "Unknown User";
 
-      const response = await axios.get(`${baseUrl}${getProjectFilesApi(projectId)}`,config);
-      console.log(`${baseUrl}${getProjectFilesApi({projectId})}`);
-      const filesData = response.data.data; // Access the 'data' array from your API response
-      console.log(response);
-      // Format the data if necessary, similar to engineersData
-      // For project files, it seems your API already returns a good structure.
-      // We'll just add a 'name' field for display if 'file_path' is a full URL.
-      const formattedFiles = filesData.map((file) => ({
-        id: file.id,
-        file_path: file.file_path,
-        description: file.description,
-        project_id: file.project_id,
-        project_participant_id: file.project_participant_id,
-        // You might want a 'name' for display. If 'file_path' is a URL,
-        // you can extract the filename from it.
-        name: file.file_path.split('/').pop() || `File ${file.id}`,
-        // Determine file type from extension for viewer/download logic
-        type: file.file_path.split('.').pop().toLowerCase()
-      }));
+        // إذا كان للملف معرف مشارك، قم بجلب اسمه
+        if (file.project_participant_id) {
+          try {
+            const participantResponse = await axios.get(`${baseUrl}${getOneParticipantApi(file.project_participant_id)}`, config);
+            const participant = participantResponse.data.data;
+            if (participant && participant.user) {
+              uploaderName = `${participant.user.first_name} ${participant.user.last_name}`;
+            }
+          } catch (participantError) {
+            console.error(`Failed to fetch name for participant ID ${file.project_participant_id}:`, participantError);
+            // في حال فشل جلب الاسم، سيبقى الاسم هو "Unknown User"
+          }
+        }
 
-      setProjectFiles(formattedFiles);
+        // --- الخطوة 3: إضافة الاسم كـ key و value إلى معلومات الملف ---
+        return {
+          ...file, // نسخ بيانات الملف الأصلية
+          name: file.file_path.split('/').pop() || `File ${file.id}`,
+          type: file.file_path.split('.').pop().toLowerCase(),
+          uploader_name: uploaderName, // إضافة الحقل الجديد
+        };
+      });
+
+      // انتظار انتهاء جميع عمليات جلب الأسماء
+      const finalFormattedFiles = await Promise.all(enhancedFilesPromises);
+
+      setProjectFiles(finalFormattedFiles);
+
     } catch (err) {
       console.error("Error fetching project files:", err);
-      setError(err); // Store the error object
+      setError(err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [projectId]);
 
-  // useEffect to call fetchProjectFiles when the component mounts or projectId changes
   useEffect(() => {
     refetchFiles();
-  }, [projectId]); // Re-run effect if projectId changes
+  }, [refetchFiles]);
 
   return { projectFiles, loading, error, refetchFiles };
 };

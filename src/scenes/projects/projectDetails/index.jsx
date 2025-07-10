@@ -35,6 +35,7 @@ import ProjectStagesComponent from "./tabs/ProjectTimeLine";
 import ProjectCalendarView from "./tabs/CalendarTab";
 import ProjectGridCalendar from "./tabs/CalendarTab";
 import ProjectContainer from "./tabs/ProjectContainerTab";
+import ResourcesTab from "./tabs/ResourcesTab";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -218,7 +219,7 @@ const ProjectDetails = () => {
               <Tab
                 icon={<ArticleIcon />}
                 iconPosition="start"
-                label="Documents"
+                label="Studies"
                 {...a11yProps(4)}
                 sx={{
                   color: colors.grey[300],
@@ -310,7 +311,7 @@ const ProjectDetails = () => {
 
           <TabPanel value={value} index={4}>
             {havePermission("view reports resource management") && (
-              <DocumentTab projectId={id} />
+              <ResourcesTab projectId={id} />
             )}
           </TabPanel>
           <TabPanel value={value} index={5}>

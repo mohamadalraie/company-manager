@@ -25,7 +25,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { tokens } from "../../../../theme";
 import useProjectFilesData from "../../../../hooks/getProjectFilesDataHook";
 import DeleteConfirmationComponent from "../../../../components/DeleteConfirmation";
-import { deleteProjectFileApi } from "../../../../shared/APIs";
+import { deleteProjectFileApi,getOneParticipantApi  } from "../../../../shared/APIs";
 import { baseUrl } from "../../../../shared/baseUrl";
 import { Header } from "../../../../components/Header";
 import AddProjectFile from "../AddFile"; // Import the new Dialog component
@@ -38,6 +38,8 @@ const DocumentsTab = ({ projectId }) => {
   const { projectFiles, loading, error, refetchFiles } = useProjectFilesData({
     projectId: projectId,
   });
+
+  
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -269,8 +271,10 @@ const DocumentsTab = ({ projectId }) => {
                       sx={{ color: colors.grey[300], mt: 0.5 }}
                     >
                       {file.description || "No description available."}
+                      {file.uploader_name}
                     </Typography>
                   }
+                
                   sx={{ flexGrow: 1, mr: { sm: 2 }, mb: { xs: 1, sm: 0 } }}
                 />
                 {file.type === "pdf" ||

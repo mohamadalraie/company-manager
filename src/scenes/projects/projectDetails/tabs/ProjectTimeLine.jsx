@@ -401,7 +401,11 @@ const ProjectStagesComponent = ({ projectId,consultingCompanyId,participants }) 
                 <AccordionDetails
                   sx={{ p: 2, backgroundColor: colors.primary[900] }}
                 >
-                  <TasksKanbanView tasks={stage.tasks} />
+                  <TasksKanbanView tasks={stage.tasks} 
+                     participants={participants}
+                     consultingCompanyId={consultingCompanyId}
+                     stageId={stage.id}
+                 />
                 </AccordionDetails>
               </Accordion>
             ))}

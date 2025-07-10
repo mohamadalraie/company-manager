@@ -13,7 +13,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime"; // Icon for estimat
 import TaskDetailDialog from "./TaskDetailsDialog";
 
 // --- The Kanban Board Component ---
-const TasksKanbanView = ({ tasks }) => {
+const TasksKanbanView = ({ tasks,participants,consultingCompanyId ,stageId}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
     const [selectedTask, setSelectedTask] = useState(null);
@@ -212,6 +212,9 @@ const TasksKanbanView = ({ tasks }) => {
               open={!!selectedTask}
               onClose={handleCloseDialog}
               task={selectedTask}
+              participants={participants} 
+              consultingCompanyId={consultingCompanyId}
+              stageId={stageId}
             />
           )}
           </>

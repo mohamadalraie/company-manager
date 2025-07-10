@@ -24,9 +24,11 @@ export const createOwnerApi="/api/owner/create";
 export const createProjectApi="/api/project/create";
 export const getAllProjectsApi="/api/project/all";
 export const getOneProjectApi="/api/project/";
+export const updateProjectApi="/api/project/update/"
 
 export const addParticipantApi="/api/projectParticipant/create";
 export const deleteParticipantApi="/api/projectParticipant/delete/"
+export const getOneParticipantApi="/api/projectParticipant/"
 
 export const createProjectManagerApi="/api/projectManagers/create";
 export const getAllProjectManagersApi="/api/projectManagers/all";
@@ -43,6 +45,9 @@ export const getAllProjectStagesApi="/api/projectStage/";
 
 export const createTaskApi="/api/task/create";
 export const deleteTaskApi="/api/task/delete/";
+export const updateTaskApi="/api/task/update/";
 
 export const getAllItemsApi="/api/item/all";
-export const getAllProjectItemsApi=(projectId)=>{return `/api/ProjectContainer/${projectId}/all`;};
+export const getAllProjectItemsApi=(projectId)=>{return `/api/projectContainer/${projectId}/all`;};
+export const addExistingItemToProjectContainer ="/api/projectContainer/create/";
+export const createNewItemApi="/api/projectContainer/createNewItems/";

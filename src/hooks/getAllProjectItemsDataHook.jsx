@@ -5,11 +5,11 @@ import { getAllProjectItemsApi } from "../shared/APIs"; // Adjust path as needed
 import { getAuthToken } from "../shared/Permissions";
 
 const useProjectItemsData = ({projectId}) => {
-  const [items, setItems] = useState([]);
+  const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const refetchItems = async () => {
+  const refetchMaterials = async () => {
     setLoading(true);
     setError(null);
     try {
@@ -22,22 +22,17 @@ const useProjectItemsData = ({projectId}) => {
       const itemsData = response.data.data;
 
       // Flatten the response data to make it easier to work with
-      const formattedItems = itemsData.map((item) => ({
+      const materials = itemsData.map((item) => ({
         id: item.id,
-        "quantity-available": item["quantity-available"],
-        "expected-quantity": item["expected-quantity"],
-        "consumed-quantity": item["consumed-quantity"],
-        "required-quantity": item["required-quantity"],
-        "remaining-quantity": item["remaining-quantity"],
-        
+        expected_quantity: item.expected_quantity,
         // Safely access nested properties from the "items_id" object
         name: item.items_id ? item.items_id.name : 'Not Available',
         category: item.items_id ? item.items_id.category : 'N/A',
-        price: item.items_id ? item.items_id.price : 0,
+        unit: item.items_id ? item.items_id.unit : "alll",
         itemId: item.items_id ? item.items_id.id : null,
       }));
 
-      setItems(formattedItems);
+      setMaterials(materials);
     } catch (err) {
       console.error("Error fetching project items:", err);
       setError(err);
@@ -47,10 +42,10 @@ const useProjectItemsData = ({projectId}) => {
   };
 
   useEffect(() => {
-    refetchItems();
+    refetchMaterials();
   }, []);
 
-  return { items, loading, error, refetchItems };
+  return { materials, loading, error, refetchMaterials };
 };
 
 export default useProjectItemsData;
