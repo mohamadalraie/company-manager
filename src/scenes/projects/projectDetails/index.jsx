@@ -34,7 +34,7 @@ import { havePermission } from "../../../shared/Permissions";
 import ProjectStagesComponent from "./tabs/ProjectTimeLine";
 import ProjectCalendarView from "./tabs/CalendarTab";
 import ProjectGridCalendar from "./tabs/CalendarTab";
-import ProjectContainer from "./tabs/ProjectContainerTab";
+import ProjectInventory from "./tabs/InventoryTab";
 import ResourcesTab from "./tabs/ResourcesTab";
 
 function TabPanel(props) {
@@ -332,7 +332,7 @@ const ProjectDetails = () => {
           
           <TabPanel value={value} index={7}>
             {havePermission("view reports resource management") && (
-              <ProjectContainer projectId={id} />
+              <ProjectInventory projectId={id} />
             )}
           </TabPanel>
         </Box>

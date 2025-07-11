@@ -51,3 +51,8 @@ export const getAllItemsApi="/api/item/all";
 export const getAllProjectItemsApi=(projectId)=>{return `/api/projectContainer/${projectId}/all`;};
 export const addExistingItemToProjectContainer ="/api/projectContainer/create/";
 export const createNewItemApi="/api/projectContainer/createNewItems/";
+export const getProjectInventoryApi=(projectId)=>{return `/api/projectContainer/${projectId}/warehouse`;};
+
+export const addResourceToTask="/api/taskContainer/create";
+export const getTaskResourcesApi=(taskId)=>{return `/api/taskContainer/all?task_id=${taskId}`;};
+export const deleteTaskResourceApi= `/api/taskContainer/delete/`;

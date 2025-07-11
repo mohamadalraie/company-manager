@@ -46,7 +46,6 @@ const AddNewTaskDialog = ({ open, onClose, stageId, onTaskAdded, consultingCompa
     start_date: "",
     dead_line: "",
     status: "",
-    status_of_approval: "false",
     type_of_task: "",
     priority: "",
     employee_assigned: "",
@@ -85,9 +84,10 @@ const AddNewTaskDialog = ({ open, onClose, stageId, onTaskAdded, consultingCompa
     const finalTaskData = {
       ...formData,
       stage_id: stageId,
-     status_of_approval:false,
+     status_of_approval:"pending",
     };
     try {
+      console.log(finalTaskData);
       const config = { headers: { Authorization: `Bearer ${getAuthToken()}` } };
       await axios.post(`${baseUrl}${createTaskApi}`, finalTaskData, config);
       onTaskAdded();

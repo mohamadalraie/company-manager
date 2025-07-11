@@ -24,6 +24,7 @@ import ProjectManagers from "./scenes/projectManagers/Index";
 import AddProjectManager from "./scenes/projectManagers/addProjectManger";
 import AddFile from "./scenes/projects/projectDetails/AddFile";
 import AddProjectFile from "./scenes/projects/projectDetails/AddFile";
+import { ProjectProvider } from "./contexts/ProjectContext";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -50,6 +51,7 @@ function App() {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
+        <ProjectProvider>
         <CssBaseline />
         <div
           className="app"
@@ -111,6 +113,7 @@ function App() {
             </Box>
           </main>
         </div>
+        </ProjectProvider>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );

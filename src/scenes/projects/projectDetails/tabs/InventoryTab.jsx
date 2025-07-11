@@ -36,7 +36,7 @@ const InfoItem = ({ icon, text }) => (
   </Box>
 );
 
-const ProjectContainer = ({ projectId }) => {
+const ProjectInventory = ({ projectId }) => {
   const { items, loading, error, refetchItems } = useProjectItemsData({ projectId });
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -255,4 +255,4 @@ const ProjectContainer = ({ projectId }) => {
   );
 };
 
-export default ProjectContainer;
+export default ProjectInventory;

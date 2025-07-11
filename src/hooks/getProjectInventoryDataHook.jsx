@@ -1,18 +1,15 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "../shared/baseUrl"; // Adjust path as needed
-import { getAllProjectItemsApi } from "../shared/APIs"; // Adjust path as needed
+import { getAllProjectItemsApi, getProjectInventoryApi } from "../shared/APIs"; // Adjust path as needed
 import { getAuthToken } from "../shared/Permissions";
-import { useProject } from '../contexts/ProjectContext';
 
-
-const useProjectItemsData = ({}) => {
-  const [materials, setMaterials] = useState([]);
+const useProjectInventoryData = ({projectId}) => {
+  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { selectedProjectId } = useProject();
 
-  const refetchMaterials = async () => {
+  const refetchItems = async () => {
     setLoading(true);
     setError(null);
     try {
@@ -21,8 +18,7 @@ const useProjectItemsData = ({}) => {
           'Authorization': `Bearer ${getAuthToken()}`
         }
       };
-      const response = await axios.get(`${baseUrl}${getAllProjectItemsApi(selectedProjectId)}`, config);
-      console.log(response.data)
+      const response = await axios.get(`${baseUrl}${getProjectInventoryApi(projectId)}`, config);
       const itemsData = response.data.data;
 
       // Flatten the response data to make it easier to work with
@@ -36,7 +32,7 @@ const useProjectItemsData = ({}) => {
         itemId: item.items_id ? item.items_id.id : null,
       }));
 
-      setMaterials(materials);
+      setItems(materials);
     } catch (err) {
       console.error("Error fetching project items:", err);
       setError(err);
@@ -46,10 +42,10 @@ const useProjectItemsData = ({}) => {
   };
 
   useEffect(() => {
-    refetchMaterials();
+    refetchItems();
   }, []);
 
-  return { materials, loading, error, refetchMaterials };
+  return { materials: items, loading, error, refetchMaterials: refetchItems };
 };
 
-export default useProjectItemsData;
+export default useProjectInventoryData;

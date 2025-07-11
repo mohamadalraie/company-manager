@@ -19,15 +19,19 @@ import CodeIcon from "@mui/icons-material/CodeOutlined";
 import AspectRatioIcon from "@mui/icons-material/AspectRatioOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import StraightenIcon from "@mui/icons-material/Straighten"; // أيقونة للوحدة (Unit)
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined"; // أيقونة للكمية
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { green } from "@mui/material/colors";
 import { useNavigate  } from "react-router-dom";
 import { havePermission } from "../shared/Permissions";
+import { useProject } from "../contexts/ProjectContext";
 
 const ProjectCard = ({ project }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate(); 
+  const {selectedProjectId, setSelectedProjectId  } = useProject();
 
   // Helper to format date
   const formatDate = (dateString) => {
@@ -86,7 +90,10 @@ const ProjectCard = ({ project }) => {
     </Grid>
   );
 const handleCardClick =() =>{
+  
   {havePermission("details projects")&&
+  setSelectedProjectId(project.id);
+  console.log("selected pId:"+selectedProjectId);
   navigate(`/projects/${project.id}`);}
 }
   return (
