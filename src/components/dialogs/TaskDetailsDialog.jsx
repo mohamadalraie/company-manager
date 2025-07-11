@@ -13,7 +13,7 @@ import {
   Alert,
   ListItemText,
 } from "@mui/material";
-import { tokens } from "../theme";
+import { tokens } from "../../theme";
 import EditTaskDialog from './EditTaskDialog';
 
 // --- Icon Imports ---
@@ -33,11 +33,11 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 // --- API Imports ---
 import axios from "axios";
-import { baseUrl } from "../shared/baseUrl"; 
-import { getAuthToken } from "../shared/Permissions";
-import { deleteTaskApi, deleteTaskResourceApi } from "../shared/APIs";
-import useTaskResources from "../hooks/getTaskResourcesDataHook";
-import DeleteConfirmationComponent from "./DeleteConfirmation";
+import { baseUrl } from "../../shared/baseUrl"; 
+import { getAuthToken } from "../../shared/Permissions";
+import { deleteTaskApi, deleteTaskResourceApi } from "../../shared/APIs";
+import useTaskResources from "../../hooks/getTaskResourcesDataHook";
+import DeleteConfirmationComponent from "../DeleteConfirmation";
 import { AddResourceDialog } from "./AddTaskResourceDialog";
 
 // Helper component for metadata items

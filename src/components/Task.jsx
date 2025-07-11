@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { tokens } from "../theme"; // Adjust path to your theme file
 import AccessTimeIcon from "@mui/icons-material/AccessTime"; // Icon for estimated time
-import TaskDetailDialog from "./TaskDetailsDialog";
+import TaskDetailDialog from "./dialogs/TaskDetailsDialog";
 
 // --- The Kanban Board Component ---
 const TasksKanbanView = ({ tasks,participants,consultingCompanyId ,stageId}) => {

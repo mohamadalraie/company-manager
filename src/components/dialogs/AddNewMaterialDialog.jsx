@@ -20,13 +20,13 @@ import {
     Stack,
     useTheme,
   } from "@mui/material";
-import { getAuthToken } from "../shared/Permissions";
-import { createNewItemApi } from "../shared/APIs";
-import { baseUrl } from "../shared/baseUrl";
+import { getAuthToken } from "../../shared/Permissions";
+import { createNewItemApi } from "../../shared/APIs";
+import { baseUrl } from "../../shared/baseUrl";
 import { useState } from "react";
-import { tokens } from "../theme";
+import { tokens } from "../../theme";
 import axios from "axios";
-import { useProject } from '../contexts/ProjectContext';
+import { useProject } from '../../contexts/ProjectContext';
 
 
 // ====================================================================

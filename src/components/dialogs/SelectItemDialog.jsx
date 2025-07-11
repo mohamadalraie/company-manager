@@ -22,14 +22,14 @@ import {
   useTheme,
 } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import useMaterialsData from "../hooks/getAllItemsDataHook";
+import useMaterialsData from "../../hooks/getAllItemsDataHook";
 import axios from "axios";
-import { baseUrl } from "../shared/baseUrl";
-import { getAuthToken } from "../shared/Permissions";
-import { tokens } from "../theme";
-import { addExistingItemToProjectContainer } from "../shared/APIs"; 
+import { baseUrl } from "../../shared/baseUrl";
+import { getAuthToken } from "../../shared/Permissions";
+import { tokens } from "../../theme";
+import { addExistingItemToProjectContainer } from "../../shared/APIs"; 
 import AddNewMaterialDialog from "./AddNewMaterialDialog";
-import { useProject } from '../contexts/ProjectContext';
+import { useProject } from '../../contexts/ProjectContext';
 
 export const SelectAndAddItemDialog = ({
   open,

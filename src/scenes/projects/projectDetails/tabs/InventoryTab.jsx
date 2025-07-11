@@ -24,7 +24,7 @@ import CategoryIcon from '@mui/icons-material/Category';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import TrackChangesIcon from '@mui/icons-material/TrackChanges';
-import { SelectAndAddItemDialog } from "../../../../components/SelectItemDialog";
+import { SelectAndAddItemDialog } from "../../../../components/dialogs/SelectItemDialog";
 import useProjectItemsData from "../../../../hooks/getAllProjectItemsDataHook";
 import { tokens } from "../../../../theme";
 // Helper component for displaying an icon with text

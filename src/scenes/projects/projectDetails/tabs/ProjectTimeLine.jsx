@@ -45,7 +45,7 @@ import { baseUrl } from "../../../../shared/baseUrl";
 import { getAuthToken } from "../../../../shared/Permissions";
 import axios from "axios";
 import { deleteStageApi } from "../../../../shared/APIs";
-import AddNewTaskDialog from "../../../../components/AddNewTaskDialog";
+import AddNewTaskDialog from "../../../../components/dialogs/AddNewTaskDialog";
 
 // --- Helper function to format dates ---
 const formatDateRange = (start, end) => {

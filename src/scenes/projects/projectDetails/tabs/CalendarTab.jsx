@@ -12,7 +12,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import LayersIcon from '@mui/icons-material/Layers';
 import useProjectStagesData from "../../../../hooks/getAllProjectStagesDataHook"; // <-- تأكد من صحة المسار
 import { tokens } from "../../../../theme"; // <-- تأكد من صحة المسار
-import TaskDetailDialog from "../../../../components/TaskDetailsDialog"; // <-- تأكد من صحة المسار
+import TaskDetailDialog from "../../../../components/dialogs/TaskDetailsDialog"; // <-- تأكد من صحة المسار
 import { useProject } from '../../../../contexts/ProjectContext';
 /**
  * دالة لتخصيص شكل عرض الحدث (النسخة المعدّلة)

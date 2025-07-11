@@ -10,12 +10,12 @@ import CategoryIcon from '@mui/icons-material/Category';
 import StraightenIcon from "@mui/icons-material/Straighten";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 
-import { tokens } from "../theme";
-import useMaterialsData from "../hooks/getAllItemsDataHook";
+import { tokens } from "../../theme";
+import useMaterialsData from "../../hooks/getAllItemsDataHook";
 import axios from "axios";
-import { baseUrl } from "../shared/baseUrl";
-import { getAuthToken } from "../shared/Permissions";
-import { addResourceToTask } from "../shared/APIs";
+import { baseUrl } from "../../shared/baseUrl";
+import { getAuthToken } from "../../shared/Permissions";
+import { addResourceToTask } from "../../shared/APIs";
 
 
 

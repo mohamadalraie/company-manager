@@ -31,15 +31,23 @@ import { Header } from "../../../../components/Header";
 import AddProjectFile from "../AddFile"; // Import the new Dialog component
 import { havePermission } from "../../../../shared/Permissions";
 import { useProject } from '../../../../contexts/ProjectContext';
+import axios from "axios";
+import { PdfViewerDialog } from "../../../../components/dialogs/PdfViewerDialog";
+
+
+
+
+
+
 
 const DocumentsTab = ({  }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  
   const { selectedProjectId } = useProject();
 
   const { projectFiles, loading, error, refetchFiles } = useProjectFilesData({
   });
-
   
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -51,6 +59,8 @@ const DocumentsTab = ({  }) => {
   const [currentFileName, setCurrentFileName] = useState("");
   const [currentFileType, setCurrentFileType] = useState("");
   const [isAddFileDialogOpen, setIsAddFileDialogOpen] = useState(false); // State for the AddFileDialog
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
+  const [pdfBlob, setPdfBlob] = useState(null);
 
   const showSnackbar = (message, severity) => {
     setSnackbarMessage(message);
@@ -65,19 +75,45 @@ const DocumentsTab = ({  }) => {
     setSnackbarOpen(false);
   };
 
-  const handleOpenViewer = (fileUrl, fileName, fileType) => {
-    setCurrentFileUrl(fileUrl);
-    setCurrentFileName(fileName);
-    setCurrentFileType(fileType);
-    setOpenViewer(true);
-  };
+  // const handleOpenViewer = (fileUrl, fileName, fileType) => {
+  //   window.open(fileUrl, '_blank', 'noopener,noreferrer');
+  //   // setCurrentFileUrl(fileUrl);
+  //   // setCurrentFileName(fileName);
+  //   // setCurrentFileType(fileType);
+  //   // setOpenViewer(true);
+  // };
+
+  // const handleCloseViewer = () => {
+  //   setOpenViewer(false);
+  //   setCurrentFileUrl("");
+  //   setCurrentFileName("");
+  //   setCurrentFileType("");
+  // };
 
   const handleCloseViewer = () => {
-    setOpenViewer(false);
-    setCurrentFileUrl("");
-    setCurrentFileName("");
-    setCurrentFileType("");
-  };
+    setIsViewerOpen(false);
+    setPdfBlob(null);
+};
+
+const handleViewFile = async (fileUrl, fileName) => {
+  try {
+      const relativeUrl = new URL(fileUrl).pathname;
+      const response = await axios.get(relativeUrl, { responseType: 'blob' });
+      
+      // 👇 --- التغيير الثاني: لا ننشئ URL، بل نستخدم الـ Blob مباشرة ---
+      const fileBlob = new Blob([response.data], { type: 'application/pdf' });
+      
+      setPdfBlob(fileBlob); // تخزين الـ Blob في الحالة
+      setCurrentFileName(fileName);
+      setIsViewerOpen(true);
+
+  } catch (error) {
+      console.error("Error preparing PDF for viewing:", error);
+      alert("Sorry, the file could not be prepared for viewing.");
+  }
+};
+
+
 
   const handleDownloadFile = (fileUrl, fileName) => {
     try {
@@ -294,7 +330,7 @@ const DocumentsTab = ({  }) => {
                       variant="contained"
                       startIcon={<VisibilityIcon />}
                       onClick={() =>
-                        handleOpenViewer(file.file_path, file.name, file.type)
+                        handleViewFile(file.file_path, file.name)
                       }
                       sx={{
                         backgroundColor: colors.blueAccent[600],
@@ -313,10 +349,10 @@ const DocumentsTab = ({  }) => {
                           handleDownloadFile(file.file_path, file.name)
                         }
                         sx={{
-                          backgroundColor: colors.greenAccent[600],
+                          backgroundColor: colors.greenAccent[700],
                           color: colors.primary[100],
                           "&:hover": {
-                            backgroundColor: colors.greenAccent[700],
+                            backgroundColor: colors.greenAccent[800],
                           },
                           flexGrow: 1,
                         }}
@@ -391,124 +427,12 @@ const DocumentsTab = ({  }) => {
         </Alert>
       </Snackbar>
 
-      <Dialog
-        open={openViewer}
-        onClose={handleCloseViewer}
-        maxWidth="md"
-        fullWidth
-        PaperProps={{
-          sx: {
-            backgroundColor: colors.primary[800],
-            color: colors.grey[100],
-          },
-        }}
-      >
-        <DialogTitle
-          sx={{
-            color: colors.grey[100],
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          Viewing: {currentFileName}
-          <IconButton
-            aria-label="close"
-            onClick={handleCloseViewer}
-            sx={{
-              color: colors.grey[100],
-              "&:hover": {
-                color: colors.blueAccent[400],
-              },
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent
-          dividers
-          sx={{ backgroundColor: colors.primary[900], p: 0 }}
-        >
-          {currentFileType === "pdf" && (
-            <iframe
-              src={currentFileUrl}
-              title={`PDF Viewer for ${currentFileName}`}
-              width="100%"
-              height="700px"
-              style={{ border: "none" }}
-            >
-              <p style={{ padding: "20px", color: colors.grey[300] }}>
-                Your browser does not support embedded PDFs. You can{" "}
-                <a
-                  href={currentFileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: colors.blueAccent[300] }}
-                >
-                  download {currentFileName} here
-                </a>
-                .
-              </p>
-            </iframe>
-          )}
-          {(currentFileType === "png" ||
-            currentFileType === "jpg" ||
-            currentFileType === "jpeg" ||
-            currentFileType === "gif" ||
-            currentFileType === "svg") && (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                p: 2,
-              }}
-            >
-              <img
-                src={currentFileUrl}
-                alt={`Image: ${currentFileName}`}
-                style={{
-                  maxWidth: "100%",
-                  maxHeight: "calc(100vh - 150px)",
-                  height: "auto",
-                  display: "block",
-                }}
-              />
-            </Box>
-          )}
-          {!(
-            currentFileType === "pdf" ||
-            currentFileType === "png" ||
-            currentFileType === "jpg" ||
-            currentFileType === "jpeg" ||
-            currentFileType === "gif" ||
-            currentFileType === "svg"
-          ) && (
-            <Box sx={{ p: 3, textAlign: "center", color: colors.grey[300] }}>
-              <Typography variant="body1">
-                This file type cannot be previewed directly. Please use the
-                download option.
-              </Typography>
-              <Button
-                variant="contained"
-                startIcon={<DownloadIcon />}
-                onClick={() => {
-                  handleDownloadFile(currentFileUrl, currentFileName);
-                  handleCloseViewer();
-                }}
-                sx={{
-                  mt: 2,
-                  backgroundColor: colors.greenAccent[600],
-                  color: colors.primary[100],
-                  "&:hover": { backgroundColor: colors.greenAccent[700] },
-                }}
-              >
-                Download {currentFileName}
-              </Button>
-            </Box>
-          )}
-        </DialogContent>
-      </Dialog>
+      <PdfViewerDialog
+                open={isViewerOpen}
+                onClose={handleCloseViewer}
+              pdfFile={pdfBlob}
+                fileName={currentFileName}
+            />
 
       <AddProjectFile
         open={isAddFileDialogOpen}

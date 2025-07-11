@@ -35,7 +35,7 @@ import ProjectStagesComponent from "./tabs/ProjectTimeLine";
 import ProjectCalendarView from "./tabs/CalendarTab";
 import ProjectGridCalendar from "./tabs/CalendarTab";
 import ProjectInventory from "./tabs/InventoryTab";
-import ResourcesTab from "./tabs/ResourcesTab";
+import ResourcesTab from "./tabs/StudiesTab";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

@@ -45,7 +45,7 @@ import {
   addExistingItemToProjectContainer,
   createNewItemApi,
 } from "../../../../shared/APIs"; // افترض وجود createNewItemApi
-import { SelectAndAddItemDialog } from "../../../../components/SelectItemDialog";
+import { SelectAndAddItemDialog } from "../../../../components/dialogs/SelectItemDialog";
 import useProjectItemsData from "../../../../hooks/getAllProjectItemsDataHook";
 import { useProject } from '../../../../contexts/ProjectContext';
 
