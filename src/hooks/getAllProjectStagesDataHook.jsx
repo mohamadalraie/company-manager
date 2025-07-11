@@ -4,20 +4,21 @@ import axios from "axios";
 import { baseUrl } from "../shared/baseUrl"; // Adjust path as needed
 import { getAllProjectStagesApi } from "../shared/APIs"; // Adjust path as needed
 import { getAuthToken } from "../shared/Permissions";
+import { useProject } from '../contexts/ProjectContext';
 
-const useProjectStagesData = (projectId) => {
+const useProjectStagesData = () => {
   const [stages, setStages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refetch, setRefetch] = useState(0); // State to trigger refetch
-
+  const { selectedProjectId } = useProject();
   const refetchData = () => {
     setRefetch(prev => prev + 1); // Increment to trigger useEffect
   };
   
   useEffect(() => {
     // Don't fetch if there's no projectId
-    if (!projectId) {
+    if (!selectedProjectId) {
       setLoading(false);
       return;
     }
@@ -31,7 +32,7 @@ const useProjectStagesData = (projectId) => {
           }
         };
 
-        const response = await axios.get(`${baseUrl}${getAllProjectStagesApi}${projectId}`, config);
+        const response = await axios.get(`${baseUrl}${getAllProjectStagesApi}${selectedProjectId}`, config);
         const stagesData = response.data.data;
 
         // Format the API data to match the structure your components expect
@@ -57,7 +58,7 @@ const useProjectStagesData = (projectId) => {
     };
 
     fetchStages();
-  }, [projectId, refetch]); // Re-run the effect if projectId or refetch changes
+  }, [selectedProjectId, refetch]);
 
   return { stages, loading, error, refetchData };
 };

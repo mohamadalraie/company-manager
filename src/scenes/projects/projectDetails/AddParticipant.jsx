@@ -23,13 +23,12 @@ import { addParticipantApi } from "../../../shared/APIs";
 import { baseUrl } from "../../../shared/baseUrl";
 import axios from "axios";
 import { getAuthToken } from "../../../shared/Permissions";
+import { useProject } from "../../../contexts/ProjectContext";
 
-/**
- * Dialog to add a participant to a project.
- */
-const AddParticipant = ({ open, onClose, projectId }) => {
+const AddParticipant = ({ open, onClose }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { selectedProjectId } = useProject();
 
   const config = {
     headers: { 'Authorization': `Bearer ${getAuthToken()}` }
@@ -73,7 +72,7 @@ const AddParticipant = ({ open, onClose, projectId }) => {
   const handleSubmitSelection = async () => {
     if (selectedEngineer) {
       const values = {
-        project_id: projectId,
+        project_id: selectedProjectId,
         participant_id: selectedEngineer.id,
         participant_type: "engineer",
       };

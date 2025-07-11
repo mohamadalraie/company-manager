@@ -61,7 +61,7 @@ const formatDateRange = (start, end) => {
   return `${startStr} -> ${endStr}`;
 };
 
-const ProjectStagesComponent = ({ projectId,consultingCompanyId,participants }) => {
+const ProjectStagesComponent = ({ consultingCompanyId,participants }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const {
@@ -69,7 +69,7 @@ const ProjectStagesComponent = ({ projectId,consultingCompanyId,participants }) 
     loading,
     error,
     refetchData,
-  } = useProjectStagesData(projectId);
+  } = useProjectStagesData();
 
   const [isTimelineCollapsed, setIsTimelineCollapsed] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -410,7 +410,7 @@ const ProjectStagesComponent = ({ projectId,consultingCompanyId,participants }) 
               </Accordion>
             ))}
           </Box>
-          <AddNewStage projectId={projectId} onStageAdded={refetchData} />
+          <AddNewStage onStageAdded={refetchData} />
         </Box>
         <Box
           display="flex"

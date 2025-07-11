@@ -27,7 +27,6 @@ import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 import { SelectAndAddItemDialog } from "../../../../components/SelectItemDialog";
 import useProjectItemsData from "../../../../hooks/getAllProjectItemsDataHook";
 import { tokens } from "../../../../theme";
-
 // Helper component for displaying an icon with text
 const InfoItem = ({ icon, text }) => (
   <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary' }}>
@@ -36,14 +35,15 @@ const InfoItem = ({ icon, text }) => (
   </Box>
 );
 
-const ProjectInventory = ({ projectId }) => {
-  const { items, loading, error, refetchItems } = useProjectItemsData({ projectId });
+const ProjectInventory = ({  }) => {
+  const { items, loading, error, refetchItems } = useProjectItemsData({ });
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+
 
   const handleOpenDialog = () => setIsDialogOpen(true);
   const handleCloseDialog = () => setIsDialogOpen(false);
@@ -248,7 +248,6 @@ const ProjectInventory = ({ projectId }) => {
           open={isDialogOpen}
           onClose={handleCloseDialog}
           onConfirm={handleMaterialConfirm}
-          projectId={projectId}
         />
       )}
     </>

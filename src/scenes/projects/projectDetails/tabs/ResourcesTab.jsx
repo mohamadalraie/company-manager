@@ -11,7 +11,7 @@ import DocumentsTab from "./DocumentsTab"; // (تأكد من صحة المسار
 import MaterialsTab from "./MaterialsTab"; // (تأكد من صحة المسار)
 
 
-const ResourcesTab = ({ projectId }) => {
+const ResourcesTab = ({  }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -42,12 +42,12 @@ const ResourcesTab = ({ projectId }) => {
 
         {/* --- TAB 1: DOCUMENTS / FILES --- */}
         <TabPanel value="1" sx={{ p: 0, pt: 2 }}>
-          <DocumentsTab projectId={projectId} />
+          <DocumentsTab />
         </TabPanel>
 
         {/* --- TAB 2: MATERIALS / INVENTORY --- */}
         <TabPanel value="2" sx={{ p: 0, pt: 2 }}>
-          <MaterialsTab projectId={projectId} />
+          <MaterialsTab />
         </TabPanel>
         
       </TabContext>

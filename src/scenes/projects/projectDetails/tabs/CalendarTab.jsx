@@ -13,7 +13,7 @@ import LayersIcon from '@mui/icons-material/Layers';
 import useProjectStagesData from "../../../../hooks/getAllProjectStagesDataHook"; // <-- تأكد من صحة المسار
 import { tokens } from "../../../../theme"; // <-- تأكد من صحة المسار
 import TaskDetailDialog from "../../../../components/TaskDetailsDialog"; // <-- تأكد من صحة المسار
-
+import { useProject } from '../../../../contexts/ProjectContext';
 /**
  * دالة لتخصيص شكل عرض الحدث (النسخة المعدّلة)
  */
@@ -105,9 +105,10 @@ const renderEventContent = (eventInfo, columnsConfig, theme, colors) => {
 };
 
 
-const ProjectGridCalendar = ({ projectId }) => {
+const ProjectGridCalendar = ({  }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { selectedProjectId } = useProject();
 
   // تعريف كائن الألوان الخاص بك داخل المكون
   const columnsConfig = {
@@ -117,7 +118,7 @@ const ProjectGridCalendar = ({ projectId }) => {
     Done: { title: "Done", color: colors.greenAccent[500] },
   };
 
-  const { stages, loading, error } = useProjectStagesData(projectId);
+  const { stages, loading, error } = useProjectStagesData(selectedProjectId);
   const [selectedTask, setSelectedTask] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 

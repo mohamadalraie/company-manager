@@ -31,7 +31,7 @@ import UserCard from "../../../../components/UserCard";
 import { useEffect } from "react";
 import { havePermission } from "../../../../shared/Permissions";
 
-const TeamTab = ({ participants,projectId }) => {
+const TeamTab = ({ participants }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -217,7 +217,6 @@ const TeamTab = ({ participants,projectId }) => {
       <AddParticipant
         open={isAddParticipantOpen}    // تمرير حالة الفتح
         onClose={handleCloseAddParticipant} // تمرير دالة الإغلاق
-        projectId={projectId}
       />
    
 

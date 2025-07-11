@@ -26,6 +26,7 @@ import { baseUrl } from "../shared/baseUrl";
 import { useState } from "react";
 import { tokens } from "../theme";
 import axios from "axios";
+import { useProject } from '../contexts/ProjectContext';
 
 
 // ====================================================================
@@ -37,13 +38,14 @@ const initialFormData = {
   
   };
   
-  const AddNewMaterialDialog = ({ open, onClose, onMaterialAdded ,projectId}) => {
+  const AddNewMaterialDialog = ({ open, onClose, onMaterialAdded }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState(initialFormData);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState(null);
+    const { selectedProjectId } = useProject();
   
     const handleInputChange = (e) => {
       const { name, value } = e.target;
@@ -92,9 +94,9 @@ const initialFormData = {
         console.log(finalData);
   
         const config = { headers: { Authorization: `Bearer ${getAuthToken()}` } };
+
         
-        // ملاحظة: تم تعديل مسار الـ API ليكون عاماً ولا يعتمد على projectId
-        await axios.post(`${baseUrl}${createNewItemApi}${projectId}`, finalData, config);
+        await axios.post(`${baseUrl}${createNewItemApi}${selectedProjectId}`, finalData, config);
   
         onMaterialAdded();
         handleCloseAndReset();

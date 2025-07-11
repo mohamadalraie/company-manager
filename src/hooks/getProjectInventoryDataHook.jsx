@@ -3,12 +3,13 @@ import axios from "axios";
 import { baseUrl } from "../shared/baseUrl"; // Adjust path as needed
 import { getAllProjectItemsApi, getProjectInventoryApi } from "../shared/APIs"; // Adjust path as needed
 import { getAuthToken } from "../shared/Permissions";
+import { useProject } from '../contexts/ProjectContext';
 
-const useProjectInventoryData = ({projectId}) => {
+const useProjectInventoryData = ({}) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const { selectedProjectId } = useProject();
   const refetchItems = async () => {
     setLoading(true);
     setError(null);
@@ -18,7 +19,7 @@ const useProjectInventoryData = ({projectId}) => {
           'Authorization': `Bearer ${getAuthToken()}`
         }
       };
-      const response = await axios.get(`${baseUrl}${getProjectInventoryApi(projectId)}`, config);
+      const response = await axios.get(`${baseUrl}${getProjectInventoryApi(selectedProjectId)}`, config);
       const itemsData = response.data.data;
 
       // Flatten the response data to make it easier to work with

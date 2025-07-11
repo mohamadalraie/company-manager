@@ -113,6 +113,7 @@ const EditTaskDialog = ({ open, onClose, task, onTaskUpdated, consultingCompanyI
       // **استخدام PUT و updateTaskApi مع معرّف المهمة**
       const response = await axios.put(`${baseUrl}${updateTaskApi}${task.id}`, formData, config);
       onTaskUpdated(response.data); // إرسال البيانات المحدثة للواجهة الأم
+      console.log(response.data);
       handleClose();
     } catch (err) {
       console.error("Failed to update task:", err);

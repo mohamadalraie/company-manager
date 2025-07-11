@@ -22,6 +22,7 @@ import { getAuthToken } from '../shared/Permissions';
 // --- External Libraries ---
 import { Formik } from "formik";
 import * as yup from "yup";
+import { useProject } from '../contexts/ProjectContext';
 
 // --- Icons for form fields ---
 import TitleIcon from '@mui/icons-material/Title';
@@ -31,13 +32,14 @@ import LowPriorityIcon from '@mui/icons-material/LowPriority';
 
 
 // --- The Refactored Add Stage Component ---
-const AddNewStage = ({ projectId,onStageAdded }) => {
+const AddNewStage = ({ onStageAdded }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const [isAdding, setIsAdding] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
+  const { selectedProjectId } = useProject();
 
   const handleFormSubmit = async (values, { resetForm }) => {
     setIsLoading(true);
@@ -72,7 +74,7 @@ const AddNewStage = ({ projectId,onStageAdded }) => {
     start_date: "",
     expected_closed_date: "",
     priority: "", // Changed to empty string for the number field
-    project_id:projectId
+    project_id:selectedProjectId
   };
 
   const validationSchema = yup.object().shape({

@@ -16,7 +16,7 @@ import axios from "axios";
 import { baseUrl } from "../shared/baseUrl";
 import { getAuthToken } from "../shared/Permissions";
 import { addResourceToTask } from "../shared/APIs";
-import { useProject } from '../contexts/ProjectContext';
+
 
 
 // ====================================================================
@@ -85,10 +85,9 @@ const MaterialCard = ({ material, onAddClick }) => {
 export const AddResourceDialog = ({ open, onClose, taskId, onResourceAdded }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const { selectedProjectId } = useProject();
-  
+
   // الـ hook الآن يستخدم selectedProjectId من الـ Context
-  const { materials: projectMaterials, loading: projectLoading } = useMaterialsData({ projectId: selectedProjectId }); 
+  const { materials: projectMaterials, loading: projectLoading } = useMaterialsData(); 
 
   // هذا الـ hook لا نحتاجه هنا لأننا سنمرر الموارد الموجودة من المكون الذي يستدعي هذا الديالوج
   // const { resources: taskResources, loading: taskLoading } = useTaskResources({ taskId });

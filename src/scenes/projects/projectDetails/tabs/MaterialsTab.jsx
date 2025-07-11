@@ -47,12 +47,13 @@ import {
 } from "../../../../shared/APIs"; // افترض وجود createNewItemApi
 import { SelectAndAddItemDialog } from "../../../../components/SelectItemDialog";
 import useProjectItemsData from "../../../../hooks/getAllProjectItemsDataHook";
+import { useProject } from '../../../../contexts/ProjectContext';
 
-const MaterialsTab = ({ projectId }) => {
+const MaterialsTab = ({ }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { selectedProjectId } = useProject();
   const { materials, loading, error, refetchMaterials } = useProjectItemsData({
-    projectId: projectId,
   });
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -111,7 +112,7 @@ const MaterialsTab = ({ projectId }) => {
       };
       const config = { headers: { Authorization: `Bearer ${getAuthToken()}` } };
       await axios.post(
-        `${baseUrl}${addExistingItemToProjectContainer}${projectId}`,
+        `${baseUrl}${addExistingItemToProjectContainer}${selectedProjectId}`,
         payload,
         config
       );
@@ -279,7 +280,6 @@ const MaterialsTab = ({ projectId }) => {
         open={isAddDialogOpen}
         onClose={() => setIsAddDialogOpen(false)}
         onConfirm={handleMaterialAdded}
-        projectId={projectId}
         existingProjectMaterials={materials}
       />
 

@@ -29,12 +29,12 @@ import { getAuthToken } from "../shared/Permissions";
 import { tokens } from "../theme";
 import { addExistingItemToProjectContainer } from "../shared/APIs"; 
 import AddNewMaterialDialog from "./AddNewMaterialDialog";
+import { useProject } from '../contexts/ProjectContext';
 
 export const SelectAndAddItemDialog = ({
   open,
   onClose,
   onConfirm,
-  projectId,
   
 }) => {
   const theme = useTheme();
@@ -50,6 +50,7 @@ export const SelectAndAddItemDialog = ({
   const [expectedQuantity, setExpectedQuantity] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
+  const { selectedProjectId } = useProject();
 
 
   const categories = useMemo(() => {
@@ -95,7 +96,7 @@ export const SelectAndAddItemDialog = ({
         expected_quantity: parseFloat(expectedQuantity),
       };
       const config = { headers: { Authorization: `Bearer ${getAuthToken()}` } };
-      await axios.post(`${baseUrl}${addExistingItemToProjectContainer}${projectId}`, payload, config);
+      await axios.post(`${baseUrl}${addExistingItemToProjectContainer}${selectedProjectId}`, payload, config);
 
       onConfirm(selectedMaterial);
       handleCloseQuantityDialog();
@@ -203,7 +204,7 @@ export const SelectAndAddItemDialog = ({
         </Dialog>
       )}
 
-      <AddNewMaterialDialog open={isAddDialogOpen} onClose={() => setIsAddDialogOpen(false)} onMaterialAdded={handleMaterialAdded} projectId={projectId}/>
+      <AddNewMaterialDialog open={isAddDialogOpen} onClose={() => setIsAddDialogOpen(false)} onMaterialAdded={handleMaterialAdded} />
     </>
   );
 };

@@ -5,14 +5,16 @@ import axios from "axios";
 import { baseUrl } from "../shared/baseUrl";
 import { getProjectFilesApi, getOneParticipantApi } from "../shared/APIs"; // تأكد من استيراد API المشارك
 import { getAuthToken } from "../shared/Permissions";
+import { useProject } from '../contexts/ProjectContext';
 
-const useProjectFilesData = ({ projectId }) => {
+const useProjectFilesData = ({  }) => {
   const [projectFiles, setProjectFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { selectedProjectId } = useProject();
 
   const refetchFiles = useCallback(async () => {
-    if (!projectId) {
+    if (!selectedProjectId) {
       setProjectFiles([]);
       setLoading(false);
       return;
@@ -29,7 +31,7 @@ const useProjectFilesData = ({ projectId }) => {
       };
 
       // --- الخطوة 1: جلب قائمة الملفات الأساسية ---
-      const filesResponse = await axios.get(`${baseUrl}${getProjectFilesApi(projectId)}`, config);
+      const filesResponse = await axios.get(`${baseUrl}${getProjectFilesApi(selectedProjectId)}`, config);
       const filesData = filesResponse.data.data;
 
       if (!filesData || filesData.length === 0) {
@@ -77,7 +79,7 @@ const useProjectFilesData = ({ projectId }) => {
     } finally {
       setLoading(false);
     }
-  }, [projectId]);
+  }, [selectedProjectId]);
 
   useEffect(() => {
     refetchFiles();

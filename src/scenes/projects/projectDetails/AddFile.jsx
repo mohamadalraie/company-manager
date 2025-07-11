@@ -30,8 +30,9 @@ import axios from "axios";
 import { baseUrl } from "../../../shared/baseUrl";
 import { addProjectFileApi } from "../../../shared/APIs";
 import { getAuthToken } from "../../../shared/Permissions";
+import { useProject } from '../../../contexts/ProjectContext';
+const AddProjectFile = ({ open, onClose,  onUploadSuccess }) => {
 
-const AddProjectFile = ({ open, onClose, projectId, onUploadSuccess }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -42,6 +43,7 @@ const AddProjectFile = ({ open, onClose, projectId, onUploadSuccess }) => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("info");
   const [fileError, setFileError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
+  const { selectedProjectId } = useProject();
 
 
 
@@ -109,11 +111,11 @@ const AddProjectFile = ({ open, onClose, projectId, onUploadSuccess }) => {
     const formData = new FormData();
     formData.append("file", selectedFile);
     formData.append("description", fileDescription);
-    formData.append("project_id", projectId);
+    formData.append("project_id", selectedProjectId);
 
     try {
       const response = await axios.post(
-        `${baseUrl}${addProjectFileApi(projectId)}`,
+        `${baseUrl}${addProjectFileApi(selectedProjectId)}`,
         formData,
 config
       );

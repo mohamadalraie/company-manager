@@ -143,7 +143,7 @@ const TaskDetailDialog = ({ open, onClose, task: initialTask, onTaskDeleted, onT
           <Grid container spacing={3} sx={{ height: '100%', pt: 2 }}>
 
             {/* --- العمود الأول: العنوان، الوصف، الملاحظات --- */}
-            <Grid item xs={12} md={4} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            <Grid item xs={12} md={4} flex="1" sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               <Box>
                 <Typography variant="h4" fontWeight="bold" color={colors.grey[100]} gutterBottom>{task.title}</Typography>
                 <Typography variant="subtitle1" color={colors.greenAccent[400]}>Stage ID: {stageId || 'N/A'}</Typography>
@@ -161,7 +161,7 @@ const TaskDetailDialog = ({ open, onClose, task: initialTask, onTaskDeleted, onT
             </Grid>
 
             {/* --- العمود الثاني: التفاصيل --- */}
-            <Grid item xs={12} md={4} sx={{ borderLeft: { md: `1px solid ${colors.grey[700]}` }, borderRight: { md: `1px solid ${colors.grey[700]}` }, px: { md: 3 } }}>
+            <Grid item xs={12} md={4} flex="1" sx={{ borderLeft: { md: `1px solid ${colors.grey[700]}` }, borderRight: { md: `1px solid ${colors.grey[700]}` }, px: { md: 3 } }}>
               <Typography variant="h6" color={colors.grey[200]} sx={{ mb: 2 }}>Details</Typography>
                 <MetadataItem icon={<PersonPinIcon />} label="Assigned To">
                     <Box display="flex" alignItems="center" gap={1}>
@@ -178,7 +178,7 @@ const TaskDetailDialog = ({ open, onClose, task: initialTask, onTaskDeleted, onT
             </Grid>
 
             {/* --- العمود الثالث: قائمة التحقق (Checklist) --- */}
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={4} flex="1">
               <Box display="flex" justifyContent="space-between" alignItems="center" mb={1.5}>
                 <Typography variant="h6" color={colors.grey[200]} sx={{ display: 'flex', alignItems: 'center', gap: 1 ,mr:"20px"}}>
                   <InventoryIcon/> Used Resources
@@ -191,7 +191,7 @@ const TaskDetailDialog = ({ open, onClose, task: initialTask, onTaskDeleted, onT
                   Add Resource
                 </Button>
               </Box>
-              <Box sx={{ p: 1, backgroundColor: colors.primary[900], borderRadius: '8px', height: 'calc(100% - 40px)', overflowY: 'auto' }}>
+              <Box sx={{ p: 1, border:`1px solid ${colors.grey[700]}` , borderRadius: '8px'}}>
                 {resourcesLoading ? (
                   <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}><CircularProgress size={30} /></Box>
                 ) : resourcesError ? (
@@ -279,7 +279,6 @@ const TaskDetailDialog = ({ open, onClose, task: initialTask, onTaskDeleted, onT
             onClose={() => setIsAddResourceDialogOpen(false)}
             onResourceAdded={handleAddResourceSuccess}
             taskId={task.id}
-            projectId={task.project_id}
           />
       )}
       

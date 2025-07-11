@@ -291,7 +291,6 @@ const ProjectDetails = () => {
             {havePermission("view project department execution") && (
               <TeamTab
                 participants={project.participants}
-                projectId={project.id}
               />
             )}
           </TabPanel>
@@ -311,13 +310,13 @@ const ProjectDetails = () => {
 
           <TabPanel value={value} index={4}>
             {havePermission("view reports resource management") && (
-              <ResourcesTab projectId={id} />
+              <ResourcesTab  />
             )}
           </TabPanel>
           <TabPanel value={value} index={5}>
             {havePermission("view reports resource management") && (
               <ProjectStagesComponent
-                projectId={id}
+                
                 consultingCompanyId={project.consultingCompany.id}
                 participants={project.participants}
               />
@@ -326,13 +325,13 @@ const ProjectDetails = () => {
 
           <TabPanel value={value} index={6}>
             {havePermission("view reports resource management") && (
-              <ProjectGridCalendar projectId={id} />
+              <ProjectGridCalendar  />
             )}
           </TabPanel>
           
           <TabPanel value={value} index={7}>
             {havePermission("view reports resource management") && (
-              <ProjectInventory projectId={id} />
+              <ProjectInventory />
             )}
           </TabPanel>
         </Box>

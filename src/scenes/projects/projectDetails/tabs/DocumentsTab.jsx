@@ -30,13 +30,14 @@ import { baseUrl } from "../../../../shared/baseUrl";
 import { Header } from "../../../../components/Header";
 import AddProjectFile from "../AddFile"; // Import the new Dialog component
 import { havePermission } from "../../../../shared/Permissions";
+import { useProject } from '../../../../contexts/ProjectContext';
 
-const DocumentsTab = ({ projectId }) => {
+const DocumentsTab = ({  }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { selectedProjectId } = useProject();
 
   const { projectFiles, loading, error, refetchFiles } = useProjectFilesData({
-    projectId: projectId,
   });
 
   
@@ -218,7 +219,7 @@ const DocumentsTab = ({ projectId }) => {
           pb: 1,
         }}
       >
-        Project Files (Project ID: {projectId})
+        Project Files (Project ID: {selectedProjectId})
       </Typography>
 
       {projectFiles.length === 0 ? (
@@ -512,7 +513,6 @@ const DocumentsTab = ({ projectId }) => {
       <AddProjectFile
         open={isAddFileDialogOpen}
         onClose={handleCloseAddFileDialog}
-        projectId={projectId}
         onUploadSuccess={refetchFiles} // Callback to refetch files after successful upload
       />
     </Box>
