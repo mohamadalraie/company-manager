@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "../shared/baseUrl"; // Adjust path as needed
-import { getAllProjectItemsApi, getProjectInventoryApi } from "../shared/APIs"; // Adjust path as needed
+import {  getProjectInventoryApi } from "../shared/APIs"; // Adjust path as needed
 import { getAuthToken } from "../shared/Permissions";
 import { useProject } from '../contexts/ProjectContext';
 
@@ -24,13 +24,13 @@ const useProjectInventoryData = ({}) => {
 
       // Flatten the response data to make it easier to work with
       const materials = itemsData.map((item) => ({
-        id: item.id,
-        expected_quantity: item.expected_quantity,
+        
+        quantity_available: item.quantity_available,
         // Safely access nested properties from the "items_id" object
-        name: item.items_id ? item.items_id.name : 'Not Available',
-        category: item.items_id ? item.items_id.category : 'N/A',
-        unit: item.items_id ? item.items_id.unit : "alll",
-        itemId: item.items_id ? item.items_id.id : null,
+        name: item.item ? item.item.name : 'Not Available',
+        category: item.item ? item.item.category : 'N/A',
+        unit: item.item ? item.item.unit : "N/A",
+        itemId: item.item ? item.item.id : null,
       }));
 
       setItems(materials);

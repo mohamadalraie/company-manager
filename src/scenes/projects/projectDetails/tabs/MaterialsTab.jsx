@@ -107,7 +107,7 @@ const MaterialsTab = ({ }) => {
 
     try {
       const payload = {
-        item_id: selectedMaterial.id,
+        item_id: selectedMaterial.itemId,
         expected_quantity: parseFloat(expectedQuantity),
       };
       const config = { headers: { Authorization: `Bearer ${getAuthToken()}` } };

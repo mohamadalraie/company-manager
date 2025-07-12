@@ -1,257 +1,429 @@
 import React, { useState, useMemo } from "react";
 import {
-  Button,
   Box,
   Typography,
-  Alert,
-  CircularProgress,
-  Grid,
-  Card,
-  CardContent,
-  Chip,
-  LinearProgress,
-  useTheme,
+  Button,
   TextField,
   FormControl,
   InputLabel,
   Select,
+  Chip,
+  Divider,
   MenuItem,
+  Grid,
+  Card,
+  CardContent,
+  CardActions,
+  CircularProgress,
+  Alert,
   Stack,
-  Tooltip,
+  useTheme,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Snackbar,
 } from "@mui/material";
-import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
-import CategoryIcon from '@mui/icons-material/Category';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import TrackChangesIcon from '@mui/icons-material/TrackChanges';
+
+import StraightenIcon from "@mui/icons-material/Straighten";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import CategoryIcon from "@mui/icons-material/Category";
+
+import { tokens } from "../../../../theme";
+import { Header } from "../../../../components/Header";
+import axios from "axios";
+import { baseUrl } from "../../../../shared/baseUrl";
+import { getAuthToken } from "../../../../shared/Permissions";
+import {
+  addExistingItemToProjectContainer,
+} from "../../../../shared/APIs";
 import { SelectAndAddItemDialog } from "../../../../components/dialogs/SelectItemDialog";
 import useProjectItemsData from "../../../../hooks/getAllProjectItemsDataHook";
-import { tokens } from "../../../../theme";
-// Helper component for displaying an icon with text
-const InfoItem = ({ icon, text }) => (
-  <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary' }}>
-    {icon}
-    <Typography variant="body2" sx={{ ml: 1 }}>{text}</Typography>
-  </Box>
-);
+import { useProject } from '../../../../contexts/ProjectContext';
+import useProjectInventoryData from "../../../../hooks/getProjectInventoryDataHook";
+import { SelectAndAddItemToInventoryDialog } from "../../../../components/dialogs/SelectItemToInventoryDialog";
 
-const ProjectInventory = ({  }) => {
-  const { items, loading, error, refetchItems } = useProjectItemsData({ });
+// Helper component for the material card
+const MaterialCard = ({ material }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  return (
+    <Card
+      elevation={0}
+      sx={{
+        p: 2,
+        backgroundColor: colors.primary[700],
+        border: `1px solid ${colors.grey[700]}`,
+        borderRadius: "12px",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+        "&:hover": {
+          transform: "translateY(-5px)",
+          boxShadow: `0px 8px 15px -5px ${colors.greenAccent[800]}`,
+          borderColor: colors.greenAccent[700],
+        },
+      }}
+    >
+      <CardContent sx={{ flexGrow: 1, p: 1 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            mb: 2,
+          }}
+        >
+          <Typography variant="h5" fontWeight="bold" color={colors.grey[100]}>
+            {material.name}
+          </Typography>
+          <Chip
+            icon={<CategoryIcon />}
+            label={material.category}
+            size="small"
+            sx={{
+              backgroundColor: colors.primary[600],
+              color: colors.grey[200],
+            }}
+          />
+        </Box>
+        <Divider sx={{ my: 2, borderColor: colors.grey[600] }} />
+        <Stack spacing={1.5}>
+          <Box display="flex" alignItems="center" gap={1.5}>
+            <StraightenIcon sx={{ color: colors.greenAccent[400] }} />
+            <Typography variant="body2" color={colors.grey[300]}>
+              Unit:{" "}
+              <Typography
+                component="span"
+                fontWeight="bold"
+                color={colors.grey[100]}
+              >
+                {material.unit}
+              </Typography>
+            </Typography>
+          </Box>
+          <Box display="flex" alignItems="center" gap={1.5}>
+            <Inventory2OutlinedIcon sx={{ color: colors.greenAccent[400] }} />
+            <Typography variant="body2" color={colors.grey[300]}>
+              Quantity Available:{" "}
+              <Typography
+                component="span"
+                fontWeight="bold"
+                color={colors.grey[100]}
+              >
+                {material.quantity_available}
+              </Typography>
+            </Typography>
+          </Box>
+        </Stack>
+      </CardContent>
+    </Card>
+  );
+};
+
+// Main component renamed to ProjectInventory
+const ProjectInventory = () => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const { selectedProjectId } = useProject(); // Using context to get the project ID
+  
+  // The hook now uses the ID from the context
+  const {  materials, loading, error, refetchMaterials } = useProjectInventoryData({
+    projectId: selectedProjectId 
+  });
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-
-
-  const handleOpenDialog = () => setIsDialogOpen(true);
-  const handleCloseDialog = () => setIsDialogOpen(false);
-
-  const handleMaterialConfirm = (material) => {
-    setSelectedMaterial(material);
-    refetchItems();
-    handleCloseDialog();
-  };
+  const [isQuantityDialogOpen, setIsQuantityDialogOpen] = useState(false);
+  const [expectedQuantity, setExpectedQuantity] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
+  const [feedback, setFeedback] = useState({
+    open: false,
+    message: "",
+    severity: "info",
+  });
 
   const categories = useMemo(() => {
-    if (!items) return [];
-    return Array.from(new Set(items.map((item) => item.category)));
-  }, [items]);
+    if (!materials) return [];
+    return Array.from(new Set(materials.map((m) => m.category)));
+  }, [materials]);
 
-  const filteredItems = useMemo(() => {
-    if (!items) return [];
-    return items
-      .filter((item) =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-      .filter((item) =>
-        selectedCategory ? item.category === selectedCategory : true
+  const filteredMaterials = useMemo(() => {
+    if (!materials) return [];
+    return materials
+      .filter((m) => m.name.toLowerCase().includes(searchTerm.toLowerCase()))
+      .filter((m) =>
+        selectedCategory ? m.category === selectedCategory : true
       );
-  }, [items, searchTerm, selectedCategory]);
+  }, [materials, searchTerm, selectedCategory]);
+
+  const handleOpenQuantityDialog = (material) => {
+    setSelectedMaterial(material);
+    setExpectedQuantity("");
+    setSubmitError(null);
+    setIsQuantityDialogOpen(true);
+  };
+
+  const handleCloseQuantityDialog = () => {
+    setIsQuantityDialogOpen(false);
+    setSelectedMaterial(null);
+  };
+
+  const handleConfirmAndAddItem = async () => {
+    if (!expectedQuantity || parseFloat(expectedQuantity) <= 0) {
+      setSubmitError("Please enter a valid, positive quantity.");
+      return;
+    }
+    setIsSubmitting(true);
+    setSubmitError(null);
+    try {
+      const payload = {
+        item_id: selectedMaterial.itemId,
+        expected_quantity: parseFloat(expectedQuantity),
+      };
+      const config = { headers: { Authorization: `Bearer ${getAuthToken()}` } };
+      await axios.post(
+        `${baseUrl}${addExistingItemToProjectContainer}${selectedProjectId}`,
+        payload,
+        config
+      );
+      setFeedback({
+        open: true,
+        message: `Successfully added ${selectedMaterial.name} to the project!`,
+        severity: "success",
+      });
+      handleCloseQuantityDialog();
+      refetchMaterials(); // Refetch the list after adding
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || "An error occurred.";
+      setSubmitError(errorMessage);
+      setFeedback({ open: true, message: errorMessage, severity: "error" });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleMaterialAdded = () => {
+    // This function is passed to the dialog for adding a NEW item to the global inventory
+    refetchMaterials(); // We can refetch here too if the dialog adds to the project directly
+    setIsAddDialogOpen(false);
+  };
 
   return (
-    <>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-        <Typography variant="h4" fontWeight="bold">
-          Project Materials
-        </Typography>
-        <Button
-          variant="contained"
-          size="large"
-          sx={{
-            backgroundColor: colors.greenAccent[700],
-            color: colors.primary[100],
-            "&:hover": {
-              backgroundColor: colors.greenAccent[800],
-            },
-          }}
-          startIcon={<LibraryAddIcon />}
-          onClick={handleOpenDialog}
-        >
-          Add Item To the Inventory
-        </Button>
+    <Box m="20px">
+      <Header
+        title="Project Inventory"
+        subtitle="Manage all materials assigned to the current project"
+      />
+
+      <Box mt="20px" p={3} sx={{ backgroundColor: colors.primary[800], borderRadius: "12px" }}>
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+            <CircularProgress />
+          </Box>
+        ) : error ? (
+          <Alert severity="error">{error.message}</Alert>
+        ) : (
+          <>
+            <Stack direction={{ xs: "column", md: "row" }} spacing={2} sx={{ mb: 4 }}>
+              <TextField
+                label="Search by material name..."
+                variant="outlined"
+                fullWidth
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <FormControl fullWidth>
+                <InputLabel>Filter by Category</InputLabel>
+                <Select
+                  value={selectedCategory}
+                  label="Filter by Category"
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                >
+                  <MenuItem value=""><em>All Categories</em></MenuItem>
+                  {categories.map((cat) => (
+                    <MenuItem key={cat} value={cat}>{cat}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Button
+                variant="contained"
+                startIcon={<AddCircleOutlineIcon />}
+                onClick={() => setIsAddDialogOpen(true)}
+                sx={{
+                  flexShrink: 0,
+                  backgroundColor: colors.greenAccent[700],
+                  color: colors.primary[100],
+                  "&:hover": { backgroundColor: colors.greenAccent[800] },
+                }}
+              >
+                Add Material
+              </Button>
+            </Stack>
+            <Grid container spacing={3}>
+              {filteredMaterials.map((material) => (
+                <Grid item key={material.id} xs={12} sm={6} md={4}>
+                  <MaterialCard material={material} />
+                </Grid>
+              ))}
+              {filteredMaterials.length === 0 && (
+                <Grid item xs={12}>
+                    <Alert severity="info" sx={{ mt: 3 }}>
+                        No materials have been added to this project yet, or none match your filter.
+                    </Alert>
+                </Grid>
+              )}
+            </Grid>
+          </>
+        )}
       </Box>
 
-      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ mb: 4 }}>
-        <TextField
-          label="Search by material name..."
-          variant="outlined"
-          fullWidth
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <FormControl fullWidth sx={{ minWidth: 200 }}>
-          <InputLabel>Filter by Category</InputLabel>
-          <Select
-            value={selectedCategory}
-            label="Filter by Category"
-            onChange={(e) => setSelectedCategory(e.target.value)}
-          >
-            <MenuItem value="">
-              <em>All Categories</em>
-            </MenuItem>
-            {categories.map((category) => (
-              <MenuItem key={category} value={category}>
-                {category}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Stack>
-
       {selectedMaterial && (
-        <Alert severity="success" sx={{ mb: 3 }}>
-          Last selected item: <strong>{selectedMaterial.name}</strong>
+        <Dialog open={isQuantityDialogOpen} onClose={handleCloseQuantityDialog}>
+          <DialogTitle sx={{ backgroundColor: colors.primary[800], color: colors.greenAccent[400] }}>
+            Enter Expected Quantity for{" "}
+            <Typography component="span" color="white" fontWeight="bold">{selectedMaterial.name}</Typography>
+          </DialogTitle>
+          <DialogContent sx={{ backgroundColor: colors.primary[800], pt: "20px !important" }}>
+            {submitError && (<Alert severity="error" sx={{ mb: 2 }}>{submitError}</Alert>)}
+            <TextField
+              autoFocus margin="dense" name="expected_quantity" label="Expected Quantity" type="number" fullWidth variant="outlined"
+              value={expectedQuantity}
+              onChange={(e) => setExpectedQuantity(e.target.value)}
+              InputProps={{ inputProps: { min: 1 } }}
+            />
+          </DialogContent>
+          <DialogActions sx={{ backgroundColor: colors.primary[800] }}>
+            <Button onClick={handleCloseQuantityDialog} disabled={isSubmitting} sx={{ color: colors.grey[100] }}>Cancel</Button>
+            <Button onClick={handleConfirmAndAddItem} variant="contained" disabled={isSubmitting} sx={{ backgroundColor: colors.greenAccent[700], "&:hover": { backgroundColor: colors.greenAccent[800] } }}>
+              {isSubmitting ? <CircularProgress size={24} /> : "Confirm & Add"}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+
+      <SelectAndAddItemToInventoryDialog
+        open={isAddDialogOpen}
+        onClose={() => setIsAddDialogOpen(false)}
+        onConfirm={handleMaterialAdded}
+        projectId={selectedProjectId}
+        existingProjectMaterials={materials}
+      />
+
+      <Snackbar
+        open={feedback.open}
+        autoHideDuration={6000}
+        onClose={() => setFeedback({ ...feedback, open: false })}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setFeedback({ ...feedback, open: false })}
+          severity={feedback.severity}
+          sx={{ width: "100%" }}
+        >
+          {feedback.message}
         </Alert>
-      )}
-
-      {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-          <CircularProgress />
-        </Box>
-      ) : error ? (
-        <Alert severity="error">Failed to load project items.</Alert>
-      ) : (
-        <Grid container spacing={3}>
-          {filteredItems.map((item) => {
-            const consumedPercentage = item["expected-quantity"] > 0
-              ? (item["consumed-quantity"] / item["expected-quantity"]) * 100
-              : 0;
-            
-            const getProgressColor = () => {
-                if (consumedPercentage > 90) return colors.redAccent[500];
-                if (consumedPercentage > 70) return colors.orangeAccent[500];
-                return colors.greenAccent[600];
-            };
-
-            return (
-              <Grid item key={item.id} xs={12} sm={6} md={4}>
-                <Card
-                  elevation={0}
-                  sx={{
-                    p: 2,
-                    backgroundColor: colors.primary[700],
-                    border: `1px solid ${colors.grey[700]}`,
-                    borderRadius: "12px",
-                    transition: "all 0.2s ease-in-out",
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: '100%',
-                    "&:hover": {
-                      cursor: "pointer",
-                      borderColor: getProgressColor(),
-                      boxShadow: `0px 4px 12px -5px ${getProgressColor()}`,
-                    },
-                  }}
-                >
-                  <CardContent sx={{ flexGrow: 1, p: 0 }}>
-                    {/* --- HEADER SECTION --- */}
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                      <Typography variant="h5" component="div" fontWeight="bold">
-                        {item.name}
-                      </Typography>
-                      <Chip
-                        label={item.category}
-                        icon={<CategoryIcon />}
-                        size="small"
-                        sx={{ backgroundColor: colors.primary[600], color: colors.grey[100] }}
-                      />
-                    </Box>
-
-                    {/* --- PRICE INFO --- */}
-                    <InfoItem
-                      icon={<AttachMoneyIcon fontSize="small" />}
-                      text={`Unit Price: $${item.price}`}
-                    />
-
-                    {/* --- QUANTITY DETAILS SECTION --- */}
-                    <Box 
-                      sx={{ 
-                        mt: 2, 
-                        p: 1.5,
-                        backgroundColor: colors.primary[800],
-                        borderRadius: '8px',
-                        border: `1px solid ${colors.grey[800]}`
-                      }}
-                    >
-                      <Grid container spacing={1}>
-                        <Grid item xs={6}>
-                          <InfoItem icon={<InventoryIcon fontSize="small" />} text={`Available: ${item['quantity-available']}`} />
-                        </Grid>
-                        <Grid item xs={6}>
-                           <InfoItem icon={<TrackChangesIcon fontSize="small" />} text={`Required: ${item['required-quantity']}`} />
-                        </Grid>
-                      </Grid>
-                    </Box>
-
-                  </CardContent>
-                  
-                  {/* --- PROGRESS BAR SECTION --- */}
-                  <Box sx={{ mt: 'auto', pt: 2 }}>
-                    <Tooltip title={`Consumed: ${item['consumed-quantity']} | Expected:  ${item['expected-quantity']}`}>
-                      <Box>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                           <Typography variant="body2" color="text.secondary">
-                                Consumption
-                           </Typography>
-                           <Typography variant="body2" fontWeight="bold" color={getProgressColor()}>
-                             {`${Math.round(consumedPercentage)}%`}
-                           </Typography>
-                        </Box>
-                        <LinearProgress
-                          variant="determinate"
-                          value={consumedPercentage}
-                          sx={{
-                            height: 8,
-                            borderRadius: 5,
-                            mt: 0.5,
-                            backgroundColor: colors.primary[900],
-                            '& .MuiLinearProgress-bar': {
-                              backgroundColor: getProgressColor(),
-                            },
-                          }}
-                        />
-                      </Box>
-                    </Tooltip>
-                  </Box>
-
-                </Card>
-              </Grid>
-            );
-          })}
-        </Grid>
-      )}
-
-      {isDialogOpen && (
-        <SelectAndAddItemDialog
-          open={isDialogOpen}
-          onClose={handleCloseDialog}
-          onConfirm={handleMaterialConfirm}
-        />
-      )}
-    </>
+      </Snackbar>
+    </Box>
   );
 };
 
 export default ProjectInventory;
+
+// const testCard=()=>{
+//   return(   <Card
+//     elevation={0}
+//     sx={{
+//       p: 2,
+//       backgroundColor: colors.primary[700],
+//       border: `1px solid ${colors.grey[700]}`,
+//       borderRadius: "12px",
+//       transition: "all 0.2s ease-in-out",
+//       display: 'flex',
+//       flexDirection: 'column',
+//       height: '100%',
+//       "&:hover": {
+//         cursor: "pointer",
+//         borderColor: getProgressColor(),
+//         boxShadow: `0px 4px 12px -5px ${getProgressColor()}`,
+//       },
+//     }}
+//   >
+//     <CardContent sx={{ flexGrow: 1, p: 0 }}>
+//       {/* --- HEADER SECTION --- */}
+//       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+//         <Typography variant="h5" component="div" fontWeight="bold">
+//           {item.name}
+//         </Typography>
+//         <Chip
+//           label={item.category}
+//           icon={<CategoryIcon />}
+//           size="small"
+//           sx={{ backgroundColor: colors.primary[600], color: colors.grey[100] }}
+//         />
+//       </Box>
+
+//       {/* --- PRICE INFO --- */}
+//       <InfoItem
+//         icon={<AttachMoneyIcon fontSize="small" />}
+//         text={`Unit Price: $${item.price}`}
+//       />
+
+//       {/* --- QUANTITY DETAILS SECTION --- */}
+//       <Box 
+//         sx={{ 
+//           mt: 2, 
+//           p: 1.5,
+//           backgroundColor: colors.primary[800],
+//           borderRadius: '8px',
+//           border: `1px solid ${colors.grey[800]}`
+//         }}
+//       >
+//         <Grid container spacing={1}>
+//           <Grid item xs={6}>
+//             <InfoItem icon={<InventoryIcon fontSize="small" />} text={`Available: ${item['quantity-available']}`} />
+//           </Grid>
+//           <Grid item xs={6}>
+//              <InfoItem icon={<TrackChangesIcon fontSize="small" />} text={`Required: ${item['required-quantity']}`} />
+//           </Grid>
+//         </Grid>
+//       </Box>
+
+//     </CardContent>
+    
+//     {/* --- PROGRESS BAR SECTION --- */}
+//     <Box sx={{ mt: 'auto', pt: 2 }}>
+//       <Tooltip title={`Consumed: ${item['consumed-quantity']} | Expected:  ${item['expected-quantity']}`}>
+//         <Box>
+//           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+//              <Typography variant="body2" color="text.secondary">
+//                   Consumption
+//              </Typography>
+//              <Typography variant="body2" fontWeight="bold" color={getProgressColor()}>
+//                {`${Math.round(consumedPercentage)}%`}
+//              </Typography>
+//           </Box>
+//           <LinearProgress
+//             variant="determinate"
+//             value={consumedPercentage}
+//             sx={{
+//               height: 8,
+//               borderRadius: 5,
+//               mt: 0.5,
+//               backgroundColor: colors.primary[900],
+//               '& .MuiLinearProgress-bar': {
+//                 backgroundColor: getProgressColor(),
+//               },
+//             }}
+//           />
+//         </Box>
+//       </Tooltip>
+//     </Box>
+
+//   </Card>);
+// }

@@ -27,7 +27,7 @@ const useProjectItemsData = ({}) => {
 
       // Flatten the response data to make it easier to work with
       const materials = itemsData.map((item) => ({
-        id: item.id,
+        
         expected_quantity: item.expected_quantity,
         // Safely access nested properties from the "items_id" object
         name: item.items_id ? item.items_id.name : 'Not Available',
