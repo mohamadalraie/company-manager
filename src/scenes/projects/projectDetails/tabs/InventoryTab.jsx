@@ -1,50 +1,33 @@
 import React, { useState, useMemo } from "react";
 import {
-  Box,
-  Typography,
-  Button,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  Chip,
-  Divider,
-  MenuItem,
-  Grid,
-  Card,
-  CardContent,
-  CardActions,
-  CircularProgress,
-  Alert,
-  Stack,
-  useTheme,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Snackbar,
+  Box, Typography, Button, TextField, FormControl, InputLabel, Select, Chip,
+  Divider, MenuItem, Grid, Card, CardContent, CircularProgress, Alert, Stack,
+  useTheme, Snackbar,
+  // --- إضافات جديدة للجدول وأزرار التبديل ---
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
+  ToggleButton, ToggleButtonGroup
 } from "@mui/material";
 
+// --- أيقونات جديدة ---
+import ViewModuleIcon from '@mui/icons-material/ViewModule'; // أيقونة عرض البطاقات
+import ViewListIcon from '@mui/icons-material/ViewList';   // أيقونة عرض القائمة/الجدول
 import StraightenIcon from "@mui/icons-material/Straighten";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import CategoryIcon from "@mui/icons-material/Category";
 
+// ... (باقي الـ imports تبقى كما هي)
 import { tokens } from "../../../../theme";
 import { Header } from "../../../../components/Header";
-import axios from "axios";
-import { baseUrl } from "../../../../shared/baseUrl";
-import { getAuthToken } from "../../../../shared/Permissions";
-import {
-  addExistingItemToProjectContainer,
-} from "../../../../shared/APIs";
-import { SelectAndAddItemDialog } from "../../../../components/dialogs/SelectItemDialog";
-import useProjectItemsData from "../../../../hooks/getAllProjectItemsDataHook";
+import useProjectInventoryData  from "../../../../hooks/getProjectInventoryDataHook";
 import { useProject } from '../../../../contexts/ProjectContext';
-import useProjectInventoryData from "../../../../hooks/getProjectInventoryDataHook";
-import { SelectAndAddItemToInventoryDialog } from "../../../../components/dialogs/SelectItemToInventoryDialog";
+import { SelectAndAddItemDialog } from "../../../../components/dialogs/SelectItemDialog";
+import { DataGrid } from "@mui/x-data-grid";
 
-// Helper component for the material card
+
+// ====================================================================
+// == مكون البطاقة (Card) - يبقى كما هو
+// ====================================================================
 const MaterialCard = ({ material }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -52,14 +35,9 @@ const MaterialCard = ({ material }) => {
     <Card
       elevation={0}
       sx={{
-        p: 2,
-        backgroundColor: colors.primary[700],
-        border: `1px solid ${colors.grey[700]}`,
-        borderRadius: "12px",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+        p: 2, backgroundColor: colors.primary[700], border: `1px solid ${colors.grey[700]}`,
+        borderRadius: "12px", height: "100%", display: "flex", flexDirection: "column",
+        transition: "transform 0.2s, box-shadow 0.2s",
         "&:hover": {
           transform: "translateY(-5px)",
           boxShadow: `0px 8px 15px -5px ${colors.greenAccent[800]}`,
@@ -68,54 +46,19 @@ const MaterialCard = ({ material }) => {
       }}
     >
       <CardContent sx={{ flexGrow: 1, p: 1 }}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            mb: 2,
-          }}
-        >
-          <Typography variant="h5" fontWeight="bold" color={colors.grey[100]}>
-            {material.name}
-          </Typography>
-          <Chip
-            icon={<CategoryIcon />}
-            label={material.category}
-            size="small"
-            sx={{
-              backgroundColor: colors.primary[600],
-              color: colors.grey[200],
-            }}
-          />
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2 }}>
+          <Typography variant="h5" fontWeight="bold" color={colors.grey[100]}>{material.name}</Typography>
+          <Chip icon={<CategoryIcon />} label={material.category} size="small" sx={{ backgroundColor: colors.primary[600], color: colors.grey[200] }} />
         </Box>
         <Divider sx={{ my: 2, borderColor: colors.grey[600] }} />
         <Stack spacing={1.5}>
           <Box display="flex" alignItems="center" gap={1.5}>
             <StraightenIcon sx={{ color: colors.greenAccent[400] }} />
-            <Typography variant="body2" color={colors.grey[300]}>
-              Unit:{" "}
-              <Typography
-                component="span"
-                fontWeight="bold"
-                color={colors.grey[100]}
-              >
-                {material.unit}
-              </Typography>
-            </Typography>
+            <Typography variant="body2" color={colors.grey[300]}>Unit: <Typography component="span" fontWeight="bold" color={colors.grey[100]}>{material.unit}</Typography></Typography>
           </Box>
           <Box display="flex" alignItems="center" gap={1.5}>
             <Inventory2OutlinedIcon sx={{ color: colors.greenAccent[400] }} />
-            <Typography variant="body2" color={colors.grey[300]}>
-              Quantity Available:{" "}
-              <Typography
-                component="span"
-                fontWeight="bold"
-                color={colors.grey[100]}
-              >
-                {material.quantity_available}
-              </Typography>
-            </Typography>
+            <Typography variant="body2" color={colors.grey[300]}>Quantity Available: <Typography component="span" fontWeight="bold" color={colors.grey[100]}>{material.quantity_available}</Typography></Typography>
           </Box>
         </Stack>
       </CardContent>
@@ -123,31 +66,74 @@ const MaterialCard = ({ material }) => {
   );
 };
 
-// Main component renamed to ProjectInventory
+
+// ====================================================================
+// == مكون الجدول الجديد
+// ====================================================================
+const MaterialsTable = ({ materials }) => {
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
+    const columns = [
+      { field: "itemId", headerName: "ID", tokensflex: 0.5 },
+      { field: "name", headerName: "Material Name", flex: 1, cellClassName: "name-column--cell" },
+      { field: "category", headerName: "Category", flex: 1 },
+      { field: "quantity_available", headerName: "Quantity Available", flex: 1 },
+      { field: "unit", headerName: "Unit", flex: 0.5 },
+    ];
+  
+console.log(materials);
+    return (
+      <Box m="20px 0 0 0" height="90vh" sx={{
+        /* DataGrid styles remain the same */
+        "& .MuiDataGrid-root": { border: "none" },
+        "& .MuiDataGrid-cell": { borderBottom: "none" },
+        "& .name-column--cell": { fontWeight: "bold" },
+        "& .MuiDataGrid-columnHeaders": {
+            color: colors.greenAccent[400],
+            borderBottom: "none",
+            fontWeight: "bold",
+        },
+      }}>
+        <DataGrid
+          rows={materials}
+          columns={columns}
+          pageSize={10}
+          rowsPerPageOptions={[5, 10, 20]}
+          disableSelectionOnClick
+          getRowId={(row) => row.itemId} 
+        />
+      </Box>
+    );
+}
+
+
+// ====================================================================
+// == المكون الرئيسي
+// ====================================================================
 const ProjectInventory = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const { selectedProjectId } = useProject(); // Using context to get the project ID
+  const { selectedProjectId } = useProject();
   
-  // The hook now uses the ID from the context
-  const {  materials, loading, error, refetchMaterials } = useProjectInventoryData({
-    projectId: selectedProjectId 
-  });
+  const { materials, loading, error, refetchMaterials } = useProjectInventoryData ({});
 
+  // --- حالات الفلترة ---
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [selectedMaterial, setSelectedMaterial] = useState(null);
-  const [isQuantityDialogOpen, setIsQuantityDialogOpen] = useState(false);
-  const [expectedQuantity, setExpectedQuantity] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState(null);
-  const [feedback, setFeedback] = useState({
-    open: false,
-    message: "",
-    severity: "info",
-  });
+  
+  // --- حالة جديدة للتحكم في وضع العرض ---
+  const [viewMode, setViewMode] = useState('card');
 
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+
+  // --- دالة لتبديل العرض ---
+  const handleViewChange = (event, newView) => {
+    if (newView !== null) { // التأكد من أن المستخدم اختار قيمة
+      setViewMode(newView);
+    }
+  };
+
+  // ... (useMemo and other handlers remain the same)
   const categories = useMemo(() => {
     if (!materials) return [];
     return Array.from(new Set(materials.map((m) => m.category)));
@@ -157,62 +143,14 @@ const ProjectInventory = () => {
     if (!materials) return [];
     return materials
       .filter((m) => m.name.toLowerCase().includes(searchTerm.toLowerCase()))
-      .filter((m) =>
-        selectedCategory ? m.category === selectedCategory : true
-      );
+      .filter((m) => selectedCategory ? m.category === selectedCategory : true);
   }, [materials, searchTerm, selectedCategory]);
-
-  const handleOpenQuantityDialog = (material) => {
-    setSelectedMaterial(material);
-    setExpectedQuantity("");
-    setSubmitError(null);
-    setIsQuantityDialogOpen(true);
-  };
-
-  const handleCloseQuantityDialog = () => {
-    setIsQuantityDialogOpen(false);
-    setSelectedMaterial(null);
-  };
-
-  const handleConfirmAndAddItem = async () => {
-    if (!expectedQuantity || parseFloat(expectedQuantity) <= 0) {
-      setSubmitError("Please enter a valid, positive quantity.");
-      return;
-    }
-    setIsSubmitting(true);
-    setSubmitError(null);
-    try {
-      const payload = {
-        item_id: selectedMaterial.itemId,
-        expected_quantity: parseFloat(expectedQuantity),
-      };
-      const config = { headers: { Authorization: `Bearer ${getAuthToken()}` } };
-      await axios.post(
-        `${baseUrl}${addExistingItemToProjectContainer}${selectedProjectId}`,
-        payload,
-        config
-      );
-      setFeedback({
-        open: true,
-        message: `Successfully added ${selectedMaterial.name} to the project!`,
-        severity: "success",
-      });
-      handleCloseQuantityDialog();
-      refetchMaterials(); // Refetch the list after adding
-    } catch (err) {
-      const errorMessage = err.response?.data?.message || "An error occurred.";
-      setSubmitError(errorMessage);
-      setFeedback({ open: true, message: errorMessage, severity: "error" });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
+  
   const handleMaterialAdded = () => {
-    // This function is passed to the dialog for adding a NEW item to the global inventory
-    refetchMaterials(); // We can refetch here too if the dialog adds to the project directly
+    refetchMaterials();
     setIsAddDialogOpen(false);
   };
+
 
   return (
     <Box m="20px">
@@ -222,113 +160,70 @@ const ProjectInventory = () => {
       />
 
       <Box mt="20px" p={3} sx={{ backgroundColor: colors.primary[800], borderRadius: "12px" }}>
+        {/* --- قسم الفلاتر وأزرار التحكم --- */}
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mb: 4 }} alignItems="center">
+          <TextField label="Search..." variant="outlined" fullWidth size="small" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+          <FormControl fullWidth size="small">
+            <InputLabel>Category</InputLabel>
+            <Select value={selectedCategory} label="Category" onChange={(e) => setSelectedCategory(e.target.value)}>
+              <MenuItem value=""><em>All</em></MenuItem>
+              {categories.map((cat) => (<MenuItem key={cat} value={cat}>{cat}</MenuItem>))}
+            </Select>
+          </FormControl>
+          <ToggleButtonGroup
+            value={viewMode}
+            exclusive
+            onChange={handleViewChange}
+            aria-label="view mode"
+            size="small"
+          >
+            <ToggleButton value="card" aria-label="card view"><ViewModuleIcon /></ToggleButton>
+            <ToggleButton value="table" aria-label="table view"><ViewListIcon /></ToggleButton>
+          </ToggleButtonGroup>
+          <Button
+            variant="contained"
+            startIcon={<AddCircleOutlineIcon />}
+            onClick={() => setIsAddDialogOpen(true)}
+            sx={{ flexShrink: 0, backgroundColor: colors.greenAccent[700], color: colors.primary[100], '&:hover': { backgroundColor: colors.greenAccent[800] } }}
+          >
+            Add Material
+          </Button>
+        </Stack>
+
+        {/* --- قسم عرض البيانات (إما كروت أو جدول) --- */}
         {loading ? (
-          <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
-            <CircularProgress />
-          </Box>
+          <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}><CircularProgress /></Box>
         ) : error ? (
           <Alert severity="error">{error.message}</Alert>
         ) : (
           <>
-            <Stack direction={{ xs: "column", md: "row" }} spacing={2} sx={{ mb: 4 }}>
-              <TextField
-                label="Search by material name..."
-                variant="outlined"
-                fullWidth
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <FormControl fullWidth>
-                <InputLabel>Filter by Category</InputLabel>
-                <Select
-                  value={selectedCategory}
-                  label="Filter by Category"
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                >
-                  <MenuItem value=""><em>All Categories</em></MenuItem>
-                  {categories.map((cat) => (
-                    <MenuItem key={cat} value={cat}>{cat}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <Button
-                variant="contained"
-                startIcon={<AddCircleOutlineIcon />}
-                onClick={() => setIsAddDialogOpen(true)}
-                sx={{
-                  flexShrink: 0,
-                  backgroundColor: colors.greenAccent[700],
-                  color: colors.primary[100],
-                  "&:hover": { backgroundColor: colors.greenAccent[800] },
-                }}
-              >
-                Add Material
-              </Button>
-            </Stack>
-            <Grid container spacing={3}>
-              {filteredMaterials.map((material) => (
-                <Grid item key={material.id} xs={12} sm={6} md={4}>
-                  <MaterialCard material={material} />
-                </Grid>
-              ))}
-              {filteredMaterials.length === 0 && (
-                <Grid item xs={12}>
-                    <Alert severity="info" sx={{ mt: 3 }}>
-                        No materials have been added to this project yet, or none match your filter.
-                    </Alert>
-                </Grid>
-              )}
-            </Grid>
+            {filteredMaterials.length === 0 ? (
+              <Alert severity="info" sx={{ mt: 3 }}>No materials found for this project or matching your filter.</Alert>
+            ) : viewMode === 'card' ? (
+              // --- عرض البطاقات ---
+              <Grid container spacing={3}>
+                {filteredMaterials.map((material) => (
+                  <Grid item key={material.id} xs={12} sm={6} md={4}>
+                    <MaterialCard material={material} />
+                  </Grid>
+                ))}
+              </Grid>
+            ) : (
+              // --- عرض الجدول ---
+              <MaterialsTable materials={filteredMaterials} />
+            )}
           </>
         )}
       </Box>
 
-      {selectedMaterial && (
-        <Dialog open={isQuantityDialogOpen} onClose={handleCloseQuantityDialog}>
-          <DialogTitle sx={{ backgroundColor: colors.primary[800], color: colors.greenAccent[400] }}>
-            Enter Expected Quantity for{" "}
-            <Typography component="span" color="white" fontWeight="bold">{selectedMaterial.name}</Typography>
-          </DialogTitle>
-          <DialogContent sx={{ backgroundColor: colors.primary[800], pt: "20px !important" }}>
-            {submitError && (<Alert severity="error" sx={{ mb: 2 }}>{submitError}</Alert>)}
-            <TextField
-              autoFocus margin="dense" name="expected_quantity" label="Expected Quantity" type="number" fullWidth variant="outlined"
-              value={expectedQuantity}
-              onChange={(e) => setExpectedQuantity(e.target.value)}
-              InputProps={{ inputProps: { min: 1 } }}
-            />
-          </DialogContent>
-          <DialogActions sx={{ backgroundColor: colors.primary[800] }}>
-            <Button onClick={handleCloseQuantityDialog} disabled={isSubmitting} sx={{ color: colors.grey[100] }}>Cancel</Button>
-            <Button onClick={handleConfirmAndAddItem} variant="contained" disabled={isSubmitting} sx={{ backgroundColor: colors.greenAccent[700], "&:hover": { backgroundColor: colors.greenAccent[800] } }}>
-              {isSubmitting ? <CircularProgress size={24} /> : "Confirm & Add"}
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
-
-      <SelectAndAddItemToInventoryDialog
+      {/* --- الديالوجات تبقى كما هي --- */}
+      <SelectAndAddItemDialog
         open={isAddDialogOpen}
         onClose={() => setIsAddDialogOpen(false)}
         onConfirm={handleMaterialAdded}
         projectId={selectedProjectId}
         existingProjectMaterials={materials}
       />
-
-      <Snackbar
-        open={feedback.open}
-        autoHideDuration={6000}
-        onClose={() => setFeedback({ ...feedback, open: false })}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setFeedback({ ...feedback, open: false })}
-          severity={feedback.severity}
-          sx={{ width: "100%" }}
-        >
-          {feedback.message}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 };

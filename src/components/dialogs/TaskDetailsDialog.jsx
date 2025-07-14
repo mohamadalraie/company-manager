@@ -206,7 +206,7 @@ const TaskDetailDialog = ({ open, onClose, task: initialTask, onTaskDeleted, onT
                       secondaryAction={
                         <DeleteConfirmationComponent
                           itemId={resource.id}
-                          deleteApi={`${baseUrl}${deleteTaskResourceApi}${initialTask.id}`}
+                          deleteApi={`${baseUrl}${deleteTaskResourceApi}${resource.id}`}
                           onDeleteSuccess={handleDeleteResourceSuccess}
                           icon={<DeleteIcon fontSize="small" sx={{ color: colors.redAccent[500] }} />}
                           confirmationText={`Are you sure you want to remove "${resource.item.name}"?`}
