@@ -83,7 +83,7 @@ const ProjectCard = ({ project }) => {
   const renderDetailItem = (Icon, label, value) => (
     <Grid item xs={12} sm={6}>
       <Box display="flex" alignItems="center">
-        <Icon sx={{ mr: 1, fontSize: "1.2rem", color: colors.blueAccent[200] }} />
+        <Icon sx={{ mr: 0.5, fontSize: "1rem", color: colors.blueAccent[200] }} />
         <Typography variant="body2" color={colors.grey[300]}>
           <Box component="span" fontWeight="bold">{label}:</Box> {value}
         </Typography>
@@ -111,7 +111,7 @@ const handleCardClick =() =>{
         transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
         "&:hover": {
           transform: "translateY(-12px)",
-          boxShadow: `0px 5px 25px ${colors.greenAccent[600]}`,
+          boxShadow: `0px 0px 15px ${colors.greenAccent[600]}`,
         },
         overflow: 'hidden',
         position: 'relative',
@@ -121,14 +121,13 @@ const handleCardClick =() =>{
       {/* Top Section: Title, Project Code, and Sale Status */}
       <Box
         sx={{
-          // p: 3,
           backgroundColor: colors.primary[700],
           borderBottom: `1px solid ${colors.grey[700]}`,
           display: "flex",
           flexDirection: { xs: 'column', sm: 'row' },
           justifyContent: "space-between",
           alignItems: { xs: 'flex-start', sm: 'center' },
-          gap: 1.5,
+        
         }}
       >
         
@@ -136,8 +135,8 @@ const handleCardClick =() =>{
           <Typography variant="h3" color={colors.greenAccent[300]} fontWeight="bold" sx={{ mb: 0.5 }}>
             {project.title}
           </Typography>
-          <Typography variant="h6" color={colors.grey[400]} display="flex" alignItems="center">
-            <CodeIcon sx={{ mr: 0.8, fontSize: "1.3rem" }} />
+          <Typography variant="body2" color={colors.grey[400]} display="flex" alignItems="center">
+            <CodeIcon sx={{ mr: 0.8, fontSize: "1rem" }} />
             {project.project_code}
           </Typography>
 
@@ -186,7 +185,7 @@ const handleCardClick =() =>{
           </Typography>
         </Box>
 
-        <Divider sx={{ my: 3, borderColor: colors.grey[700] }} />
+        <Divider sx={{ my: 2, borderColor: colors.grey[700] }} />
 
         {/* Key Details Section */}
         <Typography variant="h6" color={colors.greenAccent[400]} sx={{ mb: 1.5 }} display="flex" alignItems="center">
@@ -201,13 +200,13 @@ const handleCardClick =() =>{
           {renderDetailItem(AccountBalanceWalletOutlinedIcon, "Cost", formatCurrency(project.expected_cost))}
         </Grid>
 
-        <Divider sx={{ my: 3, borderColor: colors.grey[700] }} />
+        <Divider sx={{ my: 2, borderColor: colors.grey[700] }} />
 
             {/* Owner and Consulting Company */}
             {/* <Stack mb="20px" direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 1.5, sm: 4 }} alignItems="flex-start" flexWrap="wrap"> */}
             {project.owner && (
               <Box mb="10px"display="flex" alignItems="center">
-                <PersonIcon sx={{ mr: 1, fontSize: "1.5rem", color: colors.greenAccent[400] }} />
+                <PersonIcon sx={{ mr: 1, fontSize: "1.2rem", color: colors.greenAccent[400] }} />
                 <Typography variant="subtitle1" color={colors.grey[200]} fontWeight="bold">
                   Owner: <Box component="span" fontWeight="normal" color={colors.grey[300]}>
                     {project.owner.user.first_name} {project.owner.user.last_name}
@@ -217,7 +216,7 @@ const handleCardClick =() =>{
             )}
             {project.consultingCompany && (
               <Box display="flex" alignItems="center">
-                <BusinessIcon sx={{ mr: 1, fontSize: "1.5rem", color: colors.greenAccent[400] }} />
+                <BusinessIcon sx={{ mr: 1, fontSize: "1.2rem", color: colors.greenAccent[400] }} />
                 <Typography variant="subtitle1" color={colors.grey[200]} fontWeight="bold">
                   Consulting: <Box component="span" fontWeight="normal" color={colors.grey[300]}>
                     {project.consultingCompany.name}
