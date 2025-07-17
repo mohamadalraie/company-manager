@@ -6,6 +6,7 @@ import {
   useTheme,
   Grid,
   Divider,
+  Tooltip,
   Stack,
 } from "@mui/material";
 import { tokens } from "../theme";
@@ -101,15 +102,10 @@ const handleCardClick =() =>{
     onClick={handleCardClick}
 
       sx={{
-        p: 0,
-        mb: 2,
-        ml:2,
+        ml:1,
         // --- التغييرات الجديدة هنا ---
         width: { xs: '100%', sm: '400px', md: '450px' }, // تحديد عرض ثابت للبطاقة
         maxWidth: '100%', // التأكد من أنها لا تتجاوز عرض الشاشة على الأجهزة الصغيرة
-        // height: 'fit-content', // يمكن استخدام هذا لضمان أن الارتفاع يتناسب مع المحتوى
-        // overflowY: 'auto', // إذا أردت شريط تمرير عند تجاوز المحتوى للارتفاع المحدد (إذا قمت بتحديد ارتفاع ثابت)
-        // --- نهاية التغييرات الجديدة ---
         borderRadius: "20px",
         boxShadow: `0px 0px 15px -5px ${colors.greenAccent[600]}`,
         transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
@@ -121,10 +117,11 @@ const handleCardClick =() =>{
         position: 'relative',
       }}
     >
+      
       {/* Top Section: Title, Project Code, and Sale Status */}
       <Box
         sx={{
-          p: 3,
+          // p: 3,
           backgroundColor: colors.primary[700],
           borderBottom: `1px solid ${colors.grey[700]}`,
           display: "flex",
@@ -134,7 +131,8 @@ const handleCardClick =() =>{
           gap: 1.5,
         }}
       >
-        <Box>
+        
+        <Box sx={{p:3}}>
           <Typography variant="h3" color={colors.greenAccent[300]} fontWeight="bold" sx={{ mb: 0.5 }}>
             {project.title}
           </Typography>
@@ -142,10 +140,39 @@ const handleCardClick =() =>{
             <CodeIcon sx={{ mr: 0.8, fontSize: "1.3rem" }} />
             {project.project_code}
           </Typography>
+
+       
+
         </Box>
 
       </Box>
+      <Box
+                          display="flex"
+                          alignItems="center"
+                        >
+                          <Tooltip
+                            title={`Finished: ${project.progress_percentage}%`}
+                          >
+                            <Box
+                              sx={{
+                                display: "flex",
+                                width: { xs: '100%', sm: '400px', md: '450px' },
+                                height: "5px",
+                                // borderRadius: "4px",
+                                overflow: "hidden",
+                                backgroundColor: colors.grey[700],
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  width: `${project.progress_percentage}%`,
+                                  backgroundColor:green[500],
+                                }}
+                              />
 
+                            </Box>
+                          </Tooltip>
+                        </Box>
       {/* Main Content Section */}
       <Box sx={{ p: 3, backgroundColor: colors.primary[800] }}>
         {/* Description Section */}
@@ -201,32 +228,32 @@ const handleCardClick =() =>{
           {/* </Stack> */}
 
         {/* Progress and Associated Parties Section */}
-        <Stack mt="15px" direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 2, sm: 4 }} justifyContent="space-between" alignItems="flex-start" flexWrap="wrap">
+        <Stack mt="15px" direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 2, sm: 4 , }} justifyContent="space-between" alignItems="flex-start" flexWrap="wrap">
           {/* Progress Status Chip */}
-          <Box display="flex" alignItems="center" gap={2}>
-            <TrendingUpIcon sx={{ fontSize: "1.5rem", color: colors.greenAccent[800] }} />
+          <Box display="flex" alignItems="center" gap={1}>
+            <TrendingUpIcon sx={{ fontSize: "1rem", color: colors.greenAccent[800] }} />
             <Chip
               label={`Progress: ${project.progress_status}`}
-              size="large"
+              size="small"
               sx={{
                 backgroundColor: getProgressChipColor(project.progress_status),
                 color: colors.grey[100],
                 fontWeight: "bold",
-                fontSize: "0.95rem",
-                py: 0.8,
-                px: 1.8,
+                fontSize: "0.75rem",
+                py: 1,
+                px: 2,
                 borderRadius: "10px",
               }}
             />
                     <Chip
           label={project.status_of_sale}
-          size="medium"
+          size="small"
           sx={{
             backgroundColor: getStatusChipColor(project.status_of_sale),
             color: colors.grey[100],
             fontWeight: "bold",
-            fontSize: "1rem",
-            py: 0.8,
+            fontSize: "0.75rem",
+            py: 1,
             px: 2,
             borderRadius: "10px",
           }}
