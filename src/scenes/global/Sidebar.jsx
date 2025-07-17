@@ -187,6 +187,15 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
                 setSelected={setSelected}
               />
             )}
+                      {havePermission("view real estate managers") && (
+              <Item
+                title="Sales Managers"
+                to="/salesManagers"
+                icon={<ContactsOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
             {havePermission("view consulting company") && (
               <Item
                 title="Consulting Companies"
@@ -215,7 +224,15 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
               />
             )}
           </Box>
-        
+          {havePermission("view engineers") && (
+              <Item
+                title="Sales Dashboard"
+                to="/salesDashboard"
+                icon={<PeopleOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
           {/* FOOTER */}
           {!isCollapsed && (
              <Box mt="auto" p="16px" textAlign="center">

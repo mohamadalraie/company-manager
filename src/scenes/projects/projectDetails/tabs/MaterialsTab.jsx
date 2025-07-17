@@ -142,7 +142,6 @@ const MaterialsTab = ({ }) => {
       sx={{
         backgroundColor: colors.primary[800],
         borderRadius: "12px",
-        p: 3,
         mt: 1,
       }}
     >

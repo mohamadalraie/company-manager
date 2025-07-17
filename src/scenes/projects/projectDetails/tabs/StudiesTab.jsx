@@ -23,7 +23,7 @@ const ResourcesTab = ({  }) => {
   };
 
   return (
-    <Box m="20px" sx={{ width: '100%' }}>
+    <Box  sx={{ width: '100%' }}>
       <TabContext value={activeTab}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList 

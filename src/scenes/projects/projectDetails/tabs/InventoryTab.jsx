@@ -21,8 +21,9 @@ import { tokens } from "../../../../theme";
 import { Header } from "../../../../components/Header";
 import useProjectInventoryData  from "../../../../hooks/getProjectInventoryDataHook";
 import { useProject } from '../../../../contexts/ProjectContext';
-import { SelectAndAddItemDialog } from "../../../../components/dialogs/SelectItemDialog";
+
 import { DataGrid } from "@mui/x-data-grid";
+import { SelectAndAddItemToInventoryDialog } from "../../../../components/dialogs/SelectItemToInventoryDialog";
 
 
 // ====================================================================
@@ -51,14 +52,14 @@ const MaterialCard = ({ material }) => {
           <Chip icon={<CategoryIcon />} label={material.category} size="small" sx={{ backgroundColor: colors.primary[600], color: colors.grey[200] }} />
         </Box>
         <Divider sx={{ my: 2, borderColor: colors.grey[600] }} />
-        <Stack spacing={1.5}>
-          <Box display="flex" alignItems="center" gap={1.5}>
+        <Stack spacing={1}>
+          <Box display="flex" alignItems="center" gap={1}>
             <StraightenIcon sx={{ color: colors.greenAccent[400] }} />
             <Typography variant="body2" color={colors.grey[300]}>Unit: <Typography component="span" fontWeight="bold" color={colors.grey[100]}>{material.unit}</Typography></Typography>
           </Box>
           <Box display="flex" alignItems="center" gap={1.5}>
             <Inventory2OutlinedIcon sx={{ color: colors.greenAccent[400] }} />
-            <Typography variant="body2" color={colors.grey[300]}>Quantity Available: <Typography component="span" fontWeight="bold" color={colors.grey[100]}>{material.quantity_available}</Typography></Typography>
+            <Typography variant="body2" color={colors.grey[300]}>Available: <Typography component="span" fontWeight="bold" color={colors.grey[100]}>{material.quantity_available}</Typography></Typography>
           </Box>
         </Stack>
       </CardContent>
@@ -77,7 +78,7 @@ const MaterialsTable = ({ materials }) => {
       { field: "itemId", headerName: "ID", tokensflex: 0.5 },
       { field: "name", headerName: "Material Name", flex: 1, cellClassName: "name-column--cell" },
       { field: "category", headerName: "Category", flex: 1 },
-      { field: "quantity_available", headerName: "Quantity Available", flex: 1 },
+      { field: "quantity_available", headerName: "Available Quantity", flex: 1 },
       { field: "unit", headerName: "Unit", flex: 0.5 },
     ];
   
@@ -153,13 +154,13 @@ const ProjectInventory = () => {
 
 
   return (
-    <Box m="20px">
+    <Box >
       <Header
         title="Project Inventory"
         subtitle="Manage all materials assigned to the current project"
       />
 
-      <Box mt="20px" p={3} sx={{ backgroundColor: colors.primary[800], borderRadius: "12px" }}>
+      <Box mt="20px" sx={{ backgroundColor: colors.primary[800], borderRadius: "12px" }}>
         {/* --- قسم الفلاتر وأزرار التحكم --- */}
         <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mb: 4 }} alignItems="center">
           <TextField label="Search..." variant="outlined" fullWidth size="small" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
@@ -201,7 +202,7 @@ const ProjectInventory = () => {
               <Alert severity="info" sx={{ mt: 3 }}>No materials found for this project or matching your filter.</Alert>
             ) : viewMode === 'card' ? (
               // --- عرض البطاقات ---
-              <Grid container spacing={3}>
+              <Grid container spacing={1}>
                 {filteredMaterials.map((material) => (
                   <Grid item key={material.id} xs={12} sm={6} md={4}>
                     <MaterialCard material={material} />
@@ -217,7 +218,7 @@ const ProjectInventory = () => {
       </Box>
 
       {/* --- الديالوجات تبقى كما هي --- */}
-      <SelectAndAddItemDialog
+      <SelectAndAddItemToInventoryDialog
         open={isAddDialogOpen}
         onClose={() => setIsAddDialogOpen(false)}
         onConfirm={handleMaterialAdded}

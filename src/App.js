@@ -8,7 +8,7 @@ import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard/index";
 import Engineers from "./scenes/engineers/Index";
 import Projects from "./scenes/projects/Index";
-import SalesManagers from "./scenes/salesManagers/index";
+import SalesManagers from "./scenes/salesManagers/Index";
 import AddEngineer from "./scenes/engineers/addEngineer/index";
 import ConsultingEngineers from "./scenes/consultingCompanies/consultingEngineers/Index";
 import ConsultingCompanies from "./scenes/consultingCompanies";
@@ -25,6 +25,10 @@ import AddProjectManager from "./scenes/projectManagers/addProjectManger";
 import AddFile from "./scenes/projects/projectDetails/AddFile";
 import AddProjectFile from "./scenes/projects/projectDetails/AddFile";
 import { ProjectProvider } from "./contexts/ProjectContext";
+import AddSalesManager from "./scenes/salesManagers/addSalesManager/Index";
+import SalesDashboard from "./scenes/salesDashboard/Index";
+import AddProjectToSale from "./scenes/salesDashboard/AddProjectToSale";
+import EditProjectSale from "./scenes/salesDashboard/EditProjectToSale";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -106,6 +110,12 @@ function App() {
                 <Route path="/owners/add" element={<AddOwner />} />
                 <Route path="/projectManagers" element={<ProjectManagers />} />
                 <Route path="/projectManagers/add" element={<AddProjectManager />} />
+                <Route path="/salesManagers" element={<SalesManagers/>}/>
+                <Route path="/salesManagers/add" element={<AddSalesManager/>}/>
+                <Route path="/salesDashboard" element={<SalesDashboard/>}/>
+                <Route path="/salesDashboard/add" element={<AddProjectToSale/>}/>
+                <Route path="/salesDashboard/edit/:id" element={<EditProjectSale/>}/>
+
                 
                 {/* A catch-all route for 404 Not Found pages */}
                 <Route path="*" element={<div>404 - Page Not Found</div>} />

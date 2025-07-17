@@ -150,7 +150,7 @@ export const SelectAndAddItemToInventoryDialog = ({
                       <CardContent>
                         <Typography variant="h6" color={colors.greenAccent[400]} fontWeight="bold">{material.name}</Typography>
                         <Typography color={colors.grey[200]} fontSize="small" gutterBottom>Category: {material.category}</Typography>
-                        <Typography variant="h6" color={colors.grey[200]} fontSize="small">Unit Price ${material.price}</Typography>
+                        <Typography variant="h6" color={colors.grey[200]} fontSize="small">Unit: {material.unit}</Typography>
                       </CardContent>
                       <CardActions>
                         <Button size="small" fullWidth onClick={() => handleOpenQuantityDialog(material)} sx={{ backgroundColor: colors.greenAccent[700], color: colors.primary[100], '&:hover': { backgroundColor: colors.greenAccent[800] } }}>

@@ -26,6 +26,11 @@ export const getAllProjectsApi="/api/project/all";
 export const getOneProjectApi="/api/project/";
 export const updateProjectApi="/api/project/update/"
 
+export const updateSalesManagerApi="/api/realStateManager/update/";
+export const getAllSalesManagersApi="/api/realStateManager/all";
+export const deleteSalesManagerApi="/api/realStateManager/delete/";
+export const createSalesManagerApi="/api/realStateManager/create";
+
 export const addParticipantApi="/api/projectParticipant/create";
 export const deleteParticipantApi="/api/projectParticipant/delete/"
 export const getOneParticipantApi="/api/projectParticipant/"
@@ -57,4 +62,11 @@ export const addItemToProjectInventoryApi=(projectId)=>{return `/api/projectCont
 export const addResourceToTask="/api/taskContainer/create";
 export const getTaskResourcesApi=(taskId)=>{return `/api/taskContainer/all?task_id=${taskId}`;};
 export const deleteTaskResourceApi= `/api/taskContainer/delete/`;
+
+export const createProjectSalingDetailsApi="/api/projectSalesDetails/create";
+export const getAllProjectSalingDetailsApi="/api/projectSalesDetails/all";
+export const getSingleProjectSaleApi="/api/projectSalesDetails/";
+export const deleteProjectSaleApi="/api/projectSalesDetails/delete";
+export const updateProjectSaleApi="/api/projectSalesDetails/update/";
+
 

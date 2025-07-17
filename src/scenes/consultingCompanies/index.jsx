@@ -74,13 +74,28 @@ const ConsultingCompanies = () => {
       renderCell: ({ row }) => (
         <Box display="flex" justifyContent="center" alignItems="center" height="100%" width="100%">
           {havePermission("edit consulting company") && (
+
+
+
+
             <IconButton
+
               aria-label="edit"
               onClick={() => handleOpenUpdateDialog(row)}
+
+              
               sx={{ color: colors.blueAccent[400], "&:hover": { color: colors.blueAccent[300] } }}
             >
+
+
+
+
               <EditIcon />
             </IconButton>
+
+
+
+
           )}
           {havePermission("delete consulting company") && (
             <DeleteConfirmationComponent
