@@ -29,6 +29,9 @@ import AddSalesManager from "./scenes/salesManagers/addSalesManager/Index";
 import SalesDashboard from "./scenes/salesDashboard/Index";
 import AddProjectToSale from "./scenes/salesDashboard/AddProjectToSale";
 import EditProjectSale from "./scenes/salesDashboard/EditProjectToSale";
+import SaleDetailDialog from "./components/dialogs/SaleDetailDialog";
+import SaleDetailPage from "./scenes/salesDashboard/SaleDetailPage";
+
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -51,6 +54,8 @@ function App() {
       ? collapsedSidebarWidth
       : expandedSidebarWidth
     : "0px";
+
+
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -112,10 +117,13 @@ function App() {
                 <Route path="/projectManagers/add" element={<AddProjectManager />} />
                 <Route path="/salesManagers" element={<SalesManagers/>}/>
                 <Route path="/salesManagers/add" element={<AddSalesManager/>}/>
-                <Route path="/salesDashboard" element={<SalesDashboard/>}/>
-                <Route path="/salesDashboard/add" element={<AddProjectToSale/>}/>
-                <Route path="/salesDashboard/edit/:id" element={<EditProjectSale/>}/>
-
+                <Route path="/sales" element={<SalesDashboard/>}/>
+                <Route path="/sales/add" element={<AddProjectToSale/>}/>
+                <Route path="/sales/edit/:id" element={<EditProjectSale/>}/>
+                <Route path="/sales/saleDetails/:saleId" element={<SaleDetailPage/>}/>
+                <Route path="/sales/saleDetails/:saleId/edit" element={<SaleDetailPage/>}/>
+                
+                
                 
                 {/* A catch-all route for 404 Not Found pages */}
                 <Route path="*" element={<div>404 - Page Not Found</div>} />

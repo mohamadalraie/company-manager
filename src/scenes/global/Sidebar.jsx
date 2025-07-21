@@ -15,7 +15,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import { tokens } from "../../theme";
 
-import userImage from "../../assets/user.jpg";
+// import userImage from "../../assets/user.jpg";
 import { havePermission } from "../../shared/Permissions";
 
 // تم التعديل هنا في مكون Item
@@ -227,7 +227,7 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
           {havePermission("view engineers") && (
               <Item
                 title="Sales Dashboard"
-                to="/salesDashboard"
+                to="/sales"
                 icon={<PeopleOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}

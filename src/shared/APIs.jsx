@@ -69,4 +69,6 @@ export const getSingleProjectSaleApi="/api/projectSalesDetails/";
 export const deleteProjectSaleApi="/api/projectSalesDetails/delete";
 export const updateProjectSaleApi="/api/projectSalesDetails/update/";
 
+export const getProjectPropertyBookApi="/api/propertyBook/";
+
 

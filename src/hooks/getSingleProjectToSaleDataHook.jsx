@@ -20,7 +20,7 @@ const useSingleProjectSaleData = ({ saleId }) => {
     try {
       const config = { headers: { 'Authorization': `Bearer ${getAuthToken()}` } };
     
-      const response = await axios.get(`${baseUrl}${getSingleProjectSaleApi}${1}`, config);
+      const response = await axios.get(`${baseUrl}${getSingleProjectSaleApi}${saleId}`, config);
       setSaleData(response.data.data);
     } catch (err) {
       setError(err);

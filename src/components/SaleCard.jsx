@@ -23,7 +23,8 @@ const SaleCard = ({ sale, onClick }) => {
   return (
     <Card
       sx={{
-        width: 340,
+        width: 300,
+        // height:"60vh",
         flexShrink: 0,
         backgroundColor: colors.primary[700],
         borderRadius: "12px",

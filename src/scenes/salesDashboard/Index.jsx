@@ -1,87 +1,115 @@
-// src/scenes/sales/SalesDashboardPage.jsx
+import React, { useState, useMemo, useRef } from "react";
+import { Box, CircularProgress, Alert, IconButton, Button, useTheme, TextField, InputAdornment, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom"; // Use useNavigate for navigation
 
-import React, { useState, useRef } from "react";
-import { Box, CircularProgress, Alert, IconButton, Button } from "@mui/material";
-import { Link } from "react-router-dom";
-
-// --- أيقونات ---
+// --- Icons ---
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import SearchIcon from '@mui/icons-material/Search';
 
-// --- المكونات والأدوات ---
+// --- Components & Hooks ---
 import { Header } from "../../components/Header";
 import useProjectSalesData from "../../hooks/getAllProjectsToSaleDataHook";
 import { havePermission } from "../../shared/Permissions";
-import SaleCard from "../../components/SaleCard"; // <-- استيراد البطاقة
-import SaleDetailDialog from "../../components/dialogs/SaleDetailDialog"; // <-- استيراد الديالوج
+import SaleCard from "../../components/SaleCard";
+import { tokens } from "../../theme";
 
 const SalesDashboardPage = () => {
-  const { sales, loading, error,refetchSales } = useProjectSalesData();
-  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
-  const [selectedSale, setSelectedSale] = useState(null);
+  const { sales, loading, error } = useProjectSalesData();
   const scrollContainerRef = useRef(null);
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
 
-  const handleCardClick = (saleData) => {
-    setSelectedSale(saleData);
-    setIsDetailDialogOpen(true);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // --- This function now navigates to a new page ---
+  const handleCardClick = (saleId) => {
+    // Navigate to the detail page, passing the sale ID in the URL
+    console.log(saleId);
+    navigate(`/sales/saleDetails/${saleId}`);
   };
 
-  const handleCloseDialog = () => {
-    setIsDetailDialogOpen(false);
+  const handleAddProjectClick = () => {
+    navigate("/sales/add");
   };
-
-  const handleUpdateSuccess = () => {
-    refetchSales(); // أعد تحميل البيانات بعد التحديث الناجح
-    handleCloseDialog();
-};
   
   const scroll = (direction) => {
     if (scrollContainerRef.current) {
-        const scrollAmount = direction === 'left' ? -350 : 350;
+        const scrollAmount = direction === 'left' ? -600 : 600;
         scrollContainerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
+
+  const filteredSales = useMemo(() => {
+    if (!sales) return [];
+    if (!searchTerm) return sales;
+    return sales.filter(sale =>
+      sale.main_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      sale.project?.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [sales, searchTerm]);
 
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center" mb="20px">
         <Header title="Projects Showcase" subtitle="Browse all projects currently available for sale" />
-        {havePermission("create sales listing") && (
-          <Link to="/sales/add">
-            <Button variant="contained" startIcon={<AddCircleOutlineIcon />}>Add Project to Sale</Button>
-          </Link>
+        {havePermission("view statistics") && (
+          <Button variant="contained" startIcon={<AddCircleOutlineIcon />} onClick={handleAddProjectClick}>
+            Sale New Project
+          </Button>
         )}
       </Box>
 
+      <Box mb={3}>
+        <TextField
+          fullWidth
+          variant="filled"
+          label="Search by Project Name or Title..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+            disableUnderline: true,
+          }}
+        />
+      </Box>
+      
       {loading && <CircularProgress />}
       {error && <Alert severity="error">{error.message}</Alert>}
       
-      <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-          <IconButton onClick={() => scroll('left')} sx={{ position: 'absolute', left: -20, top: '50%', transform: 'translateY(-50%)', zIndex: 2, backgroundColor: 'rgba(0,0,0,0.3)', '&:hover': {backgroundColor: 'rgba(0,0,0,0.5)'} }}><ArrowBackIosNewIcon /></IconButton>
-          <Box
-            ref={scrollContainerRef}
-            sx={{
-              display: 'flex', overflowX: 'auto', py: 2, gap: 3,
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <IconButton onClick={() => scroll('left')} sx={{ backgroundColor: colors.primary[700], '&:hover': { backgroundColor: colors.primary[600] } }}>
+          <ArrowBackIosNewIcon />
+        </IconButton>
+        
+        <Box
+          ref={scrollContainerRef}
+          sx={{
+              display: 'flex', overflowX: 'auto', flexGrow: 1, py: 2, gap: 3, mx: 1,
               '&::-webkit-scrollbar': { display: 'none' }, msOverflowStyle: 'none', scrollbarWidth: 'none',
-            }}
-          >
-            {sales.map(sale => (
-              <SaleCard key={sale.id} sale={sale} onClick={() => handleCardClick(sale)} />
-            ))}
-          </Box>
-          <IconButton onClick={() => scroll('right')} sx={{ position: 'absolute', right: -20, top: '50%', transform: 'translateY(-50%)', zIndex: 2, backgroundColor: 'rgba(0,0,0,0.3)', '&:hover': {backgroundColor: 'rgba(0,0,0,0.5)'} }}><ArrowForwardIosIcon /></IconButton>
+          }}
+        >
+          {filteredSales.length > 0 ? (
+            filteredSales.map(sale => (
+              <SaleCard key={sale.id} sale={sale} onClick={() => handleCardClick(sale.id)} />
+            ))
+          ) : (
+            !loading && <Typography sx={{ width: '100%', textAlign: 'center' }}>No projects found matching your search.</Typography>
+          )}
+        </Box>
+        
+        <IconButton onClick={() => scroll('right')} sx={{ backgroundColor: colors.primary[700], '&:hover': { backgroundColor: colors.primary[600] } }}>
+          <ArrowForwardIosIcon />
+        </IconButton>
       </Box>
-
-      {selectedSale && (
-        <SaleDetailDialog 
-          key={selectedSale.id}
-          open={isDetailDialogOpen}
-          onClose={handleCloseDialog}
-          sale={selectedSale}
-          onUpdateSuccess={handleUpdateSuccess}
-        />
-      )}
+      
+      {/* --- The Dialog is no longer needed here --- */}
     </Box>
   );
 };
