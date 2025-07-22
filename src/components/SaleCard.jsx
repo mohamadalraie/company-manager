@@ -14,7 +14,7 @@ const SaleCard = ({ sale, onClick }) => {
 
   // استخدام Optional Chaining (?.) وقيم احتياطية لمنع الأخطاء
   const mainTitle = sale?.main_title || "Untitled Project";
-  const address = sale?.address || sale?.project?.location || "No address";
+  const projectTitle = sale?.project.title || sale?.project?.location || "N/A";
   const mainImage = sale?.main_image || "https://via.placeholder.com/340x220.png?text=Image+Not+Available";
   const status = sale?.status_of_sale || "N/A";
   const type = sale?.type || "N/A";
@@ -46,7 +46,7 @@ const SaleCard = ({ sale, onClick }) => {
         </Box>
         <CardContent>
           <Typography gutterBottom variant="h5" component="div" fontWeight="bold" noWrap>{mainTitle}</Typography>
-          <Typography variant="body2" color="text.secondary" noWrap>{address}</Typography>
+          <Typography variant="body2" color="text.secondary" noWrap>Projet: {projectTitle}</Typography>
           <Stack direction="row" spacing={2} mt={2} color={colors.grey[300]}>
              <Box display="flex" alignItems="center" gap={0.5}><HomeWorkIcon fontSize="small"/> <Typography variant="caption">{type}</Typography></Box>
              <Box display="flex" alignItems="center" gap={0.5}><SquareFootIcon fontSize="small"/> <Typography variant="caption">{area} m²</Typography></Box>

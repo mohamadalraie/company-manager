@@ -67,7 +67,7 @@ export const createProjectSalingDetailsApi="/api/projectSalesDetails/create";
 export const getAllProjectSalingDetailsApi="/api/projectSalesDetails/all";
 export const getSingleProjectSaleApi="/api/projectSalesDetails/";
 export const deleteProjectSaleApi="/api/projectSalesDetails/delete";
-export const updateProjectSaleApi="/api/projectSalesDetails/update/";
+export const updateProjectSaleApi=(saleId)=>{return `/api/projectSalesDetails/update/${saleId}?_method=PUT`};
 
 export const getProjectPropertyBookApi="/api/propertyBook/";
 

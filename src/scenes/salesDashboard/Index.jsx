@@ -56,7 +56,15 @@ const SalesDashboardPage = () => {
       <Box display="flex" justifyContent="space-between" alignItems="center" mb="20px">
         <Header title="Projects Showcase" subtitle="Browse all projects currently available for sale" />
         {havePermission("view statistics") && (
-          <Button variant="contained" startIcon={<AddCircleOutlineIcon />} onClick={handleAddProjectClick}>
+          <Button
+          sx={{
+            backgroundColor: colors.greenAccent[700],
+            color: colors.primary[100],
+            "&:hover": {
+              backgroundColor: colors.greenAccent[800],
+            },
+          }}
+          variant="contained" startIcon={<AddCircleOutlineIcon />} onClick={handleAddProjectClick}>
             Sale New Project
           </Button>
         )}

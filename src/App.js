@@ -33,6 +33,7 @@ import SaleDetailDialog from "./components/dialogs/SaleDetailDialog";
 import SaleDetailPage from "./scenes/salesDashboard/SaleDetailPage";
 
 
+
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -54,8 +55,6 @@ function App() {
       ? collapsedSidebarWidth
       : expandedSidebarWidth
     : "0px";
-
-
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -121,7 +120,7 @@ function App() {
                 <Route path="/sales/add" element={<AddProjectToSale/>}/>
                 <Route path="/sales/edit/:id" element={<EditProjectSale/>}/>
                 <Route path="/sales/saleDetails/:saleId" element={<SaleDetailPage/>}/>
-                <Route path="/sales/saleDetails/:saleId/edit" element={<SaleDetailPage/>}/>
+                <Route path="/sales/saleDetails/:saleId/edit" element={<EditProjectSale/>}/>
                 
                 
                 
@@ -130,6 +129,7 @@ function App() {
               </Routes>
             </Box>
           </main>
+
         </div>
         </ProjectProvider>
       </ThemeProvider>

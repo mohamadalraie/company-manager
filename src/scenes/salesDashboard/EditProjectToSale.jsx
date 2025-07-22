@@ -101,12 +101,14 @@ const EditProjectSale = () => {
         formData.append(key, values[key]);
       }
     });
+    
 
     try {
       const config = { headers: { 'Authorization': `Bearer ${getAuthToken()}`, 'Content-Type': 'multipart/form-data' } };
-      await axios.post(`${baseUrl}${updateProjectSaleApi(saleId)}`, formData, config);
+      const response =await axios.post(`${baseUrl}${updateProjectSaleApi(saleId)}`, formData, config);
+      console.log(response.data)
       snackbarRef.current.showSnackbar("Details updated successfully!", "success");
-      navigate("/sales-dashboard");
+      navigate("/sales");
     } catch (err) {
       snackbarRef.current.showSnackbar(err.response?.data?.message || "Update failed.", "error");
     } finally {
@@ -146,6 +148,7 @@ const EditProjectSale = () => {
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={{
+          project_id:saleData.project_id,
             main_title: saleData?.main_title || "",
             marketing_description: saleData?.marketing_description || "",
             location_link: saleData?.location_link || "",
