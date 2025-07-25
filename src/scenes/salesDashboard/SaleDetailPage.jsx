@@ -285,6 +285,7 @@ const SaleDetailPage = () => {
               borderRadius: "0 0 12px 12px",
             }}
           >
+            {/*  first tab */}
             <TabPanel value="1">
               <Stack spacing={4} p={{ xs: 0, sm: 1, md: 2 }}>
                 {/* --- Section 1: About This Project --- */}
@@ -465,7 +466,8 @@ const SaleDetailPage = () => {
                 </Box>
               </Stack>
             </TabPanel>
-
+            
+            {/* second tab */}
             <TabPanel value="2">
               <Box p={{ xs: 0, sm: 1, md: 2 }}>
                 <Typography
