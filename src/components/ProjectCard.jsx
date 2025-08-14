@@ -156,7 +156,7 @@ const handleCardClick =() =>{
                               sx={{
                                 display: "flex",
                                 width: { xs: '100%', sm: '400px', md: '450px' },
-                                height: "5px",
+                                height: "8px",
                                 // borderRadius: "4px",
                                 overflow: "hidden",
                                 backgroundColor: colors.grey[700],

@@ -186,6 +186,7 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
                 selected={selected}
                 setSelected={setSelected}
               />
+
             )}
                       {havePermission("view real estate managers") && (
               <Item

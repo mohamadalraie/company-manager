@@ -51,6 +51,7 @@ export const getAllProjectStagesApi="/api/projectStage/";
 export const createTaskApi="/api/task/create";
 export const deleteTaskApi="/api/task/delete/";
 export const updateTaskApi="/api/task/update/";
+export const changeTaskStatusApi=(taskId)=>{return `/api/task/${taskId}/change-status`;};
 
 export const getAllItemsApi="/api/item/all";
 export const getAllProjectItemsApi=(projectId)=>{return `/api/projectContainer/${projectId}/all`;};
@@ -58,6 +59,10 @@ export const addExistingItemToProjectContainer ="/api/projectContainer/create/";
 export const createNewItemApi="/api/projectContainer/createNewItems/";
 export const getProjectInventoryApi=(projectId)=>{return `/api/projectContainer/${projectId}/warehouse`;};
 export const addItemToProjectInventoryApi=(projectId)=>{return `/api/projectContainer/${projectId}/addItemsToWarehouse`;};
+export const getprojectContainerReportsApi=(projectId)=>{return `/api/projectContainer/${projectId}/reports`;};
+
+
+
 
 export const addResourceToTask="/api/taskContainer/create";
 export const getTaskResourcesApi=(taskId)=>{return `/api/taskContainer/all?task_id=${taskId}`;};
@@ -70,5 +75,7 @@ export const deleteProjectSaleApi="/api/projectSalesDetails/delete";
 export const updateProjectSaleApi=(saleId)=>{return `/api/projectSalesDetails/update/${saleId}?_method=PUT`};
 
 export const getProjectPropertyBookApi="/api/propertyBook/";
+
+
 
 

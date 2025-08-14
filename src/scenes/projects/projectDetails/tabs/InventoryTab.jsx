@@ -160,7 +160,7 @@ const ProjectInventory = () => {
         subtitle="Manage all materials assigned to the current project"
       />
 
-      <Box mt="20px" sx={{ backgroundColor: colors.primary[800], borderRadius: "12px" }}>
+      <Box mt="20px" >
         {/* --- قسم الفلاتر وأزرار التحكم --- */}
         <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mb: 4 }} alignItems="center">
           <TextField label="Search..." variant="outlined" fullWidth size="small" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />

@@ -37,8 +37,10 @@ export const SelectAndAddItemDialog = ({
   onConfirm,
   
 }) => {
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  
   const { materials, loading, error, refetchMaterials } = useMaterialsData();
 
   const [searchTerm, setSearchTerm] = useState("");

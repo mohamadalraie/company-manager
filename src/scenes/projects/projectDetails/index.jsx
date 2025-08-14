@@ -36,6 +36,8 @@ import ProjectCalendarView from "./tabs/CalendarTab";
 import ProjectGridCalendar from "./tabs/CalendarTab";
 import ProjectInventory from "./tabs/InventoryTab";
 import ResourcesTab from "./tabs/StudiesTab";
+import ReportsTab from "./tabs/ReportsTab";
+import FinancialTab from "./tabs/FinancialTab";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -202,25 +204,11 @@ const ProjectDetails = () => {
                   },
                 }}
               />
-
-              <Tab
-                icon={<MonetizationOnIcon />}
-                iconPosition="start"
-                label="Financials"
-                {...a11yProps(3)}
-                sx={{
-                  color: colors.grey[300],
-                  "&.Mui-selected": {
-                    color: colors.greenAccent[300],
-                    fontWeight: "bold",
-                  },
-                }}
-              />
               <Tab
                 icon={<ArticleIcon />}
                 iconPosition="start"
                 label="Studies"
-                {...a11yProps(4)}
+                {...a11yProps(3)}
                 sx={{
                   color: colors.grey[300],
                   "&.Mui-selected": {
@@ -233,7 +221,7 @@ const ProjectDetails = () => {
                 icon={<SplitscreenIcon />}
                 iconPosition="start"
                 label="Stages"
-                {...a11yProps(5)}
+                {...a11yProps(4)}
                 sx={{
                   color: colors.grey[300],
                   "&.Mui-selected": {
@@ -246,7 +234,7 @@ const ProjectDetails = () => {
                 icon={<CalendarMonthIcon />}
                 iconPosition="start"
                 label="Calendar"
-                {...a11yProps(6)}
+                {...a11yProps(5)}
                 sx={{
                   color: colors.grey[300],
                   "&.Mui-selected": {
@@ -256,11 +244,11 @@ const ProjectDetails = () => {
                 }}
               />
 
-              <Tab
+               <Tab
                 icon={<Inventory2Icon />}
                 iconPosition="start"
-                label="Inventory"
-                {...a11yProps(7)}
+                label="Reports"
+                {...a11yProps(6)}
                 sx={{
                   color: colors.grey[300],
                   "&.Mui-selected": {
@@ -294,44 +282,31 @@ const ProjectDetails = () => {
               />
             )}
           </TabPanel>
+
           <TabPanel value={value} index={3}>
-            {havePermission("csad") && (
-              <Box>
-                <Typography variant="h5" color={colors.grey[300]}>
-                  Documents
-                </Typography>
-                <Typography color={colors.grey[400]}>
-                  A list of project-related documents (e.g., contracts,
-                  blueprints) will be available here.
-                </Typography>
-              </Box>
+            {havePermission("view reports resource management") && (
+              <ResourcesTab  />
             )}
           </TabPanel>
 
           <TabPanel value={value} index={4}>
             {havePermission("view reports resource management") && (
-              <ResourcesTab  />
-            )}
-          </TabPanel>
-          <TabPanel value={value} index={5}>
-            {havePermission("view reports resource management") && (
               <ProjectStagesComponent
-                
                 consultingCompanyId={project.consultingCompany.id}
                 participants={project.participants}
               />
             )}
           </TabPanel>
 
-          <TabPanel value={value} index={6}>
+          <TabPanel value={value} index={5}>
             {havePermission("view reports resource management") && (
               <ProjectGridCalendar  />
             )}
           </TabPanel>
-          
-          <TabPanel value={value} index={7}>
+        
+          <TabPanel value={value} index={6}>
             {havePermission("view reports resource management") && (
-              <ProjectInventory />
+              <ReportsTab/>
             )}
           </TabPanel>
         </Box>

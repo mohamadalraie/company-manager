@@ -39,7 +39,7 @@ const useMaterialsData = () => {
     refetchMaterials();
   }, []); // يعمل مرة واحدة عند تحميل الواجهة
 
-  // 🔽 إرجاع المتغيرات والدالة الجديدة
+
   return { materials, loading, error, refetchMaterials };
 };
 

@@ -126,6 +126,7 @@ function App() {
                 {/* dwdw */}
                 {/* A catch-all route for 404 Not Found pages */}
                 <Route path="*" element={<div>404 - Page Not Found</div>} />
+                
               </Routes>
             </Box>
           </main>
