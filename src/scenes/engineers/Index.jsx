@@ -153,7 +153,6 @@ const Engineers = () => {
             )}
       </Box>
       <Box m="20px 0 0 0" height="90vh" sx={{
-        /* DataGrid styles remain the same */
         "& .MuiDataGrid-root": { border: "none" },
         "& .MuiDataGrid-cell": { borderBottom: "none" },
         "& .name-column--cell": { fontWeight: "bold" },

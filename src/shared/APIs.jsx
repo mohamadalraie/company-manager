@@ -60,7 +60,7 @@ export const createNewItemApi="/api/projectContainer/createNewItems/";
 export const getProjectInventoryApi=(projectId)=>{return `/api/projectContainer/${projectId}/warehouse`;};
 export const addItemToProjectInventoryApi=(projectId)=>{return `/api/projectContainer/${projectId}/addItemsToWarehouse`;};
 export const getprojectContainerReportsApi=(projectId)=>{return `/api/projectContainer/${projectId}/reports`;};
-
+export const getProjectBillsApi="/api/projectBills/";
 
 
 
@@ -74,7 +74,11 @@ export const getSingleProjectSaleApi="/api/projectSalesDetails/";
 export const deleteProjectSaleApi="/api/projectSalesDetails/delete";
 export const updateProjectSaleApi=(saleId)=>{return `/api/projectSalesDetails/update/${saleId}?_method=PUT`};
 
+export const getProjectMediaApi="/api/projectMedia/";
+export const deleteProjectMediaApi="";
+export const addProjectMediaApi="";
 export const getProjectPropertyBookApi="/api/propertyBook/";
+
 
 
 

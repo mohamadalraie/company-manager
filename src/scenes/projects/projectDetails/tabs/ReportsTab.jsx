@@ -11,6 +11,7 @@ import DocumentsTab from "./DocumentsTab"; // (تأكد من صحة المسار
 import MaterialsTab from "./MaterialsTab"; // (تأكد من صحة المسار)
 import MaterialsReportsTab from "./MaterialsReportsTab";
 import ProjectInventory from "./InventoryTab";
+import FinancialTab from "./FinancialTab";
 
 
 const ReportsTab = ({  }) => {
@@ -52,7 +53,7 @@ const ReportsTab = ({  }) => {
         </TabPanel>
 
         <TabPanel value="3" sx={{ p: 0, pt: 2 }}>
-          <DocumentsTab />
+          <FinancialTab />
         </TabPanel>
 
       </TabContext>
