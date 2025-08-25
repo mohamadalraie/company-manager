@@ -16,6 +16,7 @@ export const getAllConsultingCompaniesApi="/api/consultingCompany/all";
 export const deleteConsultingCompanyApi="/api/consultingCompany/delete/";
 export const createConsultingCompanyApi="/api/consultingCompany/create";
 export const updateConsultingCompanyApi="/api/consultingCompany/update/";
+export const getConsultingCompanyDetailsApi="/api/consultingCompany/";
 
 export const getAllOwnersApi="/api/owner/all";
 export const deleteOwnerApi="/api/owner/delete/";

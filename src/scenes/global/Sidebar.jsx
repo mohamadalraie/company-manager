@@ -3,6 +3,7 @@ import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme, Divider } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 
+import buildProLogo from '../../assets/logo.png';
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
@@ -110,9 +111,18 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
                 alignItems="center"
                 ml="15px"
               >
-                <Typography variant="h3" color={colors.grey[100]}>
-                  Orient
-                </Typography>
+<Link to="/dashboard" style={{ textDecoration: 'none' }}>
+    <Box
+        component="img"
+        alt="BuildPro Logo"
+        src={buildProLogo}
+        sx={{
+            height: '20px',     // <-- تحكم في ارتفاع الشعار من هنا
+            cursor: 'pointer',
+            display: 'block'    // يضمن عدم وجود مسافات إضافية
+        }}
+    />
+</Link>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
                 </IconButton>
@@ -235,13 +245,13 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
               />
             )}
           {/* FOOTER */}
-          {!isCollapsed && (
+          {/* {!isCollapsed && (
              <Box mt="auto" p="16px" textAlign="center">
                 <Typography variant="caption" color={colors.grey[500]}>
                     v2.0.0
                 </Typography>
             </Box>
-          )}
+          )} */}
         </Menu>
       </Box>
     </Sidebar>

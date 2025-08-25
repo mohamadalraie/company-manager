@@ -31,6 +31,8 @@ import AddProjectToSale from "./scenes/salesDashboard/AddProjectToSale";
 import EditProjectSale from "./scenes/salesDashboard/EditProjectToSale";
 import SaleDetailDialog from "./components/dialogs/SaleDetailDialog";
 import SaleDetailPage from "./scenes/salesDashboard/SaleDetailPage";
+import ProjectConsultingCompanyTab from "./scenes/projects/projectDetails/tabs/ConsultingCompanyTab";
+import ConsultingCompanyDetails from "./scenes/consultingCompanies/CompanyDetails";
 
 
 
@@ -105,6 +107,8 @@ function App() {
                 <Route path="/dashboard/ConsultingCompanies/add" element={<AddConsultingCompany />} />
                 <Route path="/dashboard/ConsultingCompanies/:id/ConsultingEngineers" element={<ConsultingEngineers />} />
                 <Route path="/dashboard/ConsultingCompanies/:id/ConsultingEngineers/add" element={<AddConsultingEngineer />} />
+                <Route path="/dashboard/ConsultingCompanies/:id/details" element={<ConsultingCompanyDetails />} />
+                
                 <Route path="/dashboard/projects" element={<Projects />} />
                 <Route path="/dashboard/projects/add" element={<AddProject />} />
                 <Route path="/dashboard/projects/:id" element={<ProjectDetails />} />

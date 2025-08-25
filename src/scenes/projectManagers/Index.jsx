@@ -63,9 +63,9 @@ const ProjectManagers = () => {
     { field: "id", headerName: "ID", flex: 0.5 },
     { field: "first_name", headerName: "First Name", flex: 1, cellClassName: "name-column--cell" },
     { field: "last_name", headerName: "Last Name", flex: 1, cellClassName: "name-column--cell" },
-    { field: "email", headerName: "Email", flex: 1 },
+    { field: "email", headerName: "Email", flex: 1.5 },
     { field: "phone_number", headerName: "Phone Number", flex: 1 },
-    { field: "years_of_experience", headerName: "Experience", flex: 1 },
+    { field: "years_of_experience", headerName: "Experience", flex: 0.5 },
     {
       field: "actions",
       headerName: "Actions",

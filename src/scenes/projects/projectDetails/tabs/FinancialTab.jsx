@@ -581,15 +581,15 @@ const FinancialTab = () => {
                     />
                 </DialogContent>
                 <DialogActions sx={{ backgroundColor: colors.primary[500], p: 2 }}>
-                    <Button onClick={handleCloseAddDialog} color="secondary">
+                    <Button onClick={handleCloseAddDialog} >
                         Cancel
                     </Button>
                     <Button
                         onClick={handleSaveInvoice}
                         variant="contained"
-                        color="secondary"
+                        
                         disabled={isSaving}
-                        sx={{ minWidth: '130px' }}
+                        sx={{ minWidth: '130px',backgroundColor:colors.greenAccent[600] }}
                     >
                         {isSaving ? <CircularProgress size={24} color="inherit" /> : 'Save Invoice'}
                     </Button>
