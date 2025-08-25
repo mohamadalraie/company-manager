@@ -54,7 +54,6 @@ const SaleDetailPage = () => {
 
   // --- جلب البيانات الرئيسية في المكون الأب ---
   const { saleData: sale, loading, error } = useSingleProjectSaleData({ saleId });
-  const { media, loading: mediaLoading, error: mediaError, refetchMedia } = useProjectMediaData({ projectId: sale?.project_id });
 
   const [openConfirm, setOpenConfirm] = useState(false);
 const [saleIdToDelete, setSaleIdToDelete] = useState(null);
@@ -143,10 +142,10 @@ const handleConfirmDelete = async () => {
                 <AvailablePropertiesTab projectId={sale.project_id} />
             </TabPanel>
             <TabPanel value="3" sx={{ p: 0 }}>
-                <ProjectMediaTab projectId={sale.project_id} media={media} loading={mediaLoading} error={mediaError} refetchMedia={refetchMedia} />
+                <ProjectMediaTab projectId={sale.project_id}  />
             </TabPanel>
             <TabPanel value="4" sx={{ p: 0 }}>
-                <ProjectNewsTab projectId={sale.project_id} media={media} loading={mediaLoading} error={mediaError} refetchMedia={refetchMedia} />
+                <ProjectNewsTab projectId={sale.project_id}/>
             </TabPanel>
 
 

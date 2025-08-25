@@ -7,6 +7,7 @@ import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 import DonutSmallIcon from '@mui/icons-material/DonutSmall';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
+import { getAuthToken } from '../../shared/Permissions';
 
 // --- Placeholder for your theme ---
 // In your project, you can remove this and use your actual theme imports
@@ -110,7 +111,7 @@ const Dashboard = () => {
       {/* --- HEADER --- */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h3" color={colors.grey[100]} fontWeight="bold">
-          Construction Dashboard
+          {getAuthToken()}
         </Typography>
       </Box>
 

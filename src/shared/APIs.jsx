@@ -76,9 +76,16 @@ export const getSingleProjectSaleApi="/api/projectSalesDetails/";
 export const deleteProjectSaleApi="/api/projectSalesDetails/delete/";
 export const updateProjectSaleApi=(saleId)=>{return `/api/projectSalesDetails/update/${saleId}?_method=PUT`};
 
+export const getProjectNewsApi="/api/projectNews/all/";
+export const deleteProjectNewsApi="/api/projectNews/delete/";
+export const createProjectNewsApi="/api/projectNews/create";
+
+
 export const getProjectMediaApi="/api/projectMedia/";
-export const deleteProjectMediaApi="";
-export const addProjectMediaApi="";
+export const deleteProjectMediaApi="/api/projectMedia/delete/";
+export const addProjectMediaApi="/api/projectMedia/create";
+
+
 export const getProjectPropertyBookApi="/api/propertyBook/";
 
 
