@@ -22,16 +22,25 @@ import {
   Delete as DeleteIcon,
   AddPhotoAlternate as AddPhotoAlternateIcon,
   Videocam as VideocamIcon,
-  Close as CloseIcon,
 } from "@mui/icons-material";
 import { tokens } from "../../../theme"; 
-import axios from "axios"; // ستحتاجه لعمليات الحذف والإضافة
-import { baseUrl } from "../../../shared/baseUrl"; // تأكد من صحة المسار
-import { deleteProjectMediaApi, addProjectMediaApi } from "../../../shared/APIs"; // يجب إضافة هذه المتغيرات
+import axios from "axios";
+import { baseUrl } from "../../../shared/baseUrl";
+import { deleteProjectMediaApi } from "../../../shared/APIs";
 import { getAuthToken } from "../../../shared/Permissions";
 
+// --- Mock Data ---
+const mockMedia = [
+    { id: 1, type: "image", url: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=2070&auto=format&fit=crop" },
+    { id: 2, type: "image", url: "https://images.unsplash.com/photo-1429497419816-9ca5cfb4571a?q=80&w=2071&auto=format&fit=crop" },
+    { id: 3, type: "video", url: "http://example.com/video.mp4" }, // Videos won't display, just the icon
+    { id: 4, type: "image", url: "https://images.unsplash.com/photo-1511055232023-8c414436a3a4?q=80&w=1974&auto=format&fit=crop" },
+    { id: 5, type: "image", url: "https://images.unsplash.com/photo-1581092446347-a84a229a4a75?q=80&w=2070&auto=format&fit=crop" },
+    { id: 6, type: "image", url: "https://images.unsplash.com/photo-1444723121867-7a241cacace9?q=80&w=2070&auto=format&fit=crop" },
+];
 
-// مكون لعرض عنصر الميديا (صورة أو فيديو)
+
+// Media Item Component (No changes needed)
 const MediaItem = ({ item, onDeleteClick }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -92,13 +101,26 @@ const MediaItem = ({ item, onDeleteClick }) => {
   );
 };
 
-// المكون الرئيسي للتبويب
-const ProjectMediaTab = ({ projectId, media, loading, error, refetchMedia }) => {
+// Main Tab Component
+const ProjectMediaTab = ({ projectId }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  
+  // --- Using Mock Data for Demonstration ---
+  // In a real scenario, this state would come from your data fetching hook
+  const [media, setMedia] = useState(mockMedia);
+  const loading = false;
+  const error = null;
+
   const [openConfirm, setOpenConfirm] = useState(false);
   const [mediaToDelete, setMediaToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // A dummy refetch function for the mock data scenario
+  const refetchMedia = () => {
+      console.log("Refetching media data...");
+      // In a real app, this would trigger your data hook to fetch again
+  };
 
   const handleDeleteClick = (id) => {
     setMediaToDelete(id);
@@ -108,15 +130,16 @@ const ProjectMediaTab = ({ projectId, media, loading, error, refetchMedia }) => 
   const handleConfirmDelete = async () => {
     setIsDeleting(true);
     try {
-      // منطق الحذف هنا باستخدام axios
-      const config = { headers: { 'Authorization': `Bearer ${getAuthToken()}` } };
-      await axios.delete(`${baseUrl}${deleteProjectMediaApi}/${mediaToDelete}`, config); // تأكد من تعريف API الحذف
+      // This is where you would make the actual API call
+      console.log(`Simulating deletion of media item with ID: ${mediaToDelete}`);
+      // await axios.delete(`${baseUrl}${deleteProjectMediaApi}/${mediaToDelete}`, { headers: { 'Authorization': `Bearer ${getAuthToken()}` } });
       
-      // بعد الحذف الناجح، أعد جلب البيانات
-      refetchMedia();
+      // For demonstration, we'll just filter the mock data
+      setMedia(prevMedia => prevMedia.filter(item => item.id !== mediaToDelete));
+      
+      refetchMedia(); // This would refetch data from the server in a real app
     } catch (err) {
       console.error("Failed to delete media:", err);
-      // يمكنك إضافة تنبيه للمستخدم هنا
     } finally {
       setIsDeleting(false);
       setOpenConfirm(false);
@@ -124,14 +147,12 @@ const ProjectMediaTab = ({ projectId, media, loading, error, refetchMedia }) => 
     }
   };
 
-  // دالة وهمية للإضافة، يمكنك تعديلها لرفع الملفات فعلياً
   const handleAddMedia = () => {
-    // هنا تفتح نافذة لاختيار الملفات ثم ترفعها
-    alert("سيتم هنا فتح نافذة لإضافة صور أو فيديوهات جديدة.");
-    // بعد الإضافة الناجحة، استدعِ refetchMedia()
+    alert("This would open a file dialog to upload new media.");
+    // After a successful upload, you would call refetchMedia()
   };
 
-  if (loading) return <CircularProgress />;
+  if (loading) return <Box display="flex" justifyContent="center" mt={4}><CircularProgress /></Box>;
   if (error) return <Alert severity="error">Failed to load media.</Alert>;
 
   return (
@@ -165,7 +186,7 @@ const ProjectMediaTab = ({ projectId, media, loading, error, refetchMedia }) => 
         <Alert severity="info">No media has been added to this project yet.</Alert>
       )}
 
-      {/* نافذة تأكيد الحذف */}
+      {/* Delete Confirmation Dialog */}
       <Dialog open={openConfirm} onClose={() => setOpenConfirm(false)}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>

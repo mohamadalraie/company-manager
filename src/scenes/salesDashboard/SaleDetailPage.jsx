@@ -130,7 +130,7 @@ const handleConfirmDelete = async () => {
           <Box sx={{ borderBottom: 1, borderColor: "divider", backgroundColor: colors.primary[800], borderRadius: "12px 12px 0 0" }}>
             <TabList onChange={handleTabChange} aria-label="project details tabs">
               <Tab label="Project Overview" value="1" />
-              <Tab label="Available Properties" value="2" />
+              <Tab label="Available books" value="2" />
               <Tab label="Project Media" value="3" />
               <Tab label="Project News" value="4" />
             </TabList>

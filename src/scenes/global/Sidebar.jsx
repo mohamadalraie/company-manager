@@ -117,7 +117,7 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
         alt="BuildPro Logo"
         src={buildProLogo}
         sx={{
-            height: '20px',     // <-- تحكم في ارتفاع الشعار من هنا
+            height: '25px',     // <-- تحكم في ارتفاع الشعار من هنا
             cursor: 'pointer',
             display: 'block'    // يضمن عدم وجود مسافات إضافية
         }}

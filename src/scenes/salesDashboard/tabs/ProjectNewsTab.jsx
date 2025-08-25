@@ -178,10 +178,10 @@ const ProjectNewsTab = () => {
                 <Header title="Project News" subtitle="Latest updates and announcements about the project" />
                 <Button
                     variant="contained"
-                    color="secondary"
+                    
                     startIcon={<AddIcon />}
                     onClick={handleOpenAddDialog}
-                    sx={{ height: '45px', px: 3 }}
+                    sx={{backgroundColor:colors.greenAccent[600], height: '45px', px: 3 }}
                 >
                     Add News
                 </Button>
