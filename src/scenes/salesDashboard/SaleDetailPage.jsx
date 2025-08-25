@@ -12,12 +12,18 @@ import {
   Alert,
   Stack,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 
 // --- الأيقونات ---
 import EditIcon from "@mui/icons-material/Edit";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import { tokens } from "../../theme";
 import { Header } from "../../components/Header";
@@ -27,6 +33,15 @@ import useProjectMediaData from "../../hooks/getProjectMediaDataHook";
 import ProjectOverviewTab from "./tabs/ProjectOverviewTab";
 import AvailablePropertiesTab from "./tabs/AvailablePropertiesTab";
 import ProjectMediaTab from "./tabs/ProjectMediaTab"; 
+import axios from "axios";
+import { baseUrl } from "../../shared/baseUrl";
+import { deleteProjectSaleApi } from "../../shared/APIs";
+import { getAuthToken } from "../../shared/Permissions";
+import ProjectNewsTab from "./tabs/ProjectNewsTab";
+
+
+
+
 
 
 const SaleDetailPage = () => {
@@ -41,9 +56,40 @@ const SaleDetailPage = () => {
   const { saleData: sale, loading, error } = useSingleProjectSaleData({ saleId });
   const { media, loading: mediaLoading, error: mediaError, refetchMedia } = useProjectMediaData({ projectId: sale?.project_id });
 
+  const [openConfirm, setOpenConfirm] = useState(false);
+const [saleIdToDelete, setSaleIdToDelete] = useState(null);
+const [isDeleting, setIsDeleting] = useState(false);
+
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
+
+  const handleOpenConfirm = (id) => {
+    setSaleIdToDelete(id); // تخزين الـ ID
+    setOpenConfirm(true);    // فتح النافذة
+};
+
+const handleCloseConfirm = () => {
+  setOpenConfirm(false);
+  setSaleIdToDelete(null);
+};
+
+const handleConfirmDelete = async () => {
+  setIsDeleting(true); // بدء التحميل
+  try {
+      const config = { headers: { 'Authorization': `Bearer ${getAuthToken()}` } };
+      await axios.delete(`${baseUrl}${deleteProjectSaleApi}${saleIdToDelete}`, config);
+      navigate(-1);
+
+  } catch (error) {
+      console.error("Failed to delete the sale:", error);
+      // يمكنك إظهار رسالة خطأ هنا
+  } finally {
+      setIsDeleting(false); // إيقاف التحميل
+      handleCloseConfirm(); // إغلاق النافذة
+  }
+};
+
 
   if (loading) return <Box display="flex" justifyContent="center" mt={5}><CircularProgress /></Box>;
   if (error || !sale) return <Alert severity="error">Could not load project details.</Alert>;
@@ -55,7 +101,16 @@ const SaleDetailPage = () => {
         <Header title={sale.project.title} subtitle={`The sales details of ${sale.project.title} project.`} />
         <Stack direction="row" spacing={2}>
           <Button onClick={() => navigate(-1)} variant="outlined" startIcon={<ArrowBackIcon />}>Back</Button>
-          <Button onClick={() => navigate(`/sales/saleDetails/${sale.id}/edit`)} variant="contained" startIcon={<EditIcon />}>Edit</Button>
+          <Button onClick={() => navigate(`/dashboard/sales/saleDetails/${sale.id}/edit`)} variant="contained" startIcon={<EditIcon />}>Edit</Button>
+          
+          <Button 
+    onClick={() => handleOpenConfirm(sale.id)} 
+    variant="contained" 
+    color="error" // استخدام لون مناسب للحذف
+    startIcon={<DeleteIcon />}
+>
+    Delete
+</Button>
         </Stack>
       </Box>
 
@@ -77,6 +132,7 @@ const SaleDetailPage = () => {
               <Tab label="Project Overview" value="1" />
               <Tab label="Available Properties" value="2" />
               <Tab label="Project Media" value="3" />
+              <Tab label="Project News" value="4" />
             </TabList>
           </Box>
           <Box sx={{ backgroundColor: colors.primary[800], borderRadius: "0 0 12px 12px" }}>
@@ -89,10 +145,45 @@ const SaleDetailPage = () => {
             <TabPanel value="3" sx={{ p: 0 }}>
                 <ProjectMediaTab projectId={sale.project_id} media={media} loading={mediaLoading} error={mediaError} refetchMedia={refetchMedia} />
             </TabPanel>
+            <TabPanel value="4" sx={{ p: 0 }}>
+                <ProjectNewsTab projectId={sale.project_id} media={media} loading={mediaLoading} error={mediaError} refetchMedia={refetchMedia} />
+            </TabPanel>
+
+
           </Box>
         </TabContext>
       </Box>
+
+      <Dialog
+    open={openConfirm}
+    onClose={handleCloseConfirm}
+    aria-labelledby="alert-dialog-title"
+    aria-describedby="alert-dialog-description"
+>
+    <DialogTitle id="alert-dialog-title">
+        {"Confirm Deletion"}
+    </DialogTitle>
+    <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this item? This action cannot be undone.
+        </DialogContentText>
+    </DialogContent>
+    <DialogActions>
+        <Button onClick={handleCloseConfirm} color="primary">
+            Cancel
+        </Button>
+        <Button 
+            onClick={handleConfirmDelete} 
+            color="error" 
+            variant="contained"
+            disabled={isDeleting}
+        >
+            {isDeleting ? <CircularProgress size={24} color="inherit" /> : 'Confirm'}
+        </Button>
+    </DialogActions>
+</Dialog>
     </Box>
+    
   );
 };
 

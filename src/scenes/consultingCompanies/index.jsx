@@ -125,7 +125,7 @@ const ConsultingCompanies = () => {
       <Box display="flex" justifyContent="space-between" alignItems="center" mb="20px">
         <Header title="Consulting Companies" subtitle="Managing The Consulting Companies that work with us" />
         {havePermission("create consulting company") && (
-          <Link to="/ConsultingCompanies/add" style={{ textDecoration: 'none' }}>
+          <Link to="/dashboard/ConsultingCompanies/add" style={{ textDecoration: 'none' }}>
             <Button
               variant="contained"
               sx={{

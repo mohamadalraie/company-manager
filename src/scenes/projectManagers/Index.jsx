@@ -113,7 +113,7 @@ const ProjectManagers = () => {
       <Box display="flex" justifyContent="space-between" alignItems="center" mb="20px">
         <Header title="Project Managers" subtitle="Managing the Project Managers in the Company" />
         {havePermission("create project managers") && (
-          <Link to="/projectManagers/add" style={{ textDecoration: "none" }}>
+          <Link to="/dashboard/projectManagers/add" style={{ textDecoration: "none" }}>
             <Button
               variant="contained"
               sx={{

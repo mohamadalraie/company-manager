@@ -137,7 +137,7 @@ const Engineers = () => {
         <Box display="flex" justifyContent="space-between" alignItems="center" mb="20px">
             <Header title="Engineers" subtitle="Managing the Engineers in the Company" />
             {havePermission("create engineers") && (
-            <Link to="/engineers/add" style={{ textDecoration: "none" }}>
+            <Link to="/dashboard/engineers/add" style={{ textDecoration: "none" }}>
                 <Button
                     variant="contained"
                     sx={{

@@ -42,7 +42,7 @@ function App() {
 
 
   // Routes with no sidebar and topbar
-  const noLayoutRoutes = ['/login'];
+  const noLayoutRoutes = ['/dashboard/login'];
   const showLayout = !noLayoutRoutes.includes(location.pathname);
 
   // Define sidebar widths
@@ -97,30 +97,30 @@ function App() {
             {/* This Box will contain the routed components */}
             <Box flexGrow={1} overflow="auto">
               <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/engineers" element={<Engineers />} />
-                <Route path="/engineers/add" element={<AddEngineer />} />
-                <Route path="/ConsultingCompanies" element={<ConsultingCompanies />} />
-                <Route path="/ConsultingCompanies/add" element={<AddConsultingCompany />} />
-                <Route path="/ConsultingCompanies/:id/ConsultingEngineers" element={<ConsultingEngineers />} />
-                <Route path="/ConsultingCompanies/:id/ConsultingEngineers/add" element={<AddConsultingEngineer />} />
-                <Route path="/projects" element={<Projects />} />
-                <Route path="/projects/add" element={<AddProject />} />
-                <Route path="/projects/:id" element={<ProjectDetails />} />
-                <Route path="/projects/:id/files/add" element={<AddProjectFile />} />
-                <Route path="/salesManagers" element={<SalesManagers />} />
-                <Route path="/owners" element={<Owners />} />
-                <Route path="/owners/add" element={<AddOwner />} />
-                <Route path="/projectManagers" element={<ProjectManagers />} />
-                <Route path="/projectManagers/add" element={<AddProjectManager />} />
-                <Route path="/salesManagers" element={<SalesManagers/>}/>
-                <Route path="/salesManagers/add" element={<AddSalesManager/>}/>
-                <Route path="/sales" element={<SalesDashboard/>}/>
-                <Route path="/sales/add" element={<AddProjectToSale/>}/>
-                <Route path="/sales/edit/:id" element={<EditProjectSale/>}/>
-                <Route path="/sales/saleDetails/:saleId" element={<SaleDetailPage/>}/>
-                <Route path="/sales/saleDetails/:saleId/edit" element={<EditProjectSale/>}/>
+                <Route path="/dashboard/login" element={<Login />} />
+                <Route path="/dashboard/" element={<Dashboard />} />
+                <Route path="/dashboard/engineers" element={<Engineers />} />
+                <Route path="/dashboard/engineers/add" element={<AddEngineer />} />
+                <Route path="/dashboard/ConsultingCompanies" element={<ConsultingCompanies />} />
+                <Route path="/dashboard/ConsultingCompanies/add" element={<AddConsultingCompany />} />
+                <Route path="/dashboard/ConsultingCompanies/:id/ConsultingEngineers" element={<ConsultingEngineers />} />
+                <Route path="/dashboard/ConsultingCompanies/:id/ConsultingEngineers/add" element={<AddConsultingEngineer />} />
+                <Route path="/dashboard/projects" element={<Projects />} />
+                <Route path="/dashboard/projects/add" element={<AddProject />} />
+                <Route path="/dashboard/projects/:id" element={<ProjectDetails />} />
+                <Route path="/dashboard/projects/:id/files/add" element={<AddProjectFile />} />
+                <Route path="/dashboard/salesManagers" element={<SalesManagers />} />
+                <Route path="/dashboard/owners" element={<Owners />} />
+                <Route path="/dashboard/owners/add" element={<AddOwner />} />
+                <Route path="/dashboard/projectManagers" element={<ProjectManagers />} />
+                <Route path="/dashboard/projectManagers/add" element={<AddProjectManager />} />
+                <Route path="/dashboard/salesManagers" element={<SalesManagers/>}/>
+                <Route path="/dashboard/salesManagers/add" element={<AddSalesManager/>}/>
+                <Route path="/dashboard/sales" element={<SalesDashboard/>}/>
+                <Route path="/dashboard/sales/add" element={<AddProjectToSale/>}/>
+                <Route path="/dashboard/sales/edit/:id" element={<EditProjectSale/>}/>
+                <Route path="/dashboard/sales/saleDetails/:saleId" element={<SaleDetailPage/>}/>
+                <Route path="/dashboard/sales/saleDetails/:saleId/edit" element={<EditProjectSale/>}/>
                 
                 
                 {/* dwdw */}
