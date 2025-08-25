@@ -105,7 +105,7 @@ const ProjectMediaTab = ({ projectId }) => {
     const activeMedia = media && media.length > 0 ? media[activeIndex] : null;
 
     if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}><CircularProgress /></Box>;
-    if (error) return <Alert severity="error" sx={{ mt: 2 }}>حدث خطأ أثناء تحميل الوسائط.</Alert>;
+    if (error) return <Alert severity="error" sx={{ mt: 2 }}>an error happend</Alert>;
 
     return (
         <Box sx={{ width: '100%', mt: 2, p: 2 }}>
@@ -118,7 +118,7 @@ const ProjectMediaTab = ({ projectId }) => {
             
             {!activeMedia ? (
                 <Box sx={{ mt: 4, p: 4, textAlign: 'center', backgroundColor: colors.primary[700], borderRadius: '12px' }}>
-                    <Typography variant="h6">لا توجد وسائط لعرضها.</Typography>
+                    <Typography variant="h6">there is no media to view.</Typography>
                 </Box>
             ) : (
                 <Box>
