@@ -205,11 +205,11 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
               />
             )}
           </Box>
-          {havePermission("view sales project") && ( // Assuming a permission for this dashboard
+          {havePermission("view sales project") && (
             <Item
               title="Sales Dashboard"
               to="/dashboard/sales"
-              icon={<QueryStatsIcon />} // <-- CHANGED
+              icon={<QueryStatsIcon />} 
               selected={selected}
               setSelected={setSelected}
             />
