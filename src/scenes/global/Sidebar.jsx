@@ -96,7 +96,7 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
                 alignItems="center"
                 ml="15px"
               >
-                {havePermission("view statistics")&&(
+                {havePermission("view statistics")? (
                 <Link to="/dashboard" style={{ textDecoration: 'none' }}>
                   <Box
                     component="img"
@@ -105,7 +105,12 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
                     sx={{ height: '25px', cursor: 'pointer', display: 'block' }}
                   />
                 </Link>
-                )}
+                ):(    <Box
+                  component="img"
+                  alt="BuildPro Logo"
+                  src={buildProLogo}
+                  sx={{ height: '25px', cursor: 'pointer', display: 'block' }}
+                />)}
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
                 </IconButton>
@@ -164,15 +169,17 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
                             setSelected={setSelected}
                             />
                             )}
-                            {havePermission("view consulting company") && (
-                              <Item
-                                title="Consulting Companies"
-                                to="/dashboard/ConsultingCompanies"
-                                icon={<BusinessIcon />} // <-- CHANGED
-                                selected={selected}
-                                setSelected={setSelected}
-                              />
-                            )}
+                                          {havePermission("view consulting company") && (
+                                            <Item
+                                              title="Consulting Companies"
+                                              to="/dashboard/ConsultingCompanies"
+                                              icon={<BusinessIcon />} // <-- CHANGED
+                                              selected={selected}
+                                              setSelected={setSelected}
+                                              />
+                                              )}
+                                              
+                                          
                       {!isCollapsed && (
                         <Typography
                         variant="h6"

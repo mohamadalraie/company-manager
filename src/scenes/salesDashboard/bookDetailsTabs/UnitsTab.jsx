@@ -49,33 +49,32 @@ const UnitsTab = ({ bookId }) => {
       field: "clientName",
       headerName: "Client Name",
       flex: 1,
-      // THE FIX: Use optional chaining (?.) and a fallback value (??)
-      valueGetter: (params) =>
+      // Using valueGetter is slightly more performant for sorting/filtering
+      renderCell: (params) =>
         `${params.row.client?.first_name ?? 'N/A'} ${params.row.client?.last_name ?? ''}`,
     },
     {
       field: "clientEmail",
       headerName: "Client Email",
       flex: 1,
-      // THE FIX: Safely access the email
-      valueGetter: (params) => params.row.client?.email ?? 'N/A',
+      renderCell: (params) => params.row.client?.email ?? 'N/A',
     },
     {
       field: "clientPhone",
       headerName: "Phone Number",
       flex: 1,
-      // THE FIX: Safely access the phone number
-      valueGetter: (params) => params.row.client?.phone_number ?? 'N/A',
+      renderCell: (params) => params.row.client?.phone_number ?? 'N/A',
     },
     {
       field: "first_payment_date",
       headerName: "First Payment",
       flex: 1,
       renderCell: (params) => (
+        <Box sx={{ width: '100%', height: '100%', display: "flex", alignItems: 'center', justifyContent: 'left' }}>
         <Typography>
-          {/* Add a check to ensure the date is valid before formatting */}
           {params.value ? new Date(params.value).toLocaleDateString() : 'N/A'}
         </Typography>
+        </Box>
       ),
     },
     {
@@ -87,13 +86,13 @@ const UnitsTab = ({ bookId }) => {
       renderCell: (params) => (
         <Button
           variant="contained"
-          color="secondary"
           size="small"
           startIcon={<ReceiptLongIcon />}
-          // THE FIX: Disable the button if there is no client
+          // THE FIX #1: Check for the client on `params.row`
           disabled={!params.row.client}
           onClick={() =>
-            handleViewInstallments(params.row.id, params.row.client.id)
+            // THE FIX #2: Access IDs from `params.row`
+            handleViewInstallments(params.row.id, params.row.client?.id)
           }
         >
           Bills
@@ -116,25 +115,16 @@ const UnitsTab = ({ bookId }) => {
 
   return (
     <>
-      <Box
-        sx={{
-          height: "75vh",
-          width: "100%",
-          "& .MuiDataGrid-root": { border: "none" },
-          "& .MuiDataGrid-cell": { borderBottom: "none" },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[700],
+      <Box m="20px 0 0 0" height="90vh" sx={{
+        "& .MuiDataGrid-root": { border: "none" },
+        "& .MuiDataGrid-cell": { borderBottom: "none" },
+        "& .name-column--cell": { fontWeight: "bold" },
+        "& .MuiDataGrid-columnHeaders": {
+            color: colors.greenAccent[400],
             borderBottom: "none",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[400],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.blueAccent[700],
-          },
-        }}
-      >
+            fontWeight: "bold",
+        },
+      }}>
         <DataGrid
           rows={units || []}
           columns={columns}

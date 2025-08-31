@@ -1,21 +1,4 @@
-
-import { useState } from "react"; // For Snackbar state management
-
-import { Header } from "../../../../components/Header";
-import { tokens } from "../../../../theme";
-
-// Import action icons
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import EditIcon from "@mui/icons-material/Edit";
-import AddIcon from "@mui/icons-material/Add"; // Icon for the Add button
-
-// Import the new Delete Confirmation component
-import DeleteConfirmationComponent from "../../../../components/DeleteConfirmation"; // Ensure correct path
-
-import { baseUrl } from "../../../../shared/baseUrl";
-import { deleteParticipantApi } from "../../../../shared/APIs";
-
-
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -23,39 +6,70 @@ import {
   Button,
   IconButton,
   Snackbar,
-  Alert,} from "@mui/material";
+  Alert,
+  Tooltip,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import { tokens } from "../../../../theme";
+
+// --- Action Icons ---
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import AddIcon from "@mui/icons-material/Add";
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+
+// --- Import Components ---
+import { Header } from "../../../../components/Header";
+import DeleteConfirmationComponent from "../../../../components/DeleteConfirmation";
 import AddParticipant from "../AddParticipant";
 import UserCard from "../../../../components/UserCard";
-import { useEffect } from "react";
+import AddTicketDialog from "../../../../components/dialogs/AddTicketDialog";
+
+// --- Other Imports ---
+import { baseUrl } from "../../../../shared/baseUrl";
+import { deleteParticipantApi } from "../../../../shared/APIs";
 import { havePermission } from "../../../../shared/Permissions";
 
 const TeamTab = ({ participants }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const [isAddParticipantOpen, setIsAddParticipantOpen] = useState(false); // حالة للتحكم في فتح/إغلاق الـ Dialog
-  const handleOpenAddParticipant = () => {
-    setIsAddParticipantOpen(true);
+  // State for Add Participant Dialog
+  const [isAddParticipantOpen, setIsAddParticipantOpen] = useState(false);
+  
+  // State for the Add Ticket Dialog
+  const [isTicketDialogOpen, setIsTicketDialogOpen] = useState(false);
+  const [selectedEngineerId, setSelectedEngineerId] = useState(null);
+
+  // Handlers for Add Participant Dialog
+  const handleOpenAddParticipant = () => setIsAddParticipantOpen(true);
+  const handleCloseAddParticipant = () => setIsAddParticipantOpen(false);
+  
+  // Handlers for the Add Ticket Dialog
+  const handleOpenTicketDialog = (engineerId) => {
+    setSelectedEngineerId(engineerId);
+    setIsTicketDialogOpen(true);
   };
 
-  const handleCloseAddParticipant = () => {
-    setIsAddParticipantOpen(false);
+  const handleCloseTicketDialog = () => {
+    setIsTicketDialogOpen(false);
+    setSelectedEngineerId(null);
+  };
+  
+  const handleTicketSuccess = () => {
+    showSnackbar("Ticket created successfully!", "success");
+    // You can also add a function here to refetch tickets if needed
   };
 
-
-
+  // Process participants data
   const formattedData = participants.reduce((acc, participant) => {
     const user = participant.participant.user;
-    const specialization = participant.participant.specialization;
-  
     const formattedParticipant = {
       id: user.id,
       first_name: user.first_name,
       last_name: user.last_name,
       email: user.email,
       phone_number: user.phone_number,
-      specialization_name: user.first_name,
+      specialization_name: user.first_name, // You might want to adjust this field
     };
   
     if (participant.participant_type === 'project_manager') { 
@@ -67,73 +81,36 @@ const TeamTab = ({ participants }) => {
     return acc;
   }, { formatedEngineers: [], projectManager: null });
   
-  // Now you can access the formatted data like this:
-  const formatedEngineers = formattedData.formatedEngineers;
-  const projectManager = formattedData.projectManager;
-  
-  console.log('Engineers:', formatedEngineers);
-  console.log('Project Manager:', projectManager);
+  const { formatedEngineers, projectManager } = formattedData;
 
-
-
-
-
-  // State for Snackbar messages (notifications)
+  // State and handlers for Snackbar
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Can be: 'success' | 'error' | 'warning' | 'info'
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-  // Function to open the Snackbar
   const showSnackbar = (message, severity) => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
     setSnackbarOpen(true);
   };
 
-  // Function to close the Snackbar
   const handleSnackbarClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
+    if (reason === "clickaway") return;
     setSnackbarOpen(false);
   };
 
-  // Define DataGrid columns
-  const columns =[
-    {
-      field: "id",
-      headerName: "ID",
-      flex: 0.5,
-
-    },
-    {
-      field: "first_name",
-      headerName: "First Name",
-      flex: 1,
-      cellClassName: "name-column--cell", // Custom class for name styling
-    },
-    {
-      field: "last_name",
-      headerName: "Last Name",
-      flex: 1,
-      cellClassName: "name-column--cell", // Custom class for name styling
-    },
-    {
-      field: "specialization_name",
-      headerName: "Specialization",
-      flex: 1,
-    },
-    {
-      field: "email",
-      headerName: "Email",
-      flex: 1,
-    },
+  const columns = [
+    { field: "id", headerName: "ID", flex: 0.5 },
+    { field: "first_name", headerName: "First Name", flex: 1, cellClassName: "name-column--cell" },
+    { field: "last_name", headerName: "Last Name", flex: 1, cellClassName: "name-column--cell" },
+    { field: "specialization_name", headerName: "Specialization", flex: 1 },
+    { field: "email", headerName: "Email", flex: 1 },
     {
       field: "actions",
       headerName: "Actions",
       sortable: false,
       filterable: false,
-      flex:0.5,
+      flex: 1,
       renderCell: (params) => {
         return (
           <Box
@@ -142,89 +119,100 @@ const TeamTab = ({ participants }) => {
             alignItems="center"
             height="100%"
             width="100%"
+            gap={1}
           >
-       
- 
-  
+            {/* {havePermission("create ticket") && ( */}
+              <Tooltip title="Add Ticket">
+                <IconButton onClick={() => {handleOpenTicketDialog(params.row.id);
+                  console.log(params.row.id)}}>
+                  <ConfirmationNumberIcon sx={{ color: colors.blueAccent[400] }} />
+                </IconButton>
+              </Tooltip>
+            {/* )} */}
 
-            {/* Delete Confirmation Component */}
-            {havePermission("delete project participant") &&(
-            <DeleteConfirmationComponent
-              itemId={params.row.id}
-              deleteApi={`${baseUrl}${deleteParticipantApi}`}
-              onDeleteSuccess={() => {
-                showSnackbar("Engineer deleted successfully!", "success");
-                // refetchEngineers(); // 🚨 Refetch data to update the table
-              }}
-              onDeleteError={(errorMessage) => {
-                showSnackbar(`Failed to delete engineer: ${errorMessage}`, "error");
-              }}
-              // Pass the delete icon to be rendered inside the component's button
-              icon={<DeleteOutlineIcon sx={{ color: colors.redAccent[500] }} />}
-              // You can also pass custom confirmation text if needed
-              confirmationText="Are you sure you want to delete this engineer?"
-            />
-        )}
-        
+            {havePermission("delete project participant") && (
+              <DeleteConfirmationComponent
+                itemId={params.row.id}
+                deleteApi={`${baseUrl}${deleteParticipantApi}`}
+                onDeleteSuccess={() => {
+                  showSnackbar("Engineer deleted successfully!", "success");
+                  // refetch logic should be called here
+                }}
+                onDeleteError={(errorMessage) => {
+                  showSnackbar(`Failed to delete engineer: ${errorMessage}`, "error");
+                }}
+                icon={<DeleteOutlineIcon sx={{ color: colors.redAccent[500] }} />}
+                confirmationText="Are you sure you want to delete this engineer?"
+              />
+            )}
           </Box>
         );
       },
-    },];
+    },
+  ];
 
-
+  if (!projectManager) {
+    return (
+      <Box p={3}>
+        <Typography>Loading team data or no project manager assigned...</Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box m="10px">
       <Box display="flex" justifyContent="space-between" alignItems="center" mb="20px">
         <Header
           title={"Participants"}
-          subtitle={"Managing the engineers participating in the project. "}
+          subtitle={"Managing the engineers participating in the project."}
         />
-{havePermission("assign project participant") &&(
+        {havePermission("assign project participant") && (
           <Button
             variant="contained"
             sx={{
               backgroundColor: colors.greenAccent[700],
-              color: colors.primary[100],
-              "&:hover": {
-                backgroundColor: colors.greenAccent[800],
-              },
+              color: colors.primary[100], "&:hover": { backgroundColor: colors.greenAccent[800] },
             }}
-            startIcon={<AddIcon />} // Icon for the Add button
-          onClick={handleOpenAddParticipant}
+            startIcon={<AddIcon />}
+            onClick={handleOpenAddParticipant}
           >
             Add Participant
           </Button>
-)}
+        )}
       </Box>
-  
-             <UserCard
-              label="Project Manager"
-              firstName= {projectManager.first_name}
-              lastName= {projectManager.last_name}
-              email= {projectManager.email}
-              phoneNumber= {projectManager.phone_number}
-              address= {"N/A"}
-            />
-            <Box mt="30px" mb="15px">
-           <Header 
+
+      <UserCard
+        label="Project Manager"
+        firstName={projectManager.first_name}
+        lastName={projectManager.last_name}
+        email={projectManager.email}
+        phoneNumber={projectManager.phone_number}
+        address={"N/A"}
+      />
+      <Box mt="30px" mb="15px">
+        <Header
           title={"Engineers"}
-          subtitle={"all the Engineers in the project"}
-        /></Box>
+          subtitle={"All the Engineers in the project"}
+        />
+      </Box>
 
-   <YourComponent columns={columns} formatedEngineers={formatedEngineers}/>
-
+      <EngineersDataGrid columns={columns} formatedEngineers={formatedEngineers} />
 
       <AddParticipant
-        open={isAddParticipantOpen}    // تمرير حالة الفتح
-        onClose={handleCloseAddParticipant} // تمرير دالة الإغلاق
+        open={isAddParticipantOpen}
+        onClose={handleCloseAddParticipant}
       />
-   
+      
+      <AddTicketDialog
+        open={isTicketDialogOpen}
+        onClose={handleCloseTicketDialog}
+        onSuccess={handleTicketSuccess}
+        relatedId={selectedEngineerId}
+      />
 
-      {/* Snackbar for notifications at the bottom right */}
       <Snackbar
         open={snackbarOpen}
-        autoHideDuration={6000} // Snackbar disappears after 6 seconds
+        autoHideDuration={6000}
         onClose={handleSnackbarClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
@@ -236,54 +224,35 @@ const TeamTab = ({ participants }) => {
   );
 };
 
-export default TeamTab;
-
-
-
-// Your component
-const YourComponent = ({ formatedEngineers, columns }) => {
+const EngineersDataGrid = ({ formatedEngineers, columns }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   return (
-    <Box  
-    m="20px 0 0 0"
-    height="70vh" // Fixed height for DataGrid
-    sx={{
-      // Custom styles for DataGrid
-      "& .MuiDataGrid-root": {
-        border: "none", // Remove outer border of the table
-      },
-      "& .MuiDataGrid-cell": {
-        borderBottom: "none", // Remove bottom borders between cells
-      },
-      "& .name-column--cell": {
-        // color: colors.greenAccent[300], // Distinct color for engineer names
-        fontWeight: "bold", // Bold font for names
-      },
-      "& .MuiDataGrid-columnHeaders": {
-        
-        color: colors.greenAccent[400],
-        // backgroundColor: colors.primary[800], // Background color for column headers
-        borderBottom: "none",
-        // fontSize: "1rem", // Larger font size for column headers
-        fontWeight: "bold",
-      },
-
-    }}>
-    
-    <DataGrid
-      rows={formatedEngineers}
-      columns={columns}
-      initialState={{
-        pagination: {
-          paginationModel: {
-            pageSize: 10,
-          },
+    <Box
+      m="20px 0 0 0"
+      height="70vh"
+      sx={{
+        "& .MuiDataGrid-root": { border: "none" },
+        "& .MuiDataGrid-cell": { borderBottom: "none" },
+        "& .name-column--cell": { fontWeight: "bold" },
+        "& .MuiDataGrid-columnHeaders": {
+          color: colors.greenAccent[400],
+          borderBottom: "none",
+          fontWeight: "bold",
         },
       }}
-      pageSizeOptions={[5, 10, 20]}
-    />
+    >
+      <DataGrid
+        rows={formatedEngineers}
+        columns={columns}
+        initialState={{
+          pagination: { paginationModel: { pageSize: 10 } },
+        }}
+        pageSizeOptions={[5, 10, 20]}
+      />
     </Box>
   );
 };
+
+export default TeamTab;

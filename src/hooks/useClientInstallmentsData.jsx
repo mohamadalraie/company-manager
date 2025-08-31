@@ -22,9 +22,9 @@ const useClientInstallmentsData = ({ unitId, clientId }) => {
 
     try {
       const config = { headers: { 'Authorization': `Bearer ${getAuthToken()}` } };
-      
+    
 
-      const response = await axios.get(`${baseUrl}${getClientInstallmentsApi}/${unitId}/${clientId}`, config);
+      const response = await axios.get(`${baseUrl}${getClientInstallmentsApi}${unitId}/${clientId}`, config);
       
       if (response.data && Array.isArray(response.data.data)) {
         setInstallments(response.data.data);

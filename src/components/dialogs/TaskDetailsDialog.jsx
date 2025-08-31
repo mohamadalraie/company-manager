@@ -11,6 +11,7 @@ import {
   Checkbox,
   Alert,
   ListItemText,
+  Snackbar,
 } from "@mui/material";
 import { tokens } from "../../theme";
 import EditTaskDialog from './EditTaskDialog';
@@ -31,7 +32,7 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ChevronRightIcon	 from '@mui/icons-material/ChevronRight';
 import CloseIcon from '@mui/icons-material/Close'; // أيقونة لزر الرفض
-
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 // --- API Imports ---
 import axios from "axios";
 import { baseUrl } from "../../shared/baseUrl";
@@ -40,6 +41,7 @@ import { changeTaskStatusApi, deleteTaskApi, deleteTaskResourceApi } from "../..
 import useTaskResources from "../../hooks/getTaskResourcesDataHook";
 import DeleteConfirmationComponent from "../DeleteConfirmation";
 import { AddResourceDialog } from "./AddTaskResourceDialog";
+import AddTicketDialog from "./AddTicketDialog";
 
 // Helper component for metadata items
 const MetadataItem = ({ icon, label, children }) => {
@@ -69,9 +71,15 @@ const TaskDetailDialog = ({ open, onClose, task: initialTask, onTaskDeleted, onT
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const { resources, loading: resourcesLoading, error: resourcesError, refetchResources } = useTaskResources({ taskId: task?.id });
   const [isAddResourceDialogOpen, setIsAddResourceDialogOpen] = useState(false);
+  const [isTicketDialogOpen, setIsTicketDialogOpen] = useState(false);
+  const [selectedEngineerId, setSelectedEngineerId] = useState(null);
   const [isStatusChanging, setIsStatusChanging] = useState(false);
   const [isRejecting, setIsRejecting] = useState(false);
-
+  
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
+    const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  
   useEffect(() => { setTask(initialTask); }, [initialTask]);
 
   if (!task) return null;
@@ -81,6 +89,38 @@ const TaskDetailDialog = ({ open, onClose, task: initialTask, onTaskDeleted, onT
   const handleEdit = () => { setIsEditDialogOpen(true); handleMenuClose(); };
   const handleDeleteClick = () => { setIsDeleteDialogOpen(true); handleMenuClose(); };
   const handleDeleteDialogClose = () => { if (!isDeleting) setIsDeleteDialogOpen(false); };
+
+
+
+  // Handlers for the Add Ticket Dialog
+  const handleOpenTicketDialog = (engineerId) => {
+    setSelectedEngineerId(engineerId);
+    setIsTicketDialogOpen(true);
+  };
+
+  const handleCloseTicketDialog = () => {
+    setIsTicketDialogOpen(false);
+    setSelectedEngineerId(null);
+  };
+  
+  const handleTicketSuccess = () => {
+    showSnackbar("Ticket created successfully!", "success");
+    // You can also add a function here to refetch tickets if needed
+  };
+
+
+
+  const showSnackbar = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") return;
+    setSnackbarOpen(false);
+  };
+
 
   const handleTaskUpdateSuccess = (updatedTaskData) => {
     const newTaskState = { ...task, ...updatedTaskData.data };
@@ -318,6 +358,7 @@ const TaskDetailDialog = ({ open, onClose, task: initialTask, onTaskDeleted, onT
             {havePermission("change tasks status")&&(
               <Box>
             {nextStatusInfo && (
+              <Box>
               <Button
                 onClick={() => handleStatusChange(nextStatusInfo.nextStatus)}
                 variant="contained"
@@ -330,6 +371,12 @@ const TaskDetailDialog = ({ open, onClose, task: initialTask, onTaskDeleted, onT
               >
                 {isStatusChanging ? 'Updating...' : nextStatusInfo.buttonText}
               </Button>
+                      <Button onClick={() => {handleOpenTicketDialog(task.employeeAssigned.id);
+                  console.log(task.employeeAssigned.id)}}>
+                  {/* <ConfirmationNumberIcon sx={{ color: colors.blueAccent[400] }} /> */}
+                  Reject
+                </Button>
+                </Box>
             )}
             </Box>
 )}
@@ -358,6 +405,24 @@ const TaskDetailDialog = ({ open, onClose, task: initialTask, onTaskDeleted, onT
           <Button onClick={handleConfirmDelete} color="error" disabled={isDeleting} startIcon={isDeleting ? <CircularProgress size={20} color="inherit" /> : null} variant="contained">{isDeleting ? "Deleting..." : "Delete"}</Button>
         </DialogActions>
       </Dialog>
+            
+      <AddTicketDialog
+        open={isTicketDialogOpen}
+        onClose={handleCloseTicketDialog}
+        onSuccess={handleTicketSuccess}
+        relatedId={selectedEngineerId}
+      />
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
 
       {isAddResourceDialogOpen && (
         <AddResourceDialog

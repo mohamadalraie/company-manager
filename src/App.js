@@ -36,6 +36,7 @@ import ProjectConsultingCompanyTab from "./scenes/projects/projectDetails/tabs/C
 import ConsultingCompanyDetails from "./scenes/consultingCompanies/CompanyDetails";
 import NotFound from "./scenes/NotFound";
 import BookDetails from "./scenes/salesDashboard/BookDetails";
+import TicketsPage from "./scenes/tickets/Index";
 
 // NEW: ProtectedRoutes component
 // This component checks if a token exists in localStorage.
@@ -146,6 +147,7 @@ function App() {
                     <Route path="/dashboard/sales/saleDetails/:saleId" element={<SaleDetailPage />} />
                     <Route path="/dashboard/sales/saleDetails/:saleId/edit" element={<EditProjectSale />} />
                     <Route path="/dashboard/sales/saleDetails/:saleId/:bookId/details" element={<BookDetails />} />
+                    <Route path="/dashboard/tickets" element={<TicketsPage />} />
 
                   </Route>
 

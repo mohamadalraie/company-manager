@@ -102,7 +102,7 @@ const CreatePropertyBookDialog = ({ open, onClose, projectId, onSuccess }) => {
                         </DialogContent>
                         <DialogActions sx={{ backgroundColor: colors.primary[800], p: '20px' }}>
                             <Button onClick={onClose} color="inherit">Cancel</Button>
-                            <Button type="submit" variant="contained" color="secondary" disabled={isSubmitting}>{isSubmitting ? <CircularProgress size={24} /> : "Create Book"}</Button>
+                            <Button type="submit" variant="contained"  disabled={isSubmitting}>{isSubmitting ? <CircularProgress size={24} /> : "Create Book"}</Button>
                         </DialogActions>
                     </form>
                 )}

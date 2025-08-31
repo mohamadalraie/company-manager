@@ -146,7 +146,7 @@ const GeneralInfoTab = ({ project, refetchProject }) => {
                 {havePermission("edit projects")&&(
                 <Button 
                   variant="outlined" 
-                  color="secondary" 
+                  
                   startIcon={<EditIcon />}
                   onClick={() => setIsEditDialogOpen(true)}
                 >

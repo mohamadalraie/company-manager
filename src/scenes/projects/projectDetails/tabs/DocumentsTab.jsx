@@ -89,42 +89,16 @@ const DocumentsTab = ({  }) => {
     setSnackbarOpen(false);
   };
 
-  // const handleOpenViewer = (fileUrl, fileName, fileType) => {
-  //   window.open(fileUrl, '_blank', 'noopener,noreferrer');
-  //   // setCurrentFileUrl(fileUrl);
-  //   // setCurrentFileName(fileName);
-  //   // setCurrentFileType(fileType);
-  //   // setOpenViewer(true);
-  // };
-
-  // const handleCloseViewer = () => {
-  //   setOpenViewer(false);
-  //   setCurrentFileUrl("");
-  //   setCurrentFileName("");
-  //   setCurrentFileType("");
-  // };
 
   const handleCloseViewer = () => {
     setIsViewerOpen(false);
     setPdfBlob(null);
 };
 
-const handleViewFile = async (fileUrl, fileName) => {
-  try {
-      const relativeUrl = new URL(fileUrl).pathname;
-      const response = await axios.get(relativeUrl, { responseType: 'blob' });
-      
-      // 👇 --- التغيير الثاني: لا ننشئ URL، بل نستخدم الـ Blob مباشرة ---
-      const fileBlob = new Blob([response.data], { type: 'application/pdf' });
-      
-      setPdfBlob(fileBlob); // تخزين الـ Blob في الحالة
-      setCurrentFileName(fileName);
-      setIsViewerOpen(true);
-
-  } catch (error) {
-      console.error("Error preparing PDF for viewing:", error);
-      alert("Sorry, the file could not be prepared for viewing.");
-  }
+const handleViewFile = (fileUrl, fileName) => {
+  // Opens the file URL in a new browser tab.
+  // The browser's built-in PDF viewer will handle rendering it.
+  window.open(fileUrl, '_blank', 'noopener,noreferrer');
 };
 
 
@@ -318,6 +292,14 @@ const handleViewFile = async (fileUrl, fileName) => {
                     </Typography>
                   }
                   secondary={
+                    <Box>
+                    <Typography
+                      variant="body2"
+                      sx={{ color: colors.grey[300], mt: 0.5 }}
+                    >
+                     uploaded by: {file.uploader_name}
+                    </Typography>
+
                     <Typography
                       variant="body2"
                       sx={{ color: colors.grey[300], mt: 0.5 }}
@@ -325,6 +307,7 @@ const handleViewFile = async (fileUrl, fileName) => {
                       {file.description || "No description available."}
                       {file.uploader_name}
                     </Typography>
+                    </Box>
                   }
                 
                   sx={{ flexGrow: 1, mr: { sm: 2 }, mb: { xs: 1, sm: 0 } }}

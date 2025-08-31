@@ -1,6 +1,6 @@
 import { Box, IconButton, useTheme, Menu, MenuItem, ListItemIcon, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
 import { useContext, useState } from "react"; // NEW: Import useState
-import { useNavigate } from "react-router-dom"; // NEW: Import useNavigate for redirection
+import { Link, useNavigate } from "react-router-dom"; // NEW: Import useNavigate for redirection
 import { ColorModeContext, tokens } from "../../theme";
 import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
@@ -10,6 +10,7 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import Logout from "@mui/icons-material/Logout"; // NEW: Import Logout Icon
+import { getRole } from "../../shared/Permissions";
 
 const Topbar = () => {
   const theme = useTheme();
@@ -20,6 +21,8 @@ const Topbar = () => {
   // --- NEW: State for Settings Menu ---
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
+  const userRole = getRole();
+  const forbiddenRoles = ["owner", "realStateManager"];
 
   // --- NEW: State for Logout Confirmation Dialog ---
   const [openDialog, setOpenDialog] = useState(false);
@@ -90,9 +93,15 @@ const Topbar = () => {
           {/* You can add more MenuItems here later, e.g., Profile, Settings */}
         </Menu>
 
-        <IconButton>
-          <NotificationsOutlinedIcon />
-        </IconButton>
+
+{ !forbiddenRoles.includes(userRole) && (
+  <Link to={'/dashboard/tickets'}>
+    <IconButton>
+      <NotificationsOutlinedIcon />
+    </IconButton>
+  </Link>
+)}
+
 
         <IconButton onClick={colorMode.toggleColorMode}>
           {theme.palette.mode === "dark" ? (

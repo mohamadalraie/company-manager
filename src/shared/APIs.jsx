@@ -103,8 +103,12 @@ export const rejectOrderApi=({orderId})=>{return `/api/contract-flow/${orderId}/
 export const cancelOrderApi=({orderId})=>{return `/api/contract-flow/${orderId}/cancel`;}
 
 export const getBookUnitsApi="/api/propertyUnit/all/";
-export const getClientInstallmentsApi="/api/propertyUnit/all/";
+export const getClientInstallmentsApi="/api/installments/";
 
+export const createTicketApi="/api/tickets";
+export const updateTicketApi=({tId})=>{return `/api/tickets/${tId}/Close`;}
+export const getMyTicketsApi="/api/tickets/my";
+export const getAssignedTicketsApi="/api/tickets/assigned";
 
 
 

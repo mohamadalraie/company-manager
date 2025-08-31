@@ -43,7 +43,7 @@ const useProjectFilesData = ({  }) => {
       // --- الخطوة 2: المرور على كل ملف واستدعاء الـ API الثانية ---
       // نستخدم Promise.all لجعل الطلبات متوازية وأكثر كفاءة
       const enhancedFilesPromises = filesData.map(async (file) => {
-        let uploaderName = "Unknown User";
+        let uploaderName = `${file.creator.first_name} ${file.creator.last_name}`;
 
         // إذا كان للملف معرف مشارك، قم بجلب اسمه
         if (file.project_participant_id) {

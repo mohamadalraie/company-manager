@@ -203,7 +203,7 @@ const ProjectMediaTab = ({ projectId }) => {
                 </DialogContent>
                 <DialogActions sx={{ p: 2 }}>
                     <Button onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
-                    <Button onClick={handleSaveMedia} variant="contained" color="secondary" disabled={isSaving || !newMediaFile}>
+                    <Button onClick={handleSaveMedia} variant="contained" disabled={isSaving || !newMediaFile}>
                         {isSaving ? <CircularProgress size={24} color="inherit" /> : 'Upload'}
                     </Button>
                 </DialogActions>

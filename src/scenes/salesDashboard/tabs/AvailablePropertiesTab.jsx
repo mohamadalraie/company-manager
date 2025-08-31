@@ -68,7 +68,7 @@ const AvailablePropertiesTab = ({ projectId }) => {
         <Box p={{ xs: 1, sm: 2, md: 3 }}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
                 <Typography variant="h4" fontWeight="bold" color={colors.grey[100]}>Available Units & Models</Typography>
-                <Button variant="contained" color="secondary" startIcon={<AddCircleOutlineIcon />} onClick={() => setCreateDialogOpen(true)}>
+                <Button variant="contained" startIcon={<AddCircleOutlineIcon />} onClick={() => setCreateDialogOpen(true)}>
                     Create New Model
                 </Button>
             </Stack>
