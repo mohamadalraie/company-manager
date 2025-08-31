@@ -111,7 +111,7 @@ function App() {
                     path="/"
                     element={
                       token ? (
-                        <Navigate to="/dashboard/" />
+                        <Navigate to="/dashboard/projects" />
                       ) : (
                         <Navigate to="/dashboard/login" />
                       )

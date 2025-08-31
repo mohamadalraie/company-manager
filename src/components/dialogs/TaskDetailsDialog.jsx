@@ -366,16 +366,21 @@ const TaskDetailDialog = ({ open, onClose, task: initialTask, onTaskDeleted, onT
                 startIcon={isStatusChanging ? <CircularProgress size={20} color="inherit" /> : <ChevronRightIcon	 />}
                 sx={{
                   backgroundColor: colors.blueAccent[500],
+                  mr:1,
                   '&:hover': { backgroundColor: colors.blueAccent[600] }
                 }}
               >
                 {isStatusChanging ? 'Updating...' : nextStatusInfo.buttonText}
               </Button>
-                      <Button onClick={() => {handleOpenTicketDialog(task.employeeAssigned.id);
+              {task.status === 'pendingApproval' &&
+                      <Button variant="outlined" 
+                      color="error"
+                      startIcon={isRejecting ? <CircularProgress size={20} /> : <CloseIcon />}
+                      onClick={() => {handleOpenTicketDialog(task.employeeAssigned.id);
                   console.log(task.employeeAssigned.id)}}>
                   {/* <ConfirmationNumberIcon sx={{ color: colors.blueAccent[400] }} /> */}
                   Reject
-                </Button>
+                </Button>}
                 </Box>
             )}
             </Box>

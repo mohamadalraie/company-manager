@@ -106,7 +106,7 @@ export const getBookUnitsApi="/api/propertyUnit/all/";
 export const getClientInstallmentsApi="/api/installments/";
 
 export const createTicketApi="/api/tickets";
-export const updateTicketApi=({tId})=>{return `/api/tickets/${tId}/Close`;}
+export const updateTicketApi=({tId})=>{return `/api/tickets/`;}
 export const getMyTicketsApi="/api/tickets/my";
 export const getAssignedTicketsApi="/api/tickets/assigned";
 

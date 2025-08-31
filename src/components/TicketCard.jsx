@@ -17,22 +17,36 @@ const TicketCard = ({ ticket, showActions = false, onStatusChange }) => {
   const colors = tokens(theme.palette.mode);
   const [loading, setLoading] = useState(false);
 
-
-  const handleStatusUpdate = async (newStatus) => {
+  const handleStatusUpdate = async () => {
     setLoading(true);
     try {
-
-      const config = { headers: { Authorization: `Bearer ${getAuthToken()}` } };
-      await axios.patch(`${baseUrl}${updateTicketApi({tId:ticket.id})}`, config);
-      console.log(`Updating ticket ${ticket.id} to status: ${newStatus}`);
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // 1. Define the request configuration with the necessary headers
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${getAuthToken()}`,
+          'Accept': 'application/json'
+        }
+      };
+  
+      // The full URL for the API endpoint
+      const url = `${baseUrl}/api/tickets/${ticket.id}/Closed`;
+  
+      // 2. Make the PUT request with the correct arguments
+      // We pass 'null' as the 'data' (the second argument) because this request has no body.
+      await axios.put(url, null, config);
+  
+      console.log(`Ticket ${ticket.id} status updated to Closed.`);
       
+      // 3. Trigger the parent component to refetch data
       if (onStatusChange) {
-        onStatusChange(); // Trigger refetch in the parent
+        onStatusChange();
       }
+  
     } catch (error) {
-      console.error("Failed to update ticket status", error);
+      // Provide more detailed error logging for easier debugging
+      console.error("Failed to update ticket status:", error.response?.data || error.message);
+      // You could also show an error message to the user here
+      
     } finally {
       setLoading(false);
     }
@@ -68,16 +82,17 @@ const TicketCard = ({ ticket, showActions = false, onStatusChange }) => {
           <Box display="flex" justifyContent="flex-end" gap={1.5} pt={1}>
             {loading ? <CircularProgress size={24} /> : (
               <>
+              {/* {ticket.status==="open"&& */}
                 <Button 
                   variant="contained" 
                   color="success" 
                   size="small" 
-                  disabled={ticket.status === 'closed'}
+                  disabled={ticket.status === 'Closed'}
                   onClick={() => handleStatusUpdate()}
                 >
                   Mark as Closed
                 </Button>
-
+{/* } */}
               </>
             )}
           </Box>

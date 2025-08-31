@@ -17,6 +17,7 @@ import { havePermission } from "../../../shared/Permissions";
 import { baseUrl } from "../../../shared/baseUrl";
 import { deleteProjectBookBillsApi } from "../../../shared/APIs";
 
+
 // Icons
 import BedIcon from "@mui/icons-material/Bed";
 import BathtubIcon from "@mui/icons-material/Bathtub";
@@ -26,6 +27,8 @@ import CompassCalibrationIcon from "@mui/icons-material/CompassCalibration";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import DescriptionIcon from '@mui/icons-material/Description'; // Don't forget to import the new icon
+
 
 // Components
 import AddBillDialog from "../../../components/dialogs/AddBillDialog";
@@ -94,10 +97,24 @@ const BillsTable = ({ bills, loading, error, refetchBills }) => {
       headerName: "Actions",
       sortable: false,
       filterable: false,
-      flex: 0.3,
+      flex: 1,
       renderCell: ({ row }) => (
-        <Box sx={{ width: '100%', height: '100%', display: "flex", alignItems: 'center', justifyContent: 'center' }}>
-
+        <Box sx={{ width: '100%', height: '100%', display: "flex", alignItems: 'center', justifyContent: 'space-between' }}>
+<Button
+  sx={{ 
+     
+    backgroundColor: colors.greenAccent[700], 
+    color: colors.primary[100], 
+    '&:hover': { backgroundColor: colors.greenAccent[800] } 
+  }}
+  variant="contained"
+  size="small"
+  startIcon={<DescriptionIcon />}
+  href={row.blocChainLink} 
+  target="_blank"
+>
+  View Contract
+</Button>
           {havePermission("delete engineers") && (
             <DeleteConfirmationComponent
               itemId={row.id}
@@ -113,6 +130,7 @@ const BillsTable = ({ bills, loading, error, refetchBills }) => {
               confirmationText="Are you sure you want to delete this bill?"
             />
           )}
+
         </Box>
       ),
     },

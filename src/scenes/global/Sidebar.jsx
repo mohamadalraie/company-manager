@@ -97,7 +97,7 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
                 ml="15px"
               >
                 {havePermission("view statistics")? (
-                <Link to="/dashboard" style={{ textDecoration: 'none' }}>
+                <Link to="/dashboard/projects" style={{ textDecoration: 'none' }}>
                   <Box
                     component="img"
                     alt="BuildPro Logo"
@@ -142,7 +142,7 @@ const ProSidebar = ({ isCollapsed, setIsCollapsed }) => {
                             Management
                           </Typography>
                         )}
-                        {havePermission("view statistics") && (
+                        {havePermission("view snkkkkktatistics") && (
                           <Item
                           title="Dashboard"
                           to="/dashboard/"

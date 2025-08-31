@@ -297,16 +297,16 @@ const handleViewFile = (fileUrl, fileName) => {
                       variant="body2"
                       sx={{ color: colors.grey[300], mt: 0.5 }}
                     >
-                     uploaded by: {file.uploader_name}
+                     description: {file.description || "No description available."}
+                     
                     </Typography>
-
                     <Typography
                       variant="body2"
                       sx={{ color: colors.grey[300], mt: 0.5 }}
                     >
-                      {file.description || "No description available."}
-                      {file.uploader_name}
+                     uploaded by: {file.uploader_name}
                     </Typography>
+
                     </Box>
                   }
                 
