@@ -65,26 +65,7 @@ const ConsultingEngineers = ({ consultingCompanyId }) => {
     { field: "specialization_name", headerName: "Specialization", flex: 1 },
     { field: "email", headerName: "Email", flex: 1 },
     { field: "phone_number", headerName: "Phone Number", flex: 1 },
-    {
-        field: "status",
-        headerName: "Status",
-        flex: 0.5,
-        renderCell: ({ row }) => (
-          <Box width="100%" display="flex" justifyContent="center" alignItems="center" height="100%">
-            {havePermission("activate user") &&(
-            <Button sx={{
-              backgroundColor: row.status == 1 ? colors.greenAccent[600] : colors.redAccent[600],
-              color: colors.grey[100],
-              '&:hover': {
-                backgroundColor: row.status == 1 ? colors.greenAccent[700] : colors.redAccent[700],
-              }
-            }}>
-              { row.status == 1 ?"active":"unactive"}
-            </Button>
-            )}
-          </Box>
-        ),
-      },
+   
     {
       field: "actions",
       headerName: "Actions",

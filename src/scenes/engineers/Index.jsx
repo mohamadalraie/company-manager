@@ -70,27 +70,6 @@ const Engineers = () => {
     { field: "email", headerName: "Email", flex: 1 },
     { field: "phone_number", headerName: "Phone Number", flex: 1 },
     {
-      field: "is_active",
-      headerName: "Status",
-      sortable: false,
-      filterable: false,
-      flex:0.5,
-      renderCell: ({ value }) => (
-         
-        <Box display="flex" justifyContent="center" alignItems="center" height="100%" width="100%">
-          {havePermission("activate user") &&(
-          <Button  sx={{
-                        backgroundColor: colors.greenAccent[700],
-                        color: colors.primary[100],
-                        "&:hover": { backgroundColor: colors.greenAccent[800] },
-                    }}>
-            {value ===1 ? "active" :"unactive" || "Undefined"}
-          </Button>
-          )}
-        </Box>
-      ),
-    },
-    {
       field: "actions",
       headerName: "Actions",
       sortable: false,
